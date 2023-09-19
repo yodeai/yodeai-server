@@ -1,14 +1,14 @@
 import os
-from flask import Flask
+from fastapi import FastAPI
+
+app = FastAPI()
 
 
-app = Flask(__name__)
-
-@app.route("/")
+@app.get("/")
 def demo():
-    app.logger.info("Hello World endpoint was hit.")
-    return "Hello World"
+    return {"message": "Hello World"}
 
 if __name__ == "__main__":
+    import uvicorn
     port = int(os.environ.get("PORT", 5000))
-    app.run(host='0.0.0.0', port=port)
+    uvicorn.run(app, host="0.0.0.0", port=port)

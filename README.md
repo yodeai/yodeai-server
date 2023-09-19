@@ -20,15 +20,11 @@ This repository contains the back-end for YodeAI.
     pip install -r requirements.txt
     ```
 
-3. **Set the Flask app environment variable:**
+3. **Run the FastAPI app:**
     ```bash
-    export FLASK_APP=app.py 
+    uvicorn app:app --reload
     ```
 
-4. **Run the Flask app:**
-    ```bash
-    flask run
-    ```
 
 ## Deployment to Heroku
 

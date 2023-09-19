@@ -1,6 +1,6 @@
-FROM python:3.6-buster
+FROM --platform=linux/amd64 python:3.9-slim
+COPY . /app
 WORKDIR /app
-COPY requirements.txt .
 RUN pip install -r requirements.txt
-COPY . .
-CMD ["python", "app.py"]
+EXPOSE $PORT
+CMD gunicorn --workers=4 --bind 0.0.0.0:$PORT app:app 

@@ -1,9 +1,14 @@
-from flask import Flask, render_template
 import os
+from flask import Flask
+import logging
+
 app = Flask(__name__)
-@app.route('/')
-def fun():
-    return render_template('index.html')
-if __name__ == '__main__':
-    port = int(os.environ.get('PORT', 8000))
-    app.run(host='0.0.0.0', port=port, debug=True)
+
+@app.route("/")
+def demo():
+    app.logger.info("Hello World endpoint was hit.")
+    return "Hello World"
+
+if __name__ == "__main__":
+    port = int(os.environ.get("PORT", 5000))
+    app.run(host='0.0.0.0', port=port)

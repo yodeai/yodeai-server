@@ -1,1 +1,10 @@
+__pycache__/
+*.pyc
+*.pyo
+*.egg-info/
+*.egg
+*.log
+*.swp
+*.swo
 venv/
+*.sqlite3

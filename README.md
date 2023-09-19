@@ -32,17 +32,7 @@ This repository contains the back-end for YodeAI.
 
 ## Deployment to Heroku
 
-1. **Build the Docker image:**
+1. **Deploy to Heroku:**
     ```bash
-    docker build -t yodeai-server .
-    ```
-
-2. **Push the Docker image to Heroku:**
-    ```bash
-    heroku container:push web --app yodeai-server 
-    ```
-
-3. **Release the Docker image on Heroku:**
-    ```bash
-    heroku container:release web --app yodeai-server
+    git push heroku main
     ```

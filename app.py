@@ -15,12 +15,18 @@ def demo():
     # Send the request to the Hugging Face API
     response = requests.post("https://api-inference.huggingface.co/models/BAAI/bge-large-en-v1.5", headers=headers, data=json.dumps(data))
     #print(response.content)
+    response_content = response.content.decode("utf-8")
+    print("Hugging Face API Response:", response_content)
+    
 
     # Extract the embeddings from the response
     embeddings = json.loads(response.content.decode("utf-8"))
+    print(embeddings[0])
+    print(type(embeddings[0][0]))
 
     # Calculate the pairwise similarity matrix
     similarity_matrix = cosine_similarity(embeddings)
+    
 
     # Print the similarity matrix
     for i, row in enumerate(similarity_matrix):

@@ -1,5 +1,6 @@
 # Use an official Python runtime as the base image
-FROM heroku/heroku:20
+FROM python:3.8-slim
+
 
 # Set the working directory in the container to /app
 WORKDIR /app

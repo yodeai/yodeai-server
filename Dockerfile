@@ -1,5 +1,5 @@
 # Use an official Python runtime as the base image
-FROM python:3.8-slim
+FROM heroku/heroku:20
 
 # Set the working directory in the container to /app
 WORKDIR /app
@@ -11,7 +11,4 @@ COPY . /app
 RUN pip install --no-cache-dir -r requirements.txt
 
 # Set the command to run your app using gunicorn
-#CMD ["gunicorn", "app:app", "--bind", "0.0.0.0:8000"]
-CMD gunicorn app:app --bind 0.0.0.0:$PORT
-
-
+CMD ["gunicorn", "app:app", "--bind", "0.0.0.0:$PORT"]

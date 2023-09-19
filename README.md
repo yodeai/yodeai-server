@@ -1,12 +1,12 @@
-# YodeAI Server
+# Yodeai Server
 
-This repository contains the back-end for YodeAI.
+This repository contains the back-end for Yodeai.
 
 ## Setup and Local Development
 
 ### Prerequisites
 
-- Ensure you have a Python environment set up, preferably using `venv`.
+- Ensure you have a Python environment set up, preferably using `venv`. If you don't have a venv folder, create one: virtualenv venv
 
 ### Steps to Run Locally
 

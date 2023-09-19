@@ -1,31 +1,32 @@
 import os
+import requests
+import json
 from fastapi import FastAPI
-from langchain.embeddings.huggingface import HuggingFaceEmbeddings
+from sklearn.metrics.pairwise import cosine_similarity
 
 app = FastAPI()
 
 @app.get("/")
 def demo():
-    model_name = "sentence-transformers/all-mpnet-base-v2"
-    model_kwargs = {'device': 'cpu'}
-    encode_kwargs = {'normalize_embeddings': False}
-    hf_embeddings = HuggingFaceEmbeddings(
-        model_name=model_name,
-        model_kwargs=model_kwargs,
-        encode_kwargs=encode_kwargs
-    )
+    # Set up the request headers and data
+    headers = {"Authorization": os.environ.get("HUGGINGFACEHUB_API_KEY"), "Content-Type": "application/json"}
+    data = {"inputs": ["This is a sentence.", "This is another sentence.", "this is a sentence about Japanese food", "Sushi is nice"]}
 
-    # Compute embeddings for a list of sentences
-    sentences = ["This is a sentence.", "This is another sentence."]
-    embeddings = hf_embeddings.embed_documents(sentences)
+    # Send the request to the Hugging Face API
+    response = requests.post("https://api-inference.huggingface.co/models/BAAI/bge-large-en-v1.5", headers=headers, data=json.dumps(data))
+    #print(response.content)
 
-    # Store the length of embeddings
-    lengths = []
-    for i, embedding in enumerate(embeddings):
-        print(f"Sentence {i+1} embedding: {embedding}")
-        lengths.append(len(embedding))
+    # Extract the embeddings from the response
+    embeddings = json.loads(response.content.decode("utf-8"))
 
-    return {"embedding_lengths": lengths}
+    # Calculate the pairwise similarity matrix
+    similarity_matrix = cosine_similarity(embeddings)
+
+    # Print the similarity matrix
+    for i, row in enumerate(similarity_matrix):
+        print(f"Sentence {i+1} similarity: {row}")
+
+    return {"similarity_matrix": similarity_matrix.tolist()}
 
 if __name__ == "__main__":
     import uvicorn

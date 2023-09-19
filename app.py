@@ -9,7 +9,11 @@ app = FastAPI()
 @app.get("/")
 def demo():
     # Set up the request headers and data
-    headers = {"Authorization": os.environ.get("HUGGINGFACEHUB_API_KEY"), "Content-Type": "application/json"}
+    headers = {
+    "Authorization": f"Bearer {os.environ.get('HUGGINGFACEHUB_API_KEY')}",
+    "Content-Type": "application/json"
+    }
+
     data = {"inputs": ["This is a sentence.", "This is another sentence.", "this is a sentence about Japanese food", "Sushi is nice"]}
 
     # Send the request to the Hugging Face API

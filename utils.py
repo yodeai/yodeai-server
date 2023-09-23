@@ -3,11 +3,11 @@ import time
 import random
 import sys
 import os
-from supabase import create_client, Client
 from openai import ChatCompletion
 from langchain.vectorstores import SupabaseVectorStore
 from langchain.embeddings import HuggingFaceEmbeddings
 import re
+from DB import mySupabase
 
 def exponential_backoff(retries=5, backoff_in_seconds=1, out=sys.stdout):
     def backoff(func):
@@ -37,20 +37,10 @@ def get_completion(prompt, model="gpt-3.5-turbo"):
     )
     return response.choices[0].message["content"]
 
-def getSupabaseClient():
-    url: str = os.environ.get("PUBLIC_SUPABASE_URL")
-    key: str = os.environ.get("PUBLIC_SUPABASE_ANON_KEY")
-    if not url:
-        raise Exception('SUPABASE_URL environment variable is not defined')
-    if not key:
-        raise Exception('supabasekey environment variable is not defined')
-    return create_client(url, key)
+
 
 def fetchLinksFromDatabase():
-    url: str = os.environ.get("PUBLIC_SUPABASE_URL")
-    key: str = os.environ.get("PUBLIC_SUPABASE_ANON_KEY")
-    supabase  = create_client(url, key)
-    data, count = supabase.table('links').select('title, url').execute()
+    data, count = mySupabase.table('links').select('title, url').execute()
     if len(data[1]) == 0:
         raise Exception("no data found in links database")
     data = data[1]
@@ -98,7 +88,7 @@ def getRelevance(question, response, text):
         return int(score[0]) if score else 0
 
 def getDocumentsVectorStore():
-    client = getSupabaseClient()
+    client = mySupabase
     embeddings = HuggingFaceEmbeddings(model_name="all-MiniLM-L6-v2")
     return SupabaseVectorStore(
         client=client,
@@ -107,7 +97,7 @@ def getDocumentsVectorStore():
         query_name="match_documents_huggingface"
     )
 def getQuestionsVectorStore():
-    client = getSupabaseClient()
+    client = mySupabase
     embeddings = HuggingFaceEmbeddings(model_name="all-MiniLM-L6-v2")
     return SupabaseVectorStore(
         client=client,

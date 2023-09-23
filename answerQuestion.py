@@ -13,6 +13,7 @@ from langchain.retrievers.self_query.base import SelfQueryRetriever
 from utils import addHyperlinksToResponse, fetchLinksFromDatabase, getSupabaseClient, removeDuplicates, getRelevance, get_completion, getDocumentsVectorStore, getQuestionsVectorStore
 import os
 from langchain.embeddings import HuggingFaceEmbeddings, SentenceTransformerEmbeddings
+from DB import mySupabase
 
 relevanceThreshold = 5
 notFound = "The question does not seem to be relevant to the provided content."
@@ -104,6 +105,51 @@ def process_vector_search(question: str) -> str:
         "response": response,
         "metadata": uniqueMetadataList  
     }
+
+
+
+def process_vector_search(question: str, lensID: int) -> str:    
+    print("starting to answer question")
+    vectorStore = getDocumentsVectorStore()
+    vectorStoreRetriever = vectorStore.as_retriever()
+    def getRelDocs(q):
+        docs = []
+        metadataList = []
+        #ans1 = vectorStoreRetriever.get_relevant_documents(q)
+        #docs.extend(ans1)
+        #for doc in docs:
+        #    metadataList.append(doc.metadata)
+
+        chunkIDList = mySupabase.from_('lens_chunks').select('*').eq('lens_id', lensID).execute()
+
+        filter_params = {"category": {"$in": chunkIDList}}
+        ans2 = vectorStore.similarity_search(q, 8, filter=filter_params)
+        docs.extend(ans2)
+        for doc in ans2:
+            metadataList.append(doc.metadata)
+        return {"documents": docs, "metadata": metadataList}
+    print("starting to get docs")
+    results = getRelDocs(question)
+    dlist = results['documents']
+    metadataList = results['metadata']
+    text = ""
+    for d in dlist:
+        text += d.page_content + "\n\n"
+    prompt = "You are answering questions from freshmen at UC Berkeley. Answer the question: " + question + " in a helpful and concise way and in at most one paragraph, using the following text inside tripple quotes: '''" + text + "''' \n <<<REMEMBER:  If the question is irrelevant to the text, do not try to make up an answer, just say that the question is irrelevant to the context.>>>"
+    print("starting to get completion")
+    response = get_completion(prompt);    
+    filteredMetadata = [meta for meta in metadataList if isinstance(meta["source"], str) and "title" in meta]
+    uniqueMetadataList = removeDuplicates(filteredMetadata)
+    getRel = getRelevance(question, response, text)
+    if getRel == None or getRel <= relevanceThreshold:
+        response = notFound
+    print("done with process vector search")
+    return {
+        "question": question,
+        "response": response,
+        "metadata": uniqueMetadataList  
+    }
+
 
 def update_question_popularity(id, diff):
     supabase = getSupabaseClient()

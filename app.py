@@ -16,6 +16,10 @@ app = FastAPI()
 class Question(BaseModel):
     text: str
 
+class QuestionFromLens(BaseModel):
+    question: str
+    lensID: str
+
 templates = Jinja2Templates(directory="templates")
 
 app.add_middleware(
@@ -33,8 +37,15 @@ async def ask_form(request: Request):
 
 @app.post("/answer")
 async def answer_text(question: str = Form(...)):
-    # Perform your logic here to get the answer
     answer = answer_question(question)
+    return {"answer": answer}
+
+@app.post("/answerFromLens")
+async def answer_from_lens(data: QuestionFromLens):
+    # Extracting question and lensID from the request body
+    question = data.question
+    lensID = data.lensID
+    answer = f"Answering {question} using lensID {lensID}"
     return {"answer": answer}
 
 

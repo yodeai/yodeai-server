@@ -10,6 +10,7 @@ from fastapi.templating import Jinja2Templates
 from sklearn.metrics.pairwise import cosine_similarity
 from fastapi.middleware.cors import CORSMiddleware
 from answerQuestion import answer_question 
+from answerQuestionLens import answer_question_lens     
 from pydantic import BaseModel
 
 app = FastAPI()
@@ -51,7 +52,7 @@ async def answer_from_lens(data: QuestionFromLens):
     # Extracting question and lensID from the request body
     question = data.question
     lensID = data.lensID
-    answer = f"Answering {question} using lensID {lensID}"
+    answer = answer_question_lens(question, lensID)
     return {"answer": answer}
 
 

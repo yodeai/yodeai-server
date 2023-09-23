@@ -1,0 +1,39 @@
+<!-- templates/asklens.html -->
+<form id="myForm">
+    <label for="text">Question:</label>
+    <input type="text" name="question" id="question" placeholder="Type your question here">
+    <label for="text">Lens ID:</label>
+    <input type="text" name="lensID" id="lensID">
+    <input type="submit" value="Ask">
+</form>
+
+<div id="answer"></div> <!-- Div to display the answer -->
+
+<script>
+document.getElementById('myForm').addEventListener('submit', function(e){
+    e.preventDefault();
+
+    let question = document.getElementById('question').value;
+    let lensID = document.getElementById('lensID').value;
+
+    fetch('/answerFromLens', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            question: question,
+            lensID: lensID
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        // Displaying the answer on the page
+        document.getElementById('answer').innerText = 'Answer: ' + data.answer;
+    })
+    .catch(error => {
+        console.error('There has been a problem with your fetch operation:', error);
+        document.getElementById('answer').innerText = 'Error occurred while getting the answer!';
+    });
+});
+</script>

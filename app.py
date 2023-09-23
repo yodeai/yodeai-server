@@ -35,10 +35,16 @@ app.add_middleware(
 async def ask_form(request: Request):
     return templates.TemplateResponse("ask.html", {"request": request})
 
+@app.get("/asklens", response_class=HTMLResponse)
+async def ask_form(request: Request):
+    return templates.TemplateResponse("asklens.html", {"request": request})
+
 @app.post("/answer")
 async def answer_text(question: str = Form(...)):
     answer = answer_question(question)
     return {"answer": answer}
+
+
 
 @app.post("/answerFromLens")
 async def answer_from_lens(data: QuestionFromLens):

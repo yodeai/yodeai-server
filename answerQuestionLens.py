@@ -7,7 +7,7 @@ from langchain.retrievers.self_query.base import SelfQueryRetriever
 
 from utils import addHyperlinksToResponse, fetchLinksFromDatabase, getRelevance, get_completion, getChunksVectorStore, getEmbeddings
 import os
-from langchain.embeddings import HuggingFaceEmbeddings, SentenceTransformerEmbeddings
+from langchain.embeddings import HuggingFaceEmbeddings
 from DB import mySupabase
 
 relevanceThreshold = 5

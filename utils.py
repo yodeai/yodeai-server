@@ -93,7 +93,7 @@ def getEmbeddings(texts):
     }
     data = {"inputs": texts}
 
-    response = requests.post("https://api-inference.huggingface.co/models/BAAI/bge-large-en-v1.5", headers=headers, data=json.dumps(data))
+    response = requests.post(os.environ.get('BGELARGE_MODEL'), headers=headers, data=json.dumps(data))
     if response.status_code != 200:
         print("Error in Hugging Face API Response:", response.content.decode("utf-8"))
         return None

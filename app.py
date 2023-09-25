@@ -67,7 +67,7 @@ def demo():
     data = {"inputs": ["This is a sentence.", "This is another sentence.", "this is a sentence about Japanese food", "Sushi is nice"]}
 
     # Send the request to the Hugging Face API
-    response = requests.post("https://api-inference.huggingface.co/models/BAAI/bge-large-en-v1.5", headers=headers, data=json.dumps(data))
+    response = requests.post(os.environ.get('BGELARGE_MODEL'), headers=headers, data=json.dumps(data))
     #print(response.content)
 
     if response.status_code != 200:

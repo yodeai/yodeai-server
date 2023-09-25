@@ -10,7 +10,7 @@ from langchain.llms import OpenAI
 from langchain.chains.query_constructor.base import AttributeInfo
 from langchain.retrievers.self_query.base import SelfQueryRetriever
 
-from utils import addHyperlinksToResponse, fetchLinksFromDatabase, getSupabaseClient, removeDuplicates, getRelevance, get_completion, getDocumentsVectorStore, getQuestionsVectorStore
+from utils import addHyperlinksToResponse, fetchLinksFromDatabase, removeDuplicates, getRelevance, get_completion, getDocumentsVectorStore, getQuestionsVectorStore
 import os
 from langchain.embeddings import HuggingFaceEmbeddings, SentenceTransformerEmbeddings
 from DB import mySupabase
@@ -54,7 +54,7 @@ def answer_question(question, whatsappDetails=None):
     if (whatsappDetails):
         insertData['whatsapp_message_id'] = whatsappDetails.messageId
         insertData['whatsapp_phone_number'] = whatsappDetails.phoneNumber
-    supabase = getSupabaseClient()
+    supabase = mySupabase
     print("inserting data now")
     try:
         data, count = supabase.table('questions').insert(insertData).execute()
@@ -108,7 +108,7 @@ def process_vector_search(question: str) -> str:
 
 
 
-def process_vector_search(question: str, lensID: int) -> str:    
+def process_vector_search_from_lens(question: str, lensID: int) -> str:    
     print("starting to answer question")
     vectorStore = getDocumentsVectorStore()
     vectorStoreRetriever = vectorStore.as_retriever()
@@ -122,7 +122,7 @@ def process_vector_search(question: str, lensID: int) -> str:
 
         chunkIDList = mySupabase.from_('lens_chunks').select('*').eq('lens_id', lensID).execute()
 
-        filter_params = {"category": {"$in": chunkIDList}}
+        filter_params = {"id": {"$in": chunkIDList}}
         ans2 = vectorStore.similarity_search(q, 8, filter=filter_params)
         docs.extend(ans2)
         for doc in ans2:
@@ -152,7 +152,7 @@ def process_vector_search(question: str, lensID: int) -> str:
 
 
 def update_question_popularity(id, diff):
-    supabase = getSupabaseClient()
+    supabase = mySupabase
     data, error = supabase.rpc('increment', { "x": diff, "row_id": id }).execute()
     print("updated question popularity", data, error)
     return {"data": data, "error": error}

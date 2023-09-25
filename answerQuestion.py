@@ -1,14 +1,6 @@
 # app/answerer.py
-from langchain.embeddings.openai import OpenAIEmbeddings
-from langchain.chains import RetrievalQA
 
-from langchain.indexes import VectorstoreIndexCreator
-from langchain.text_splitter import CharacterTextSplitter
-from langchain.embeddings import OpenAIEmbeddings
 from langchain.llms import OpenAI
-
-from langchain.chains.query_constructor.base import AttributeInfo
-from langchain.retrievers.self_query.base import SelfQueryRetriever
 
 from openai import ChatCompletion
 llm = OpenAI(temperature=0)

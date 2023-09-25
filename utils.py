@@ -8,9 +8,6 @@ import os
 import openai
 from supabase import create_client, Client
 from openai import ChatCompletion
-from langchain.vectorstores import SupabaseVectorStore
-from langchain.embeddings import HuggingFaceEmbeddings
-from DB import mySupabase
 import re
 from dotenv import load_dotenv
 load_dotenv(dotenv_path='.env.local')
@@ -103,14 +100,4 @@ def getEmbeddings(texts):
 
     embeddings = json.loads(response.content.decode("utf-8"))
     return embeddings
-
-def getChunksVectorStore():
-    client = mySupabase
-    embeddings = HuggingFaceEmbeddings(model_name="BAAI/bge-large-en-v1.5")
-    return SupabaseVectorStore(
-        client=client,
-        embedding=embeddings,
-        table_name="chunk",
-        query_name="match_chunks"
-    )
 

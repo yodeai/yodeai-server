@@ -1,7 +1,6 @@
 from DB import mySupabase
 from utils import getEmbeddings
 from langchain.text_splitter import RecursiveCharacterTextSplitter
-import datetime
 
 def processBlock(block_id):
 

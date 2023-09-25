@@ -1,13 +1,5 @@
-from langchain.embeddings.openai import OpenAIEmbeddings
-from langchain.indexes import VectorstoreIndexCreator
-from langchain.llms import OpenAI
 
-from langchain.chains.query_constructor.base import AttributeInfo
-from langchain.retrievers.self_query.base import SelfQueryRetriever
-
-from utils import addHyperlinksToResponse, fetchLinksFromDatabase, getRelevance, get_completion, getChunksVectorStore, getEmbeddings
-import os
-from langchain.embeddings import HuggingFaceEmbeddings
+from utils import get_completion, getEmbeddings
 from DB import mySupabase
 
 relevanceThreshold = 5
@@ -15,16 +7,9 @@ notFound = "The question does not seem to be relevant to the provided content."
 
 def answer_question_lens(question: str, lensID: str):
     response = "This is a test response from the backend, and the question is: " + question + " and the lensID is: " + lensID
-    vectorStore = getChunksVectorStore()
-    vectorStoreRetriever = vectorStore.as_retriever()
+
     def getRelDocs(q):
         docs = []
-        metadataList = []
-        #ans1 = vectorStoreRetriever.get_relevant_documents(q)
-        #docs.extend(ans1)
-        #for doc in docs:
-        #    metadataList.append(doc.metadata)
-
         #chunkIDList = mySupabase.from_('lens_chunks').select('*').eq('lens_id', lensID).execute()
         data = mySupabase.from_('lens_blocks').select('block_id').eq('lens_id', lensID).execute().data
         block_ids = [d['block_id'] for d in data]   

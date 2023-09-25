@@ -52,8 +52,8 @@ async def answer_from_lens(data: QuestionFromLens):
     # Extracting question and lensID from the request body
     question = data.question
     lensID = data.lensID
-    answer = answer_question_lens(question, lensID)
-    return {"answer": answer}
+    response = answer_question_lens(question, lensID)
+    return response
 
 
 @app.get("/test") # this is testing Hugging Face API for embeddings

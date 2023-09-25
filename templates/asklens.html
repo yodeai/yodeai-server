@@ -28,8 +28,9 @@ document.getElementById('myForm').addEventListener('submit', function(e){
     })
     .then(response => response.json())
     .then(data => {
+        console.log('Success:', data)
         // Displaying the answer on the page
-        document.getElementById('answer').innerText = 'Answer: ' + data.answer;
+        document.getElementById('answer').innerText = 'Answer: ' + data.answer + ' \n Source: ' + data.metadata;
     })
     .catch(error => {
         console.error('There has been a problem with your fetch operation:', error);

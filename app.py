@@ -3,14 +3,15 @@ import requests
 import json
 from dotenv import load_dotenv
 load_dotenv(dotenv_path='.env.local')
-from fastapi import FastAPI, Request, Form
+from fastapi import FastAPI, Request, Form, HTTPException
 from fastapi.responses import JSONResponse
 from fastapi.responses import HTMLResponse
 from fastapi.templating import Jinja2Templates
 from sklearn.metrics.pairwise import cosine_similarity
 from fastapi.middleware.cors import CORSMiddleware
 from answerQuestion import answer_question 
-from answerQuestionLens import answer_question_lens     
+from answerQuestionLens import answer_question_lens   
+from processBlock import processBlock  
 from pydantic import BaseModel
 
 app = FastAPI()
@@ -45,7 +46,17 @@ async def answer_text(question: str = Form(...)):
     answer = answer_question(question)
     return {"answer": answer}
 
-
+@app.post("/processBlock")
+async def route_process_block(block: dict):
+    block_id = block.get("block_id")
+    if not block_id:
+        raise HTTPException(status_code=400, detail="block_id must be provided")
+    
+    try:
+        processBlock(block_id)
+        return {"status": "Content processed and chunks stored successfully."}
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=str(e))
 
 @app.post("/answerFromLens")
 async def answer_from_lens(data: QuestionFromLens):
@@ -54,6 +65,8 @@ async def answer_from_lens(data: QuestionFromLens):
     lensID = data.lensID
     response = answer_question_lens(question, lensID)
     return response
+
+
 
 
 @app.get("/test") # this is testing Hugging Face API for embeddings

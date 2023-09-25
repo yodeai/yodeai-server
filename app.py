@@ -80,8 +80,8 @@ def demo():
 
     # Extract the embeddings from the response
     embeddings = json.loads(response.content.decode("utf-8"))
-    print(embeddings[0])
-    print(type(embeddings[0][0]))
+    #print(embeddings[0])
+    
 
     # Calculate the pairwise similarity matrix
     similarity_matrix = cosine_similarity(embeddings)

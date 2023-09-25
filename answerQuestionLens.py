@@ -35,12 +35,12 @@ def answer_question_lens(question: str, lensID: str):
 
     print("starting to get docs")
     relevant_chunks = getRelDocs(question)  
-    print("done with get docs: ", relevant_chunks)  
+    #print("done with get docs: ", relevant_chunks)  
     relevant_block_ids = [d['block_id'] for d in relevant_chunks]
     text = ""
-    print("in results\n\n\n:")    
+    #print("in results\n\n\n:")    
     for d in relevant_chunks:        
-        print(d)        
+        #print(d)        
         text += d['content'] + "\n\n"        
     prompt = "You are answering questions asked by a user. Answer the question: " + question + " in a helpful and concise way and in at most one paragraph, using the following text inside tripple quotes: '''" + text + "''' \n <<<REMEMBER:  If the question is irrelevant to the text, do not try to make up an answer, just say that the question is irrelevant to the context.>>>"
     print("starting to get completion")
@@ -60,7 +60,6 @@ def answer_question_lens(question: str, lensID: str):
 def test_answer_question_lens():
     question = "what are some ways to develop autonomous language agents?"
     lensID = "159"
-    
     response = answer_question_lens(question, lensID)
     print(response)
     

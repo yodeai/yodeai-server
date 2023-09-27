@@ -1,13 +1,16 @@
 
 from utils import get_completion, getEmbeddings
 from DB import mySupabase
+import time
 
 relevanceThreshold = 5
 notFound = "The question does not seem to be relevant to the provided content."
 
 def answer_question_lens(question: str, lensID: str):
+    start_time = time.time()
     response = "This is a test response from the backend, and the question is: " + question + " and the lensID is: " + lensID
-
+    # Record the start time for getRelDocs
+    get_rel_docs_start_time = time.time()
     def getRelDocs(q):
         docs = []
         #chunkIDList = mySupabase.from_('lens_chunks').select('*').eq('lens_id', lensID).execute()
@@ -34,7 +37,10 @@ def answer_question_lens(question: str, lensID: str):
         #ans2 = vectorStore.similarity_search(question, 8, filter=filter)
 
     print("starting to get docs")
+    
     relevant_chunks = getRelDocs(question)  
+    print(f"Time taken by getRelDocs: {time.time() - get_rel_docs_start_time:.2f} seconds")
+
     #print("done with get docs: ", relevant_chunks)  
     relevant_block_ids = [d['block_id'] for d in relevant_chunks]
     text = ""
@@ -44,12 +50,20 @@ def answer_question_lens(question: str, lensID: str):
         text += d['content'] + "\n\n"        
     prompt = "You are answering questions asked by a user. Answer the question: " + question + " in a helpful and concise way and in at most one paragraph, using the following text inside tripple quotes: '''" + text + "''' \n <<<REMEMBER:  If the question is irrelevant to the text, do not try to make up an answer, just say that the question is irrelevant to the context.>>>"
     print("starting to get completion")
-    response = get_completion(prompt);    
+    # Record the start time for get_completion
+    get_completion_start_time = time.time()
+    response = get_completion(prompt)
+    # Print the time taken by get_completion
+    print(f"Time taken by get_completion: {time.time() - get_completion_start_time:.2f} seconds")
+        
     #getRel = getRelevance(question, response, text)
     #if getRel == None or getRel <= relevanceThreshold:
     #    response = notFound
     metadata = {"blocks": list(set(relevant_block_ids))}
     print("done with process vector search")
+    # Print the total time taken
+    print(f"Total time taken: {time.time() - start_time:.2f} seconds")
+
     return {
         "question": question,
         "answer": response,
@@ -58,8 +72,12 @@ def answer_question_lens(question: str, lensID: str):
 
 
 def test_answer_question_lens():
-    question = "what are some ways to develop autonomous language agents?"
-    lensID = "159"
+    #question = "what are some ways to develop autonomous language agents?"
+    #lensID = "159"
+    #question = "how do spiders know that there's another spider on their net?"
+    #lensID = "1"
+    question = "who illustrated the lord of the rings books?"
+    lensID = "1"
     response = answer_question_lens(question, lensID)
     print(response)
     

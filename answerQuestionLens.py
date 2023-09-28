@@ -13,24 +13,31 @@ def answer_question_lens(question: str, lensID: str):
     get_rel_docs_start_time = time.time()
     def getRelDocs(q):
         docs = []
-        #chunkIDList = mySupabase.from_('lens_chunks').select('*').eq('lens_id', lensID).execute()
-        data = mySupabase.from_('lens_blocks').select('block_id').eq('lens_id', lensID).execute().data
-        block_ids = [d['block_id'] for d in data]   
-        relevant_chunks = mySupabase.from_('chunk').select('chunk_id').in_('block_id', block_ids).execute().data
-        chunk_ids = [d['chunk_id'] for d in relevant_chunks]
-        
-        #print("\n\n\n"+chunk_ids.__str__())
-
-        filter = {
-            "chunk_id": {"in": chunk_ids}
-        }
         question_embedding=getEmbeddings(question)
+ 
         rpc_params = {
-            "filter": filter,
-            "match_count": 4,
-            "query_embedding": question_embedding
-        }        
-        data, error =  mySupabase.rpc("match_chunks", rpc_params).execute()       
+            "lensid": lensID,
+            "match_count": 4, 
+            "query_embedding": question_embedding,
+        }
+        data, error = mySupabase.rpc("get_top_chunks_for_lens", rpc_params).execute() 
+
+        
+        # data = mySupabase.from_('lens_blocks').select('block_id').eq('lens_id', lensID).execute().data    
+        # block_ids = [d['block_id'] for d in data]   
+        # relevant_chunks = mySupabase.from_('chunk').select('chunk_id').in_('block_id', block_ids).execute().data
+        # chunk_ids = [d['chunk_id'] for d in relevant_chunks]
+        # filter = {
+        #     "chunk_id": {"in": chunk_ids}
+        # }
+        # question_embedding=getEmbeddings(question)
+        # rpc_params = {
+        #     "filter": filter,
+        #     "match_count": 4,
+        #     "query_embedding": question_embedding
+        # }        
+        # data, error =  mySupabase.rpc("match_chunks", rpc_params).execute()
+
         return data[1]
         
         #filter_params = {"chunk_id": {"$in_": chunk_ids}}
@@ -74,10 +81,10 @@ def answer_question_lens(question: str, lensID: str):
 def test_answer_question_lens():
     #question = "what are some ways to develop autonomous language agents?"
     #lensID = "159"
-    #question = "how do spiders know that there's another spider on their net?"
-    #lensID = "1"
-    question = "who illustrated the lord of the rings books?"
+    question = "how do spiders know that there's another spider on their net?"
     lensID = "1"
+    # question = "What is the meaning of life?"
+    # lensID = "6"
     response = answer_question_lens(question, lensID)
     print(response)
     

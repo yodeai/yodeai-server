@@ -2,13 +2,15 @@
 import time
 import random
 import sys
-import requests
-import json
 import os
-import openai
 from supabase import create_client, Client
 from openai import ChatCompletion
+from langchain.vectorstores import SupabaseVectorStore
+from langchain.embeddings import HuggingFaceEmbeddings
 import re
+import requests
+import json
+import openai
 from dotenv import load_dotenv
 load_dotenv(dotenv_path='.env.local')
 openai.api_key = os.getenv("OPENAI_API_KEY")
@@ -41,6 +43,14 @@ def get_completion(prompt, model="gpt-3.5-turbo"):
     )
     return response.choices[0].message["content"]
 
+def getSupabaseClient():
+    url: str = os.environ.get("PUBLIC_SUPABASE_URL")
+    key: str = os.environ.get("PUBLIC_SUPABASE_ANON_KEY")
+    if not url:
+        raise Exception('SUPABASE_URL environment variable is not defined')
+    if not key:
+        raise Exception('supabasekey environment variable is not defined')
+    return create_client(url, key)
 
 def fetchLinksFromDatabase():
     url: str = os.environ.get("PUBLIC_SUPABASE_URL")
@@ -73,6 +83,15 @@ def addHyperlinksToResponse(response, linkMap):
         i += 1
 
     return newResponse
+def match(lst, metadataObj):
+    return any([meta for meta in lst if "title" in meta and "source" in meta and "language" in meta and meta["title"] == metadataObj.get("title", None) and meta["source"] == metadataObj.get("source", None) and meta["language"] == metadataObj.get("language", None)])
+
+def removeDuplicates(metadataList):
+    uniqueList = []
+    for meta in metadataList:
+        if not match(uniqueList, meta):
+            uniqueList.append(meta)
+    return uniqueList
 
 
 
@@ -85,6 +104,24 @@ def getRelevance(question, response, text):
         score = re.match(r"\d+", resp2prompt)
         return int(score[0]) if score else 0
 
+def getDocumentsVectorStore():
+    client = getSupabaseClient()
+    embeddings = HuggingFaceEmbeddings(model_name="all-MiniLM-L6-v2")
+    return SupabaseVectorStore(
+        client=client,
+        embedding=embeddings,
+        table_name="documents_huggingface",
+        query_name="match_documents_huggingface"
+    )
+def getQuestionsVectorStore():
+    client = getSupabaseClient()
+    embeddings = HuggingFaceEmbeddings(model_name="all-MiniLM-L6-v2")
+    return SupabaseVectorStore(
+        client=client,
+        embedding=embeddings,
+        table_name="questions_huggingface",
+        query_name="match_questions_huggingface"
+    )
 
 def getEmbeddings(texts):
     headers = {

@@ -9,7 +9,7 @@ from fastapi.responses import HTMLResponse
 from fastapi.templating import Jinja2Templates
 from sklearn.metrics.pairwise import cosine_similarity
 from fastapi.middleware.cors import CORSMiddleware
-from answerQuestion import answer_question 
+from answerQuestion import answer_question, get_searchable_feed, update_question_popularity
 from answerQuestionLens import answer_question_lens   
 from processBlock import processBlock  
 from pydantic import BaseModel
@@ -32,18 +32,30 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+class Question(BaseModel):
+    question: str
 
-@app.get("/ask", response_class=HTMLResponse)
-async def ask_form(request: Request):
-    return templates.TemplateResponse("ask.html", {"request": request})
 
 @app.get("/asklens", response_class=HTMLResponse)
 async def ask_form(request: Request):
     return templates.TemplateResponse("asklens.html", {"request": request})
 
 @app.post("/answer")
-async def answer_text(question: str = Form(...)):
-    answer = answer_question(question)
+async def answer_text(q: Question):
+    # Perform your logic here to get the answer
+    answer = answer_question(q.question)
+    return {"answer": answer}
+
+@app.get("/searchableFeed/{question}", response_class=JSONResponse)
+async def searchable_feed(question):
+    # Perform your logic here to get the answer
+    answer = get_searchable_feed(question)
+    return {"answer": answer}
+
+@app.patch("/updatePopularity")
+async def answer_text(id, diff):
+    # Perform your logic here to get the answer
+    answer = update_question_popularity(id, diff)
     return {"answer": answer}
 
 @app.post("/processBlock")

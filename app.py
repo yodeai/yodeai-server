@@ -3,18 +3,24 @@ import requests
 import json
 from dotenv import load_dotenv
 load_dotenv(dotenv_path='.env.local')
-from fastapi import FastAPI, Request, Form
+from fastapi import FastAPI, Request, Form, HTTPException
 from fastapi.responses import JSONResponse
 from fastapi.responses import HTMLResponse
 from fastapi.templating import Jinja2Templates
 from sklearn.metrics.pairwise import cosine_similarity
 from fastapi.middleware.cors import CORSMiddleware
 from answerQuestion import answer_question, get_searchable_feed, update_question_popularity
+from answerQuestionLens import answer_question_lens   
+from processBlock import processBlock  
 from pydantic import BaseModel
 
 app = FastAPI()
 class Question(BaseModel):
     text: str
+
+class QuestionFromLens(BaseModel):
+    question: str
+    lensID: str
 
 templates = Jinja2Templates(directory="templates")
 
@@ -29,6 +35,10 @@ app.add_middleware(
 class Question(BaseModel):
     question: str
 
+
+@app.get("/asklens", response_class=HTMLResponse)
+async def ask_form(request: Request):
+    return templates.TemplateResponse("asklens.html", {"request": request})
 
 @app.post("/answer")
 async def answer_text(q: Question):
@@ -48,6 +58,29 @@ async def answer_text(id, diff):
     answer = update_question_popularity(id, diff)
     return {"answer": answer}
 
+@app.post("/processBlock")
+async def route_process_block(block: dict):
+    block_id = block.get("block_id")
+    if not block_id:
+        raise HTTPException(status_code=400, detail="block_id must be provided")
+    
+    try:
+        processBlock(block_id)
+        return {"status": "Content processed and chunks stored successfully."}
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=str(e))
+
+@app.post("/answerFromLens")
+async def answer_from_lens(data: QuestionFromLens):
+    # Extracting question and lensID from the request body
+    question = data.question
+    lensID = data.lensID
+    response = answer_question_lens(question, lensID)
+    return response
+
+
+
+
 @app.get("/test") # this is testing Hugging Face API for embeddings
 def demo():
     # Set up the request headers and data
@@ -59,7 +92,7 @@ def demo():
     data = {"inputs": ["This is a sentence.", "This is another sentence.", "this is a sentence about Japanese food", "Sushi is nice"]}
 
     # Send the request to the Hugging Face API
-    response = requests.post("https://api-inference.huggingface.co/models/BAAI/bge-large-en-v1.5", headers=headers, data=json.dumps(data))
+    response = requests.post(os.environ.get('BGELARGE_MODEL'), headers=headers, data=json.dumps(data))
     #print(response.content)
 
     if response.status_code != 200:
@@ -72,8 +105,8 @@ def demo():
 
     # Extract the embeddings from the response
     embeddings = json.loads(response.content.decode("utf-8"))
-    print(embeddings[0])
-    print(type(embeddings[0][0]))
+    #print(embeddings[0])
+    
 
     # Calculate the pairwise similarity matrix
     similarity_matrix = cosine_similarity(embeddings)

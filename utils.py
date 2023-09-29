@@ -8,6 +8,12 @@ from openai import ChatCompletion
 from langchain.vectorstores import SupabaseVectorStore
 from langchain.embeddings import HuggingFaceEmbeddings
 import re
+import requests
+import json
+import openai
+from dotenv import load_dotenv
+load_dotenv(dotenv_path='.env.local')
+openai.api_key = os.getenv("OPENAI_API_KEY")
 
 def exponential_backoff(retries=5, backoff_in_seconds=1, out=sys.stdout):
     def backoff(func):
@@ -88,6 +94,7 @@ def removeDuplicates(metadataList):
     return uniqueList
 
 
+
 def getRelevance(question, response, text):
     myprompt = f"Is this information  ''{response}'' relevant to part of the following text in triple quotes? Answer with a single number between 1 to 10 with higher numbers representing higher relevance. Text:  '''{text}'''"
     resp2prompt = get_completion(myprompt)
@@ -115,3 +122,19 @@ def getQuestionsVectorStore():
         table_name="questions_huggingface",
         query_name="match_questions_huggingface"
     )
+
+def getEmbeddings(texts):
+    headers = {
+        "Authorization": f"Bearer {os.environ.get('HUGGINGFACEHUB_API_KEY')}",
+        "Content-Type": "application/json"         
+    }
+    data = {"inputs": texts}
+
+    response = requests.post(os.environ.get('BGELARGE_MODEL'), headers=headers, data=json.dumps(data))
+    if response.status_code != 200:
+        print("Error in Hugging Face API Response:", response.content.decode("utf-8"))
+        return None
+
+    embeddings = json.loads(response.content.decode("utf-8"))
+    return embeddings
+

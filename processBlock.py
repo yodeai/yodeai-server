@@ -3,7 +3,16 @@ from utils import getEmbeddings
 from langchain.text_splitter import RecursiveCharacterTextSplitter
 
 def processBlock(block_id):
-
+    # Update the status of the block to 'processing'
+    update_response, update_error = mySupabase.table('block')\
+        .update({'status': 'processing'})\
+        .eq('block_id', block_id)\
+        .execute()
+    
+    # Handle potential errors during the update
+    if not update_response or len(update_response) < 2 or not update_response[1]:
+        raise Exception(f"Error updating status for block with id {block_id}: {update_error}")
+    
     # Deleting existing chunks for the block_id before processing
     res =mySupabase.table('chunk').delete().eq('block_id', block_id).execute()
     if not res.data and res.count is not None:
@@ -29,13 +38,14 @@ def processBlock(block_id):
     chunks = text_splitter.split_text(content)
     # Getting the embeddings for each chunk
     embeddings = getEmbeddings(chunks)
+
     
     if embeddings is None:
         raise Exception("Error in getting embeddings.")
-
+    
     for idx, (chunk, embedding) in enumerate(zip(chunks, embeddings)):
         print (f"Processing chunk {idx} of block {block_id}")
-        
+       
         # Creating a new row in chunks table for each split
         mySupabase.table('chunk').insert({
             'block_id': block_id,
@@ -52,15 +62,14 @@ def processBlock(block_id):
         .update({'status': 'ready'})\
         .eq('block_id', block_id)\
         .execute()
-    
     # Handle potential errors during the update
-    if update_error:
+    if not update_response or len(update_response) < 2 or not update_response[1]:
         raise Exception(f"Error updating status for block with id {block_id}: {update_error}")
         
 
 if __name__ == "__main__":
     try:
-        processBlock(49)
+        processBlock(60)
         print("Content processed and chunks stored successfully.")
     except Exception as e:
         print(f"Exception occurred: {e}")

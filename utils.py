@@ -136,5 +136,7 @@ def getEmbeddings(texts):
         return None
 
     embeddings = json.loads(response.content.decode("utf-8"))
-    return embeddings
+    if embeddings is None or 'embeddings' not in embeddings:
+        raise Exception("Error in getting embeddings.")
+    return embeddings['embeddings']
 

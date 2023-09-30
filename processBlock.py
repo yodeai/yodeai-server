@@ -3,7 +3,6 @@ from utils import getEmbeddings
 from langchain.text_splitter import RecursiveCharacterTextSplitter
 
 def processBlock(block_id):
-
     # Deleting existing chunks for the block_id before processing
     res =mySupabase.table('chunk').delete().eq('block_id', block_id).execute()
     if not res.data and res.count is not None:
@@ -48,14 +47,14 @@ def processBlock(block_id):
         }).execute()
    
     # After processing all chunks, update the status of the block to 'ready'
-    update_response, update_error = mySupabase.table('block')\
+    data, count = mySupabase.table('block')\
         .update({'status': 'ready'})\
         .eq('block_id', block_id)\
         .execute()
     
     # Handle potential errors during the update
-    if update_error:
-        raise Exception(f"Error updating status for block with id {block_id}: {update_error}")
+    if count == 0:
+        raise Exception(f"Error updating status for block with id {block_id}: no data")
         
 
 if __name__ == "__main__":

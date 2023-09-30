@@ -10,11 +10,20 @@ from fastapi.templating import Jinja2Templates
 from sklearn.metrics.pairwise import cosine_similarity
 from fastapi.middleware.cors import CORSMiddleware
 from answerQuestion import answer_question, get_searchable_feed, update_question_popularity
-from answerQuestionLens import answer_question_lens   
-from processBlock import processBlock  
+from answerQuestionLens import answer_question_lens  
+from celery_tasks.tasks import process_block_task 
 from pydantic import BaseModel
+from config.celery_utils import create_celery
+from config.celery_utils import get_task_info
+from utils import exponential_backoff
+import sys
+def create_app() -> FastAPI:
+    current_app = FastAPI()
+    current_app.celery_app = create_celery()
+    return current_app
 
-app = FastAPI()
+app = create_app()
+celery = app.celery_app
 class Question(BaseModel):
     text: str
 
@@ -35,6 +44,12 @@ app.add_middleware(
 class Question(BaseModel):
     question: str
 
+@app.get("/task/{task_id}")
+async def get_task_status(task_id: str) -> dict:
+    """
+    Return the status of the submitted Task
+    """
+    return get_task_info(task_id)
 
 @app.get("/asklens", response_class=HTMLResponse)
 async def ask_form(request: Request):
@@ -63,12 +78,8 @@ async def route_process_block(block: dict):
     block_id = block.get("block_id")
     if not block_id:
         raise HTTPException(status_code=400, detail="block_id must be provided")
-    
-    try:
-        processBlock(block_id)
-        return {"status": "Content processed and chunks stored successfully."}
-    except Exception as e:
-        raise HTTPException(status_code=400, detail=str(e))
+    task = process_block_task.apply_async(args=[block_id])
+    return JSONResponse({"task_id": task.id})
 
 @app.post("/answerFromLens")
 async def answer_from_lens(data: QuestionFromLens):
@@ -89,11 +100,15 @@ def demo():
     "Content-Type": "application/json"         
     }
 
-    data = {"inputs": ["This is a sentence.", "This is another sentence.", "this is a sentence about Japanese food", "Sushi is nice"]}
+
+    data = {"wait_for_model": True, "inputs": ["This is a sentence.", "This is another sentence.", "this is a sentence about Japanese food", "Sushi is nice"]}
 
     # Send the request to the Hugging Face API
-    response = requests.post(os.environ.get('BGELARGE_MODEL'), headers=headers, data=json.dumps(data))
-    #print(response.content)
+    @exponential_backoff(retries=5, backoff_in_seconds=1, out=sys.stdout)
+    def get_response(headers, data):
+        response = requests.post(os.environ.get('BGELARGE_MODEL'), headers=headers, data=json.dumps(data))
+        return response
+    response = get_response(headers, data)
 
     if response.status_code != 200:
         print("Error in Hugging Face API Response:", response.content.decode("utf-8"))

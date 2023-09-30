@@ -33,7 +33,7 @@ def exponential_backoff(retries=5, backoff_in_seconds=1, out=sys.stdout):
         return wrapper
     return backoff
 
-@exponential_backoff(retries=5, backoff_in_seconds=1, out=sys.stdout)
+@exponential_backoff(retries=6, backoff_in_seconds=1, out=sys.stdout)
 def get_completion(prompt, model="gpt-3.5-turbo"):
     messages = [{"role": "user", "content": prompt}]
     response = ChatCompletion.create(
@@ -128,9 +128,14 @@ def getEmbeddings(texts):
         "Authorization": f"Bearer {os.environ.get('HUGGINGFACEHUB_API_KEY')}",
         "Content-Type": "application/json"         
     }
-    data = {"inputs": texts}
+    data = {"wait_for_model": True,"inputs": texts}
 
-    response = requests.post(os.environ.get('BGELARGE_MODEL'), headers=headers, data=json.dumps(data))
+    # Send the request to the Hugging Face API
+    @exponential_backoff(retries=5, backoff_in_seconds=1, out=sys.stdout)
+    def get_response(headers, data):
+        response = requests.post(os.environ.get('BGELARGE_MODEL'), headers=headers, data=json.dumps(data))
+        return response
+    response = get_response(headers, data)
     if response.status_code != 200:
         print("Error in Hugging Face API Response:", response.content.decode("utf-8"))
         return None

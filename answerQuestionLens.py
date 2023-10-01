@@ -1,6 +1,6 @@
 
 from utils import get_completion, getEmbeddings
-from DB import mySupabase
+from DB import supabaseClient
 import time
 
 relevanceThreshold = 5
@@ -20,7 +20,7 @@ def answer_question_lens(question: str, lensID: str):
             "match_count": 4, 
             "query_embedding": question_embedding,
         }
-        data, error = mySupabase.rpc("get_top_chunks_for_lens", rpc_params).execute() 
+        data, error = supabaseClient.rpc("get_top_chunks_for_lens", rpc_params).execute() 
 
         
         # data = mySupabase.from_('lens_blocks').select('block_id').eq('lens_id', lensID).execute().data    

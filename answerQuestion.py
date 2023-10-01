@@ -1,5 +1,5 @@
-# app/answerer.py
 
+'''
 from langchain.llms import OpenAI
 
 from langchain.chains.query_constructor.base import AttributeInfo
@@ -7,7 +7,7 @@ from langchain.retrievers.self_query.base import SelfQueryRetriever
 
 from utils import addHyperlinksToResponse, fetchLinksFromDatabase, getSupabaseClient, removeDuplicates, getRelevance, get_completion, getDocumentsVectorStore, getQuestionsVectorStore
 import os
-from langchain.embeddings import HuggingFaceEmbeddings, SentenceTransformerEmbeddings
+from langchain.embeddings import HuggingFaceEmbeddings
 
 relevanceThreshold = 5
 notFound = "The question does not seem to be relevant to the provided content."
@@ -119,3 +119,4 @@ def get_searchable_feed(question):
             metadataList.append(doc.metadata)
         return {"documents": docs, "metadata": metadataList}
     return getRelDocs(question)
+'''

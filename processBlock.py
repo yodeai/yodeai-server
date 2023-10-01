@@ -1,10 +1,10 @@
-from DB import mySupabase
+from DB import supabaseClient
 from utils import getEmbeddings
 from langchain.text_splitter import RecursiveCharacterTextSplitter
 
 def processBlock(block_id):
     # Update the status of the block to 'processing'
-    update_response, update_error = mySupabase.table('block')\
+    update_response, update_error = supabaseClient.table('block')\
         .update({'status': 'processing'})\
         .eq('block_id', block_id)\
         .execute()
@@ -14,11 +14,11 @@ def processBlock(block_id):
         raise Exception(f"Error updating status for block with id {block_id}: {update_error}")
     
     # Deleting existing chunks for the block_id before processing
-    res =mySupabase.table('chunk').delete().eq('block_id', block_id).execute()
+    res =supabaseClient.table('chunk').delete().eq('block_id', block_id).execute()
     if not res.data and res.count is not None:
         raise Exception(f"Error deleting chunks with block_id {block_id}: {res.error_msg if hasattr(res, 'error_msg') else 'Unknown error'}")
      
-    data, error = mySupabase.table('block').select('content').eq('block_id', block_id).execute()
+    data, error = supabaseClient.table('block').select('content').eq('block_id', block_id).execute()
     
     if error and error[1]:
         raise Exception(f"Error fetching block with id {block_id}: {error[1]}")
@@ -47,7 +47,7 @@ def processBlock(block_id):
         print (f"Processing chunk {idx} of block {block_id}")
        
         # Creating a new row in chunks table for each split
-        mySupabase.table('chunk').insert({
+        supabaseClient.table('chunk').insert({
             'block_id': block_id,
             'content': chunk,
             'metadata': {},  
@@ -58,7 +58,7 @@ def processBlock(block_id):
         }).execute()
    
     # After processing all chunks, update the status of the block to 'ready'
-    update_response, update_error = mySupabase.table('block')\
+    update_response, update_error = supabaseClient.table('block')\
         .update({'status': 'ready'})\
         .eq('block_id', block_id)\
         .execute()

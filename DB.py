@@ -16,4 +16,5 @@ def getSupabaseClient():
         raise Exception('supabasekey environment variable is not defined')
     return create_client(url, key)
 
-mySupabase=getSupabaseClient()
+supabaseClient=getSupabaseClient()
+

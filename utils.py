@@ -3,14 +3,14 @@ import time
 import random
 import sys
 import os
-from supabase import create_client, Client
 from openai import ChatCompletion
-from langchain.vectorstores import SupabaseVectorStore
-from langchain.embeddings import HuggingFaceEmbeddings
+#from langchain.vectorstores import SupabaseVectorStore
+#from langchain.embeddings import HuggingFaceEmbeddings
 import re
 import requests
 import json
 import openai
+from DB import supabaseClient
 from dotenv import load_dotenv
 load_dotenv(dotenv_path='.env.local')
 openai.api_key = os.getenv("OPENAI_API_KEY")
@@ -43,30 +43,7 @@ def get_completion(prompt, model="gpt-3.5-turbo"):
     )
     return response.choices[0].message["content"]
 
-def getSupabaseClient():
-    url: str = os.environ.get("PUBLIC_SUPABASE_URL")
-    key: str = os.environ.get("PUBLIC_SUPABASE_ANON_KEY")
-    if not url:
-        raise Exception('SUPABASE_URL environment variable is not defined')
-    if not key:
-        raise Exception('supabasekey environment variable is not defined')
-    return create_client(url, key)
 
-def fetchLinksFromDatabase():
-    url: str = os.environ.get("PUBLIC_SUPABASE_URL")
-    key: str = os.environ.get("PUBLIC_SUPABASE_ANON_KEY")
-    supabase  = create_client(url, key)
-    data, count = supabase.table('links').select('title, url').execute()
-    if len(data[1]) == 0:
-        raise Exception("no data found in links database")
-    data = data[1]
-    linkMap = {}
-
-    if data:
-        for link in data:
-            linkMap[link["title"]] = link["url"]
-
-    return linkMap
 
 def addHyperlinksToResponse(response, linkMap):
     keyList = list(linkMap.keys())
@@ -81,8 +58,8 @@ def addHyperlinksToResponse(response, linkMap):
                 i += len(href) - 1
                 break
         i += 1
-
     return newResponse
+
 def match(lst, metadataObj):
     return any([meta for meta in lst if "title" in meta and "source" in meta and "language" in meta and meta["title"] == metadataObj.get("title", None) and meta["source"] == metadataObj.get("source", None) and meta["language"] == metadataObj.get("language", None)])
 
@@ -105,7 +82,7 @@ def getRelevance(question, response, text):
         return int(score[0]) if score else 0
 
 def getDocumentsVectorStore():
-    client = getSupabaseClient()
+    client = supabaseClient
     embeddings = HuggingFaceEmbeddings(model_name="all-MiniLM-L6-v2")
     return SupabaseVectorStore(
         client=client,
@@ -114,7 +91,7 @@ def getDocumentsVectorStore():
         query_name="match_documents_huggingface"
     )
 def getQuestionsVectorStore():
-    client = getSupabaseClient()
+    client = supabaseClient
     embeddings = HuggingFaceEmbeddings(model_name="all-MiniLM-L6-v2")
     return SupabaseVectorStore(
         client=client,
@@ -123,7 +100,8 @@ def getQuestionsVectorStore():
         query_name="match_questions_huggingface"
     )
 
-def getEmbeddings(texts):
+# Current options for model are "BGELARGE_MODEL" and "MINILM_MODEL"
+def getEmbeddings(texts, model='BGELARGE_MODEL'):
     headers = {
         "Authorization": f"Bearer {os.environ.get('HUGGINGFACEHUB_API_KEY')}",
         "Content-Type": "application/json"         
@@ -133,7 +111,7 @@ def getEmbeddings(texts):
     # Send the request to the Hugging Face API
     @exponential_backoff(retries=5, backoff_in_seconds=1, out=sys.stdout)
     def get_response(headers, data):
-        response = requests.post(os.environ.get('BGELARGE_MODEL'), headers=headers, data=json.dumps(data))
+        response = requests.post(os.environ.get(model), headers=headers, data=json.dumps(data))
         return response
     response = get_response(headers, data)
     if response.status_code != 200:
@@ -141,5 +119,7 @@ def getEmbeddings(texts):
         return None
 
     embeddings = json.loads(response.content.decode("utf-8"))
-    return embeddings
+    if embeddings is None or 'embeddings' not in embeddings:
+        raise Exception("Error in getting embeddings.")
+    return embeddings['embeddings']
 

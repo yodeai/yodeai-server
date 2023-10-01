@@ -9,8 +9,8 @@ from fastapi.responses import HTMLResponse
 from fastapi.templating import Jinja2Templates
 from sklearn.metrics.pairwise import cosine_similarity
 from fastapi.middleware.cors import CORSMiddleware
-from answerQuestion import answer_question, get_searchable_feed, update_question_popularity
-from answerQuestionLens import answer_question_lens  
+#from answerQuestion import answer_question, get_searchable_feed, update_question_popularity
+from answerQuestionLens import answer_question_lens   
 from celery_tasks.tasks import process_block_task 
 from pydantic import BaseModel
 from config.celery_utils import create_celery

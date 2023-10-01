@@ -9,7 +9,7 @@ from fastapi.responses import HTMLResponse
 from fastapi.templating import Jinja2Templates
 from sklearn.metrics.pairwise import cosine_similarity
 from fastapi.middleware.cors import CORSMiddleware
-#from answerQuestion import answer_question, get_searchable_feed, update_question_popularity
+from answerQuestion import answer_question, get_searchable_feed, update_question_popularity
 from answerQuestionLens import answer_question_lens   
 from celery_tasks.tasks import process_block_task 
 from pydantic import BaseModel
@@ -67,10 +67,16 @@ async def searchable_feed(question):
     answer = get_searchable_feed(question)
     return {"answer": answer}
 
-@app.patch("/updatePopularity")
-async def answer_text(id, diff):
+@app.patch("/increasePopularity/{id}")
+async def answer_text(id):
     # Perform your logic here to get the answer
-    answer = update_question_popularity(id, diff)
+    answer = update_question_popularity(id, 1)
+    return {"answer": answer}
+
+@app.patch("/decreasePopularity/{id}")
+async def answer_text(id):
+    # Perform your logic here to get the answer
+    answer = update_question_popularity(id, -1)
     return {"answer": answer}
 
 @app.post("/processBlock")

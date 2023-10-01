@@ -1,25 +1,16 @@
 
-'''
-from langchain.llms import OpenAI
-
-from langchain.chains.query_constructor.base import AttributeInfo
-from langchain.retrievers.self_query.base import SelfQueryRetriever
-
-from utils import addHyperlinksToResponse, fetchLinksFromDatabase, getSupabaseClient, removeDuplicates, getRelevance, get_completion, getDocumentsVectorStore, getQuestionsVectorStore
-import os
-from langchain.embeddings import HuggingFaceEmbeddings
+from utils import addHyperlinksToResponse, fetchLinksFromDatabase, removeDuplicates, getRelevance, get_completion, getEmbeddings
+from DB import supabaseClient
+import time
 
 relevanceThreshold = 5
 notFound = "The question does not seem to be relevant to the provided content."
 
-from openai import ChatCompletion
-llm = OpenAI(temperature=0)
 
 def answer_question(question, whatsappDetails=None):
-    result = process_vector_search(question)
-    embeddings = HuggingFaceEmbeddings(model_name="all-MiniLM-L6-v2")
     print("starting to embed question")
-    question_embedding = embeddings.embed_query(question)
+    question_embedding=getEmbeddings(question)
+    result = process_vector_search(question)
     sources = []
     print("starting to sort metadata")
     print(result)
@@ -42,17 +33,15 @@ def answer_question(question, whatsappDetails=None):
         "question_text": result["question"],
         "answer_preview": result["response"],
         "answer_full": fullAnswer_with_sources,
-        "slug": "TODO5",
         "asked_on_whatsapp": whatsappDetails != None
     }
 
     if (whatsappDetails):
         insertData['whatsapp_message_id'] = whatsappDetails.messageId
         insertData['whatsapp_phone_number'] = whatsappDetails.phoneNumber
-    supabase = getSupabaseClient()
     print("inserting data now")
     try:
-        data, count = supabase.table('questions').insert(insertData).execute()
+        data, count = supabaseClient.table('questions').insert(insertData).execute()
     except:
         print("Error inserting into database")
     
@@ -65,27 +54,26 @@ def answer_question(question, whatsappDetails=None):
 
 def process_vector_search(question: str) -> str:
     print("starting to answer question")
-    vectorStore = getDocumentsVectorStore()
-    vectorStoreRetriever = vectorStore.as_retriever()
+    get_rel_docs_start_time = time.time()
+    # Record the start time for getRelDocs
     def getRelDocs(q):
-        docs = []
-        metadataList = []
-        ans1 = vectorStoreRetriever.get_relevant_documents(q)
-        docs.extend(ans1)
-        for doc in docs:
-            metadataList.append(doc.metadata)
-        ans2 = vectorStore.similarity_search(q, 8)
-        docs.extend(ans2)
-        for doc in ans2:
-            metadataList.append(doc.metadata)
-        return {"documents": docs, "metadata": metadataList}
+        question_embedding=getEmbeddings(question)
+ 
+        rpc_params = {
+            "match_count": 4, 
+            "query_embedding": question_embedding,
+        }
+        data, error = supabaseClient.rpc("match_documents", rpc_params).execute() 
+        return data[1]
+
     print("starting to get docs")
     results = getRelDocs(question)
-    dlist = results['documents']
-    metadataList = results['metadata']
+    print(f"Time taken by getRelDocs: {time.time() - get_rel_docs_start_time:.2f} seconds")
+    dlist = results
+    metadataList = [r["metadata"] for r in results]
     text = ""
     for d in dlist:
-        text += d.page_content + "\n\n"
+        text += d["content"] + "\n\n"
     prompt = "You are answering questions from freshmen at UC Berkeley. Answer the question: " + question + " in a helpful and concise way and in at most one paragraph, using the following text inside tripple quotes: '''" + text + "''' \n <<<REMEMBER:  If the question is irrelevant to the text, do not try to make up an answer, just say that the question is irrelevant to the context.>>>"
     print("starting to get completion")
     response = get_completion(prompt);    
@@ -102,21 +90,30 @@ def process_vector_search(question: str) -> str:
     }
 
 def update_question_popularity(id, diff):
-    supabase = getSupabaseClient()
-    data, error = supabase.rpc('increment', { "x": diff, "row_id": id }).execute()
+    data, error = supabaseClient.rpc('increment', { "x": diff, "row_id": id }).execute()
     print("updated question popularity", data, error)
     return {"data": data, "error": error}
 
 def get_searchable_feed(question):
-    vectorStore = getQuestionsVectorStore()
-    vectorStoreRetriever = vectorStore.as_retriever()
+    get_rel_docs_start_time = time.time()
+    # Record the start time for getRelDocs
+    get_rel_docs_start_time = time.time()
     def getRelDocs(q):
-        docs = []
-        metadataList = []
-        ans1 = vectorStoreRetriever.get_relevant_documents(q)
-        docs.extend(ans1)
-        for doc in docs:
-            metadataList.append(doc.metadata)
-        return {"documents": docs, "metadata": metadataList}
-    return getRelDocs(question)
-'''
+        question_embedding=getEmbeddings(question, 'MINILM_MODEL')
+ 
+        rpc_params = {
+            "match_count": 3, 
+            "query_embedding": question_embedding,
+        }
+        data, error = supabaseClient.rpc("match_questions", rpc_params).execute() 
+        return data[1]
+
+    ans1 = getRelDocs(question)
+    print(f"Time taken by getRelDocs: {time.time() - get_rel_docs_start_time:.2f} seconds")
+    docs = []
+    metadataList = []
+    docs.extend(ans1)
+    for doc in docs:
+        metadataList.append(doc["metadata"])
+    return {"documents": docs, "metadata": metadataList}
+

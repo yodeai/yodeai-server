@@ -43,7 +43,18 @@ def get_completion(prompt, model="gpt-3.5-turbo"):
     )
     return response.choices[0].message["content"]
 
+def fetchLinksFromDatabase():
+    data, count = supabaseClient.table('links').select('title, url').execute()
+    if len(data[1]) == 0:
+        raise Exception("no data found in links database")
+    data = data[1]
+    linkMap = {}
 
+    if data:
+        for link in data:
+            linkMap[link["title"]] = link["url"]
+
+    return linkMap
 
 def addHyperlinksToResponse(response, linkMap):
     keyList = list(linkMap.keys())
@@ -81,24 +92,25 @@ def getRelevance(question, response, text):
         score = re.match(r"\d+", resp2prompt)
         return int(score[0]) if score else 0
 
-def getDocumentsVectorStore():
-    client = supabaseClient
-    embeddings = HuggingFaceEmbeddings(model_name="all-MiniLM-L6-v2")
-    return SupabaseVectorStore(
-        client=client,
-        embedding=embeddings,
-        table_name="documents_huggingface",
-        query_name="match_documents_huggingface"
-    )
-def getQuestionsVectorStore():
-    client = supabaseClient
-    embeddings = HuggingFaceEmbeddings(model_name="all-MiniLM-L6-v2")
-    return SupabaseVectorStore(
-        client=client,
-        embedding=embeddings,
-        table_name="questions_huggingface",
-        query_name="match_questions_huggingface"
-    )
+# def getDocumentsVectorStore():
+    # client = supabaseClient
+    # embeddings = HuggingFaceEmbeddings(model_name="all-MiniLM-L6-v2")
+    # return SupabaseVectorStore(
+    #     client=client,
+    #     embedding=embeddings,
+    #     table_name="documents_huggingface",
+    #     query_name="match_documents_huggingface"
+    # )
+
+# def getQuestionsVectorStore():
+    # client = supabaseClient
+    # embeddings = HuggingFaceEmbeddings(model_name="all-MiniLM-L6-v2")
+    # return SupabaseVectorStore(
+    #     client=client,
+    #     embedding=embeddings,
+    #     table_name="questions_huggingface",
+    #     query_name="match_questions_huggingface"
+    # )
 
 # Current options for model are "BGELARGE_MODEL" and "MINILM_MODEL"
 def getEmbeddings(texts, model='BGELARGE_MODEL'):

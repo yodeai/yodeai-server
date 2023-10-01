@@ -9,7 +9,7 @@ from fastapi.responses import HTMLResponse
 from fastapi.templating import Jinja2Templates
 from sklearn.metrics.pairwise import cosine_similarity
 from fastapi.middleware.cors import CORSMiddleware
-from answerQuestion import answer_question, get_searchable_feed, update_question_popularity
+#from answerQuestion import answer_question, get_searchable_feed, update_question_popularity
 from answerQuestionLens import answer_question_lens   
 from processBlock import processBlock  
 from pydantic import BaseModel

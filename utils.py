@@ -100,6 +100,7 @@ def getQuestionsVectorStore():
         query_name="match_questions_huggingface"
     )
 
+# Current options for model are "BGELARGE_MODEL" and "MINILM_MODEL"
 def getEmbeddings(texts, model='BGELARGE_MODEL'):
     headers = {
         "Authorization": f"Bearer {os.environ.get('HUGGINGFACEHUB_API_KEY')}",

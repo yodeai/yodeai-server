@@ -1,6 +1,13 @@
 from DB import supabaseClient
 from utils import getEmbeddings
 from langchain.text_splitter import RecursiveCharacterTextSplitter
+from langchain.document_loaders import PyPDFLoader
+from debug.tools import clearConsole
+import re
+
+def replace_two_whitespace(input_string):
+    result_string = re.sub(r'(\s)\1+', r'\1', input_string)
+    return result_string
 
 def processBlock(block_id):
     # Update the status of the block to 'processing'
@@ -18,7 +25,7 @@ def processBlock(block_id):
     if not res.data and res.count is not None:
         raise Exception(f"Error deleting chunks with block_id {block_id}: {res.error_msg if hasattr(res, 'error_msg') else 'Unknown error'}")
      
-    data, error = supabaseClient.table('block').select('content').eq('block_id', block_id).execute()
+    data, error = supabaseClient.table('block').select('content','block_type','file_url').eq('block_id', block_id).execute()
     
     if error and error[1]:
         raise Exception(f"Error fetching block with id {block_id}: {error[1]}")
@@ -27,11 +34,24 @@ def processBlock(block_id):
     if len(data[1]) > 1:
         raise Exception(f"Multiple blocks found with id {block_id}")
     
-    content = data[1][0]['content']
+    #clearConsole(data)
+    if (data[1][0]['block_type'] == "note"):
+        content = data[1][0]['content']
+    elif (data[1][0]['block_type'] == "pdf"):
+        loader = PyPDFLoader(data[1][0]['file_url'])
+        pages = []
+        pages.extend(loader.load())
+        content = ""
+        for page in pages:
+            content = content + page.page_content
+    
+    content = replace_two_whitespace(content)
+
     text_splitter = RecursiveCharacterTextSplitter(
         chunk_size=800,
         chunk_overlap=200,
-        separators=["\n\n", "\n", "(?<=\. )", " ", ""]
+        separators=["\n\n", "\n", " ", ""]
+        #["\n\n", "\n", "(?<=\. )", " ", ""]
     )
 
     # Splitting the content
@@ -69,7 +89,7 @@ def processBlock(block_id):
 
 if __name__ == "__main__":
     try:
-        processBlock(60)
+        processBlock(1000)
         print("Content processed and chunks stored successfully.")
     except Exception as e:
         print(f"Exception occurred: {e}")

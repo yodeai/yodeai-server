@@ -25,8 +25,8 @@ def answer_question_lens(question: str, lensID: str, userID: str):
             sys.stdout.write("before DB call:\n")
             data, error = supabaseClient.rpc("get_top_chunks", rpc_params).execute() 
             sys.stdout.write("after DB call:\n")
-            sys.stdout.write(userID)
-            sys.stdout.write(error.__str__)
+            sys.stdout.write(userID+"\n")
+            sys.stdout.write(data[0]+"\n"+data[1])
             return data[1]
                
         rpc_params = {

@@ -22,6 +22,7 @@ class Question(BaseModel):
 class QuestionFromLens(BaseModel):
     question: str
     lensID: str
+    userID: str
 
 templates = Jinja2Templates(directory="templates")
 

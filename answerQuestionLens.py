@@ -63,8 +63,10 @@ def answer_question_lens(question: str, lensID: str, userID: str):
     text = ""    
     for d in relevant_chunks:        
         text += d['content'] + "\n\n"        
-    prompt = "You are answering questions asked by a user. Answer the question: " + question + " in a helpful and concise way and in at most one paragraph, using the following text inside tripple quotes: '''" + text + "''' \n <<<REMEMBER:  If the question is irrelevant to the text, do not try to make up an answer, just say that the question is irrelevant to the context.>>>"
-
+    prompt = "You are answering questions asked by a user. Answer the question: " + question + " in a helpful and concise way and in at most one paragraph, using the following text inside tripple quotes:\n '''" + text + "''' \n <<<REMEMBER:  If the question is irrelevant to the text, do not try to make up an answer, just say that the question is irrelevant to the context.>>>"
+    sys.stdout.write("\n\n\n----------prompt:\n")
+    sys.stdout.write(prompt)
+    clearConsole(prompt)
     print("starting to get completion")
     # Record the start time for get_completion
     get_completion_start_time = time.time()
@@ -99,14 +101,9 @@ def test_answer_question_lens():
     
 
 if __name__ == "__main__":
-            question_embedding=getEmbeddings("where can i find ice cream?")
-            rpc_params = {
-                "match_count": 5, 
-                "query_embedding": question_embedding,
-                "user_id": "e6666aec-85eb-4873-a059-c7b2414f1b26" 
-            }
-            clearConsole("before DB call:\n")
-            data, error = supabaseClient.rpc("get_top_chunks", rpc_params).execute() 
-            clearConsole("after DB call:")
-            print(data)
+            q = "what are fun birthdays like?"
+            userID = "e6666aec-85eb-4873-a059-c7b2414f1b26"
+            response = answer_question_lens(q, "NONE", userID)
+            print(response)
+
     #test_answer_question_lens()

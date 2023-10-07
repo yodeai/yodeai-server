@@ -13,6 +13,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from answerQuestionLens import answer_question_lens   
 from processBlock import processBlock  
 from pydantic import BaseModel
+import sys
 
 app = FastAPI()
 class Question(BaseModel):
@@ -74,6 +75,9 @@ async def route_process_block(block: dict):
 async def answer_from_lens(data: QuestionFromLens):
     # Extracting question and lensID from the request body
     #return [data.lensID, type(data.lensID)]
+    sys.stdout.write("Debug message here\n")
+    sys.stdout.write(data)
+    sys.stdout.write(data.lensID)
     question = data.question
     lensID = data.lensID
     

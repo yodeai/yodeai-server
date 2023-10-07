@@ -20,7 +20,7 @@ def answer_question_lens(question: str, lensID: str, userID: str):
             rpc_params = {
                 "match_count": 5, 
                 "query_embedding": question_embedding,
-                "user_id": userID 
+                "owner_id": userID 
             }
             sys.stdout.write("before DB call:\n")
             data, error = supabaseClient.rpc("get_top_chunks", rpc_params).execute() 

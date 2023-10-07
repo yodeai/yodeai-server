@@ -3,7 +3,7 @@ from utils import get_completion, getEmbeddings
 from DB import supabaseClient
 import time
 from debug.tools import clearConsole
-
+import sys
 
 relevanceThreshold = 5
 notFound = "The question does not seem to be relevant to the provided content."
@@ -17,6 +17,7 @@ def answer_question_lens(question: str, lensID: str, userID: str):
         docs = []
         question_embedding=getEmbeddings(question)
         if (lensID == "NONE"):
+            sys.stdout.write("the right db func called")            
             rpc_params = {
                 "match_count": 5, 
                 "query_embedding": question_embedding,

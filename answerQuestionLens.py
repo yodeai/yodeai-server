@@ -28,7 +28,9 @@ def answer_question_lens(question: str, lensID: str, userID: str):
             sys.stdout.write(userID+"\n")
             sys.stdout.write(data[0])
             sys.stdout.write("\n\n-------------\n\n")
-            sys.stdout.write(data[1])
+            sys.stdout.write(', '.join(data[1]))
+            sys.stdout.write("\n\n-------------\n\n")
+            sys.stdout.write(error)
             return data[1]
                
         rpc_params = {

@@ -73,9 +73,10 @@ async def route_process_block(block: dict):
 @app.post("/answerFromLens")
 async def answer_from_lens(data: QuestionFromLens):
     # Extracting question and lensID from the request body
+    return [data.lensID, type(data.lensID)]
     question = data.question
     lensID = data.lensID
-    return [lensID, type(lensID)]
+    
     if (lensID == "null"):
         lensID = ""
     response = answer_question_lens(question, lensID)

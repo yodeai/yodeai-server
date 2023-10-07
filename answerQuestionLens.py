@@ -20,7 +20,7 @@ def answer_question_lens(question: str, lensID: str, userID: str):
             rpc_params = {
                 "match_count": 5, 
                 "query_embedding": question_embedding,
-                "owner_id": userID 
+                "user_id": userID 
             }
             sys.stdout.write("before DB call:\n")
             data, error = supabaseClient.rpc("get_top_chunks", rpc_params).execute() 
@@ -104,4 +104,14 @@ def test_answer_question_lens():
     
 
 if __name__ == "__main__":
-    test_answer_question_lens()
+            question_embedding=getEmbeddings("where can i find ice cream?")
+            rpc_params = {
+                "match_count": 5, 
+                "query_embedding": question_embedding,
+                "user_id": "e6666aec-85eb-4873-a059-c7b2414f1b26" 
+            }
+            clearConsole("before DB call:\n")
+            data, error = supabaseClient.rpc("get_top_chunks", rpc_params).execute() 
+            clearConsole("after DB call:")
+            print(data)
+    #test_answer_question_lens()

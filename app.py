@@ -80,8 +80,8 @@ async def answer_from_lens(data: QuestionFromLens):
     sys.stdout.write(data.lensID)
     question = data.question
     lensID = data.lensID
-    
-    response = answer_question_lens(question, lensID)
+    userID = data.userID
+    response = answer_question_lens(question, lensID, userID)
     return response
 
 

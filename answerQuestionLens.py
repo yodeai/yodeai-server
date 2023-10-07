@@ -22,15 +22,8 @@ def answer_question_lens(question: str, lensID: str, userID: str):
                 "query_embedding": question_embedding,
                 "user_id": userID 
             }
-            sys.stdout.write("before DB call:\n")
+            #sys.stdout.write("before DB call:\n")
             data, error = supabaseClient.rpc("get_top_chunks", rpc_params).execute() 
-            sys.stdout.write("after DB call:\n")
-            sys.stdout.write(userID+"\n")
-            sys.stdout.write(data[0])
-            sys.stdout.write("\n\n-------------\n\n")
-            sys.stdout.write(str(data[1]))
-            sys.stdout.write("\n\n-------------\n\n")
-            sys.stdout.write(str(error))
             return data[1]
                
         rpc_params = {
@@ -66,10 +59,8 @@ def answer_question_lens(question: str, lensID: str, userID: str):
     relevant_chunks = getRelDocs(question)  
     print(f"Time taken by getRelDocs: {time.time() - get_rel_docs_start_time:.2f} seconds")
 
-    #print("done with get docs: ", relevant_chunks)  
     relevant_block_ids = [d['block_id'] for d in relevant_chunks]
-    text = ""
-    clearConsole ("results:") 
+    text = ""    
     for d in relevant_chunks:        
         text += d['content'] + "\n\n"        
     prompt = "You are answering questions asked by a user. Answer the question: " + question + " in a helpful and concise way and in at most one paragraph, using the following text inside tripple quotes: '''" + text + "''' \n <<<REMEMBER:  If the question is irrelevant to the text, do not try to make up an answer, just say that the question is irrelevant to the context.>>>"

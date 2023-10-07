@@ -111,7 +111,7 @@ def demo():
 
     # Extract the embeddings from the response
     embeddings = json.loads(response.content.decode("utf-8"))
-    #print(embeddings[0])
+
     
 
     # Calculate the pairwise similarity matrix

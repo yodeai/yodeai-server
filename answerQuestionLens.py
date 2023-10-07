@@ -22,6 +22,7 @@ def answer_question_lens(question: str, lensID: str, userID: str):
                 "query_embedding": question_embedding,
                 "user_id": userID 
             }
+            sys.stdout.write("before DB call:\n")
             data, error = supabaseClient.rpc("get_top_chunks", rpc_params).execute() 
             sys.stdout.write("after DB call:\n")
             sys.stdout.write(userID)

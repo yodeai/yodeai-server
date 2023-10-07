@@ -10,6 +10,29 @@ def replace_two_whitespace(input_string):
     return result_string
 
 def processBlock(block_id):
+    
+    try:
+        existing_row, error = supabaseClient.table('block') \
+        .select('updated_at', 'created_at', 'owner_id') \
+        .eq('block_id', block_id) \
+        .execute()
+    except Exception as e:
+        print(f"Exception occurred while retrieving updated_at, created_at: {e}")
+
+    # if the block_id does not exist in the block table, then add it to the inbox
+    if existing_row[1][0]['created_at'] == existing_row[1][0]['updated_at']:                                
+        try:                               
+            insert_response, insert_error = supabaseClient.table('inbox') \
+            .insert([{'user_id': existing_row[1][0]['owner_id'], 'block_id': block_id}]) \
+            .execute()
+            if insert_response and 'error' not in insert_response:
+                print("Insertion to inbox successful.")
+            else:
+                print("Insertion to inbox failed. ")    
+        except Exception as e:
+            print(f"Exception occurred while adding block to inbox: {e}")
+
+    
     # Update the status of the block to 'processing'
     update_response, update_error = supabaseClient.table('block')\
         .update({'status': 'processing'})\
@@ -89,7 +112,7 @@ def processBlock(block_id):
 
 if __name__ == "__main__":
     try:
-        processBlock(1000)
+        processBlock(44)
         print("Content processed and chunks stored successfully.")
     except Exception as e:
         print(f"Exception occurred: {e}")

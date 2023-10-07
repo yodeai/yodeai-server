@@ -75,6 +75,10 @@ async def answer_from_lens(data: QuestionFromLens):
     # Extracting question and lensID from the request body
     question = data.question
     lensID = data.lensID
+    print("data:")
+    print(data)
+    if (lensID == "null"):
+        lensID = ""
     response = answer_question_lens(question, lensID)
     return response
 
@@ -121,4 +125,4 @@ def demo():
 if __name__ == "__main__":
     import uvicorn
     port = int(os.environ.get("PORT", 5000))
-    uvicorn.run(app, host="0.0.0.0", port=port)
+    uvicorn.run(app, host="0.0.0.0", port=port)    

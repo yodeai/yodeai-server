@@ -16,14 +16,16 @@ def answer_question_lens(question: str, lensID: str, userID: str):
     def getRelDocs(q):
         docs = []
         question_embedding=getEmbeddings(question)
-        if (lensID == "NONE"):
-            sys.stdout.write("the right db func called")            
+        if (lensID == "NONE"):                        
             rpc_params = {
                 "match_count": 5, 
                 "query_embedding": question_embedding,
                 "user_id": userID 
             }
             data, error = supabaseClient.rpc("get_top_chunks", rpc_params).execute() 
+            sys.stdout.write("after DB call:\n")
+            sys.stdout.write(userID)
+            sys.stdout.write(error.__str__)
             return data[1]
                
         rpc_params = {

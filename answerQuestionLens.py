@@ -30,7 +30,7 @@ def answer_question_lens(question: str, lensID: str, userID: str):
             sys.stdout.write("\n\n-------------\n\n")
             sys.stdout.write(str(data[1]))
             sys.stdout.write("\n\n-------------\n\n")
-            sys.stdout.write(error)
+            sys.stdout.write(error.__str__)
             return data[1]
                
         rpc_params = {

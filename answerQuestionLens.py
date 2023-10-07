@@ -16,7 +16,7 @@ def answer_question_lens(question: str, lensID: str):
     def getRelDocs(q):
         docs = []
         question_embedding=getEmbeddings(question)
-        if (lensID == ""):
+        if (lensID == "NONE"):
             rpc_params = {
                 "match_count": 5, 
                 "query_embedding": question_embedding,

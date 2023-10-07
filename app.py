@@ -76,13 +76,10 @@ async def answer_from_lens(data: QuestionFromLens):
     # Extracting question and lensID from the request body
     #return [data.lensID, type(data.lensID)]
     sys.stdout.write("Debug message here\n")
-    sys.stdout.write(data)
     sys.stdout.write(data.lensID)
     question = data.question
     lensID = data.lensID
     
-    if (lensID == "null"):
-        lensID = ""
     response = answer_question_lens(question, lensID)
     return response
 

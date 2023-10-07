@@ -75,8 +75,7 @@ async def answer_from_lens(data: QuestionFromLens):
     # Extracting question and lensID from the request body
     question = data.question
     lensID = data.lensID
-    print("data:")
-    print(data)
+    return [lensID, type(lensID)]
     if (lensID == "null"):
         lensID = ""
     response = answer_question_lens(question, lensID)

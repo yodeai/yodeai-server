@@ -9,13 +9,13 @@ from fastapi.responses import HTMLResponse
 from fastapi.templating import Jinja2Templates
 from sklearn.metrics.pairwise import cosine_similarity
 from fastapi.middleware.cors import CORSMiddleware
-from answerQuestion import answer_question, get_searchable_feed, update_question_popularity
-from answerQuestionLens import answer_question_lens   
+from answerQuestionLens import answer_question_lens, get_searchable_feed, update_question_popularity 
 from celery_tasks.tasks import process_block_task 
 from pydantic import BaseModel
 from config.celery_utils import create_celery
 from config.celery_utils import get_task_info
-from utils import exponential_backoff
+from celery.signals import task_success, task_failure, task_internal_error
+from utils import exponential_backoff, supabaseClient
 import sys
 def create_app() -> FastAPI:
     current_app = FastAPI()
@@ -29,7 +29,11 @@ class Question(BaseModel):
 
 class QuestionFromLens(BaseModel):
     question: str
-    lensID: str
+    lens_id: str
+
+class QuestionPopularityUpdateFromLens(BaseModel):
+    row_id: str
+    lens_id: str
 
 templates = Jinja2Templates(directory="templates")
 
@@ -55,28 +59,23 @@ async def get_task_status(task_id: str) -> dict:
 async def ask_form(request: Request):
     return templates.TemplateResponse("asklens.html", {"request": request})
 
-@app.post("/answer")
-async def answer_text(q: Question):
+
+@app.post("/searchableFeed")
+async def searchable_feed(data: QuestionFromLens):
     # Perform your logic here to get the answer
-    answer = answer_question(q.question)
+    answer = get_searchable_feed(data.question, data.lens_id)
     return {"answer": answer}
 
-@app.get("/searchableFeed/{question}", response_class=JSONResponse)
-async def searchable_feed(question):
+@app.patch("/increasePopularity")
+async def answer_text(data: QuestionPopularityUpdateFromLens):
     # Perform your logic here to get the answer
-    answer = get_searchable_feed(question)
+    answer = update_question_popularity(data.row_id, 1, data.lens_id)
     return {"answer": answer}
 
-@app.patch("/increasePopularity/{id}")
-async def answer_text(id):
+@app.patch("/decreasePopularity")
+async def answer_text(data: QuestionPopularityUpdateFromLens):
     # Perform your logic here to get the answer
-    answer = update_question_popularity(id, 1)
-    return {"answer": answer}
-
-@app.patch("/decreasePopularity/{id}")
-async def answer_text(id):
-    # Perform your logic here to get the answer
-    answer = update_question_popularity(id, -1)
+    answer = update_question_popularity(data.row_id, -1, data.lens_id)
     return {"answer": answer}
 
 @app.post("/processBlock")
@@ -89,13 +88,11 @@ async def route_process_block(block: dict):
 
 @app.post("/answerFromLens")
 async def answer_from_lens(data: QuestionFromLens):
-    # Extracting question and lensID from the request body
+    # Extracting question and lens_id from the request body
     question = data.question
-    lensID = data.lensID
-    response = answer_question_lens(question, lensID)
+    lens_id = data.lens_id
+    response = answer_question_lens(question, lens_id)
     return response
-
-
 
 
 @app.get("/test") # this is testing Hugging Face API for embeddings
@@ -138,6 +135,15 @@ def demo():
         print(f"Sentence {i+1} similarity: {row}")
 
     return {"similarity_matrix": similarity_matrix.tolist()}
+
+@task_success.connect
+def task_success_notifier(sender=None, result=None, **kwargs):
+    # After processing all chunks, update the status of the block to 'ready'
+    print("updating block", result['block_id'])
+    update_response, update_error = supabaseClient.table('block')\
+        .update({'status': 'ready'})\
+        .eq('block_id', result['block_id'])\
+        .execute()
 
 if __name__ == "__main__":
     import uvicorn

@@ -2,6 +2,8 @@
 from utils import addHyperlinksToResponse, fetchLinksFromDatabase, removeDuplicates, getRelevance, get_completion, getEmbeddings
 from DB import supabaseClient
 import time
+from debug.tools import clearConsole
+import sys
 
 relevanceThreshold = 5
 notFound = "The question does not seem to be relevant to the provided content."
@@ -11,7 +13,7 @@ def test_answer_question_lens():
     #question = "what are some ways to develop autonomous language agents?"
     #lensID = "159"
     question = "how do spiders know that there's another spider on their net?"
-    lensID = "1"
+    lensID = "2"
     # question = "What is the meaning of life?"
     # lensID = "6"
     response = answer_question_lens(question, lensID)
@@ -19,9 +21,10 @@ def test_answer_question_lens():
 
 
 def answer_question_lens(question,lensID, whatsappDetails=None):
-    print("starting to embed question")
+    # if question has been asked before, return the embedding for it
+    print("starting to answer question")
     question_embedding=getEmbeddings(question)
-    result = process_vector_search(question, lensID)
+    result = process_vector_search(question, lensID, question_embedding)
     sources = []
     print("starting to sort metadata")
     print(result)
@@ -64,12 +67,11 @@ def answer_question_lens(question,lensID, whatsappDetails=None):
         "metadata": result["metadata"]  
     }
 
-def process_vector_search(question: str, lensID) -> str:
+def process_vector_search(question: str, lensID: int, question_embedding) -> str:
     print("starting to answer question")
     get_rel_docs_start_time = time.time()
     # Record the start time for getRelDocs
     def getRelDocs(q):
-        question_embedding=getEmbeddings(question)
  
         rpc_params = {
             "lensid": lensID,
@@ -133,4 +135,9 @@ def get_searchable_feed(question, lensID):
     return {"documents": docs, "metadata": metadataList}
 
 if __name__ == "__main__":
+    # q = "what are fun birthdays like?"
+    # userID = "e6666aec-85eb-4873-a059-c7b2414f1b26"
+    # response = answer_question_lens(q, "NONE", userID)
+    # print(response)
+
     test_answer_question_lens()

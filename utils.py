@@ -14,6 +14,8 @@ from DB import supabaseClient
 from dotenv import load_dotenv
 load_dotenv(dotenv_path='.env.local')
 openai.api_key = os.getenv("OPENAI_API_KEY")
+from sentence_transformers import SentenceTransformer
+
 
 def exponential_backoff(retries=5, backoff_in_seconds=1, out=sys.stdout):
     def backoff(func):
@@ -113,13 +115,12 @@ def getRelevance(question, response, text):
     # )
 
 # Current options for model are "BGELARGE_MODEL" and "MINILM_MODEL"
-def getEmbeddings(texts, model='BGELARGE_MODEL'):
+def getEmbeddings(texts, model='MINILM_MODEL'):
     headers = {
         "Authorization": f"Bearer {os.environ.get('HUGGINGFACEHUB_API_KEY')}",
         "Content-Type": "application/json"         
     }
     data = {"wait_for_model": True,"inputs": texts}
-
     # Send the request to the Hugging Face API
     @exponential_backoff(retries=5, backoff_in_seconds=1, out=sys.stdout)
     def get_response(headers, data):
@@ -134,4 +135,10 @@ def getEmbeddings(texts, model='BGELARGE_MODEL'):
     if embeddings is None or 'embeddings' not in embeddings:
         raise Exception("Error in getting embeddings.")
     return embeddings['embeddings']
+    # print("This is texts")
+    # print(texts)
+    # model = SentenceTransformer('sentence-transformers/all-MiniLM-L6-v2')
+    # data = {"wait_for_model": True,"inputs": texts}
+    # embeddings = model.encode(json.dumps(data))
+    # return embeddings
 

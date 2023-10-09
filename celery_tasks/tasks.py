@@ -6,7 +6,7 @@ from processBlock import processBlock
 from fastapi import HTTPException
 from utils import supabaseClient
 
-@shared_task(name='processBlock:process_a_block_task', bind=True,autoretry_for=(Exception,), retry_jitter=True, retry_backoff=0, retry_kwargs={"max_retries": 0})
+@shared_task(name='processBlock:process_a_block_task', bind=True,autoretry_for=(Exception,), retry_jitter=True, retry_backoff=5, retry_kwargs={"max_retries": 5})
 def process_block_task(self, block_id):
     try:
         processBlock(block_id)

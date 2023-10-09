@@ -21,6 +21,7 @@ def create_app() -> FastAPI:
     current_app = FastAPI()
     current_app.celery_app = create_celery()
     return current_app
+import sys
 
 app = create_app()
 celery = app.celery_app
@@ -34,6 +35,7 @@ class QuestionFromLens(BaseModel):
 class QuestionPopularityUpdateFromLens(BaseModel):
     row_id: str
     lens_id: str
+    userID: str
 
 templates = Jinja2Templates(directory="templates")
 
@@ -88,10 +90,14 @@ async def route_process_block(block: dict):
 
 @app.post("/answerFromLens")
 async def answer_from_lens(data: QuestionFromLens):
-    # Extracting question and lens_id from the request body
+    # Extracting question and lensID from the request body
+    #return [data.lensID, type(data.lensID)]
+    sys.stdout.write("Debug message here\n")
+    sys.stdout.write(data.lens_id)
     question = data.question
-    lens_id = data.lens_id
-    response = answer_question_lens(question, lens_id)
+    lensID = data.lens_id
+    userID = data.userID
+    response = answer_question_lens(question, lensID, userID)
     return response
 
 
@@ -123,7 +129,7 @@ def demo():
 
     # Extract the embeddings from the response
     embeddings = json.loads(response.content.decode("utf-8"))
-    #print(embeddings[0])
+
     
 
     # Calculate the pairwise similarity matrix
@@ -148,4 +154,4 @@ def task_success_notifier(sender=None, result=None, **kwargs):
 if __name__ == "__main__":
     import uvicorn
     port = int(os.environ.get("PORT", 5000))
-    uvicorn.run(app, host="0.0.0.0", port=port)
+    uvicorn.run(app, host="0.0.0.0", port=port)    

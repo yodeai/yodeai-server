@@ -11,11 +11,19 @@ import requests
 import json
 import openai
 from DB import supabaseClient
+import boto3
+
+
 from dotenv import load_dotenv
 load_dotenv(dotenv_path='.env.local')
 openai.api_key = os.getenv("OPENAI_API_KEY")
 from sentence_transformers import SentenceTransformer
 
+AWS_ACCESS_KEY_ID = os.getenv('AWS_ACCESS_KEY_ID')
+AWS_SECRET_ACCESS_KEY = os.getenv('AWS_SECRET_ACCESS_KEY')
+
+
+s3 = boto3.client('s3', aws_access_key_id=AWS_ACCESS_KEY_ID, aws_secret_access_key=AWS_SECRET_ACCESS_KEY)
 
 def exponential_backoff(retries=5, backoff_in_seconds=1, out=sys.stdout):
     def backoff(func):
@@ -114,19 +122,25 @@ def getRelevance(question, response, text):
     #     query_name="match_questions_huggingface"
     # )
 
+
+def remove_invalid_surrogates(text):
+    # Remove invalid high surrogates
+    text = re.sub(r'[\uD800-\uDBFF](?![\uDC00-\uDFFF])', '', text)
+    # Remove invalid low surrogates
+    text = re.sub(r'(?<![\uD800-\uDBFF])[\uDC00-\uDFFF]', '', text)
+    return text
+
 # Current options for model are "BGELARGE_MODEL" and "MINILM_MODEL"
-def getEmbeddings(texts, model='MINILM_MODEL'):
+def getEmbeddings(texts, model='BGELARGE_MODEL'):
+    
     headers = {
         "Authorization": f"Bearer {os.environ.get('HUGGINGFACEHUB_API_KEY')}",
         "Content-Type": "application/json"         
     }
-    data = {"wait_for_model": True,"inputs": texts}
-    # Send the request to the Hugging Face API
-    @exponential_backoff(retries=5, backoff_in_seconds=1, out=sys.stdout)
-    def get_response(headers, data):
-        response = requests.post(os.environ.get(model), headers=headers, data=json.dumps(data))
-        return response
-    response = get_response(headers, data)
+    data = {"inputs": texts}
+    
+    #print(cleaned_texts[36:37])
+    response = requests.post(os.environ.get(model), headers=headers, data=json.dumps(data))
     if response.status_code != 200:
         print("Error in Hugging Face API Response:", response.content.decode("utf-8"))
         return None

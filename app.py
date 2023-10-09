@@ -69,13 +69,13 @@ async def searchable_feed(data: QuestionFromLens):
     return {"answer": answer}
 
 @app.patch("/increasePopularity")
-async def answer_text(data: QuestionPopularityUpdateFromLens):
+async def increase_popularity(data: QuestionPopularityUpdateFromLens):
     # Perform your logic here to get the answer
     answer = update_question_popularity(data.row_id, 1, data.lens_id)
     return {"answer": answer}
 
 @app.patch("/decreasePopularity")
-async def answer_text(data: QuestionPopularityUpdateFromLens):
+async def decrease_popularity(data: QuestionPopularityUpdateFromLens):
     # Perform your logic here to get the answer
     answer = update_question_popularity(data.row_id, -1, data.lens_id)
     return {"answer": answer}
@@ -91,13 +91,11 @@ async def route_process_block(block: dict):
 @app.post("/answerFromLens")
 async def answer_from_lens(data: QuestionFromLens):
     # Extracting question and lensID from the request body
-    #return [data.lensID, type(data.lensID)]
-    sys.stdout.write("Debug message here\n")
-    sys.stdout.write(data.lens_id)
     question = data.question
     lensID = data.lens_id
-    userID = data.userID
-    response = answer_question_lens(question, lensID, userID)
+    print("HEY")
+    print(data)
+    response = answer_question_lens(question, lensID)
     return response
 
 

@@ -1,6 +1,8 @@
 import os
 from functools import lru_cache
 from kombu import Queue
+from dotenv import load_dotenv
+load_dotenv(dotenv_path='.env.local')
 
 
 def route_task(name, args, kwargs, options, task=None, **kw):
@@ -9,9 +11,8 @@ def route_task(name, args, kwargs, options, task=None, **kw):
         return {"queue": queue}
     return {"queue": "celery"}
 
-
 class BaseConfig:
-    CELERY_BROKER_URL: str = "amqp://guest:guest@localhost:5672//"
+    CELERY_BROKER_URL: str = f"amqp://{os.environ.get('RABBIT_MQ_USER')}:{os.environ.get('RABBIT_MQ_PASSWORD')}@localhost:5672//"
     CELERY_RESULT_BACKEND: str = "redis://127.0.0.1:6379/0"
 
     CELERY_TASK_QUEUES: list = (

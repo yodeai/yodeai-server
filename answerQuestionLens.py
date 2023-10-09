@@ -2,6 +2,8 @@
 from utils import addHyperlinksToResponse, fetchLinksFromDatabase, removeDuplicates, getRelevance, get_completion, getEmbeddings
 from DB import supabaseClient
 import time
+from debug.tools import clearConsole
+import sys
 
 relevanceThreshold = 5
 notFound = "The question does not seem to be relevant to the provided content."
@@ -11,7 +13,7 @@ def test_answer_question_lens():
     #question = "what are some ways to develop autonomous language agents?"
     #lensID = "159"
     question = "how do spiders know that there's another spider on their net?"
-    lensID = "1"
+    lensID = "2"
     # question = "What is the meaning of life?"
     # lensID = "6"
     response = answer_question_lens(question, lensID)
@@ -133,4 +135,9 @@ def get_searchable_feed(question, lensID):
     return {"documents": docs, "metadata": metadataList}
 
 if __name__ == "__main__":
-    test_answer_question_lens()
+            q = "what are fun birthdays like?"
+            userID = "e6666aec-85eb-4873-a059-c7b2414f1b26"
+            response = answer_question_lens(q, "NONE", userID)
+            print(response)
+
+    #test_answer_question_lens()

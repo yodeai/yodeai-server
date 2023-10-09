@@ -13,3 +13,4 @@ celery
 flower
 redis
 gunicorn
+pypdf==3.16.2

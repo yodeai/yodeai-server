@@ -1,13 +1,54 @@
 from DB import supabaseClient
 from utils import getEmbeddings
 from langchain.text_splitter import RecursiveCharacterTextSplitter
+from langchain.document_loaders import PyPDFLoader
+from debug.tools import clearConsole
+import re
+
+def replace_two_whitespace(input_string):
+    result_string = re.sub(r'(\s)\1+', r'\1', input_string)
+    return result_string
+
 def processBlock(block_id):
+    
+    try:
+        existing_row, error = supabaseClient.table('block') \
+        .select('updated_at', 'created_at', 'owner_id') \
+        .eq('block_id', block_id) \
+        .execute()
+    except Exception as e:
+        print(f"Exception occurred while retrieving updated_at, created_at: {e}")
+
+    # if the block_id does not exist in the block table, then add it to the inbox
+    if existing_row[1][0]['created_at'] == existing_row[1][0]['updated_at']:                                
+        try:                               
+            insert_response, insert_error = supabaseClient.table('inbox') \
+            .insert([{'user_id': existing_row[1][0]['owner_id'], 'block_id': block_id}]) \
+            .execute()
+            if insert_response and 'error' not in insert_response:
+                print("Insertion to inbox successful.")
+            else:
+                print("Insertion to inbox failed. ")    
+        except Exception as e:
+            print(f"Exception occurred while adding block to inbox: {e}")
+
+    
+    # Update the status of the block to 'processing'
+    update_response, update_error = supabaseClient.table('block')\
+        .update({'status': 'processing'})\
+        .eq('block_id', block_id)\
+        .execute()
+    
+    # Handle potential errors during the update
+    if not update_response or len(update_response) < 2 or not update_response[1]:
+        raise Exception(f"Error updating status for block with id {block_id}: {update_error}")
+    
     # Deleting existing chunks for the block_id before processing
     res =supabaseClient.table('chunk').delete().eq('block_id', block_id).execute()
     if not res.data and res.count is not None:
         raise Exception(f"Error deleting chunks with block_id {block_id}: {res.error_msg if hasattr(res, 'error_msg') else 'Unknown error'}")
      
-    data, error = supabaseClient.table('block').select('content').eq('block_id', block_id).execute()
+    data, error = supabaseClient.table('block').select('content','block_type','file_url').eq('block_id', block_id).execute()
     
     if error and error[1]:
         raise Exception(f"Error fetching block with id {block_id}: {error[1]}")
@@ -16,11 +57,24 @@ def processBlock(block_id):
     if len(data[1]) > 1:
         raise Exception(f"Multiple blocks found with id {block_id}")
     
-    content = data[1][0]['content']
+    #clearConsole(data)
+    if (data[1][0]['block_type'] == "note"):
+        content = data[1][0]['content']
+    elif (data[1][0]['block_type'] == "pdf"):
+        loader = PyPDFLoader(data[1][0]['file_url'])
+        pages = []
+        pages.extend(loader.load())
+        content = ""
+        for page in pages:
+            content = content + page.page_content
+    
+    content = replace_two_whitespace(content)
+
     text_splitter = RecursiveCharacterTextSplitter(
         chunk_size=800,
         chunk_overlap=200,
-        separators=["\n\n", "\n", "(?<=\. )", " ", ""]
+        separators=["\n\n", "\n", " ", ""]
+        #["\n\n", "\n", "(?<=\. )", " ", ""]
     )
 
     # Splitting the content
@@ -48,7 +102,7 @@ def processBlock(block_id):
 
 if __name__ == "__main__":
     try:
-        processBlock(60)
+        processBlock(44)
         print("Content processed and chunks stored successfully.")
     except Exception as e:
         print(f"Exception occurred: {e}")

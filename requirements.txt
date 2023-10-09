@@ -11,3 +11,4 @@ openai==0.27.8
 supabase==1.0.4
 gunicorn
 pypdf==3.16.2
+boto3==1.28.62

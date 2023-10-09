@@ -3,6 +3,11 @@ from utils import getEmbeddings
 from langchain.text_splitter import RecursiveCharacterTextSplitter
 from langchain.document_loaders import PyPDFLoader
 from debug.tools import clearConsole
+from urllib.parse import urlparse
+import tempfile
+from utils import s3
+from utils import remove_invalid_surrogates
+
 import re
 
 def replace_two_whitespace(input_string):
@@ -61,12 +66,28 @@ def processBlock(block_id):
     if (data[1][0]['block_type'] == "note"):
         content = data[1][0]['content']
     elif (data[1][0]['block_type'] == "pdf"):
-        loader = PyPDFLoader(data[1][0]['file_url'])
-        pages = []
-        pages.extend(loader.load())
-        content = ""
-        for page in pages:
-            content = content + page.page_content
+        parsed_url = urlparse(data[1][0]['file_url'])
+        bucket_name = parsed_url.netloc.split('.')[0]  # Extracts 'yodeai' from the hostname
+        key_name = parsed_url.path.lstrip('/')  # Removes the leading '/'
+        print ("bucket_name: "+ bucket_name+ " key_name: "+ key_name)
+        # Fetch the PDF file from S3
+        s3_object = s3.get_object(Bucket=bucket_name, Key=key_name)
+        print ("s3_object: "+ str(s3_object))
+        pdf_file = s3_object['Body']
+        print ("pdf_file: "+ str(pdf_file))
+        
+        # Write the content to a temporary file
+        with tempfile.NamedTemporaryFile(delete=True, suffix=".pdf") as temp_pdf:
+            temp_pdf.write(pdf_file.read())
+            temp_pdf.flush()
+
+            # Use your PyPDFLoader to load the PDF content
+            loader = PyPDFLoader(temp_pdf.name)
+            pages = []
+            pages.extend(loader.load())
+            content = ""
+            for page in pages:
+                content = content + page.page_content
     
     content = replace_two_whitespace(content)
 
@@ -79,16 +100,16 @@ def processBlock(block_id):
 
     # Splitting the content
     chunks = text_splitter.split_text(content)
+    cleaned_chunks = [remove_invalid_surrogates(text) for text in chunks]
     # Getting the embeddings for each chunk
-    embeddings = getEmbeddings(chunks)
-
+    embeddings = getEmbeddings(cleaned_chunks)
     
     if embeddings is None:
         raise Exception("Error in getting embeddings.")
     
-    for idx, (chunk, embedding) in enumerate(zip(chunks, embeddings)):
-        print (f"Processing chunk {idx} of block {block_id}")
-       
+    for idx, (chunk, embedding) in enumerate(zip(cleaned_chunks, embeddings)):
+        #print (f"Processing chunk {idx} of block {block_id}")
+        
         # Creating a new row in chunks table for each split
         supabaseClient.table('chunk').insert({
             'block_id': block_id,
@@ -112,7 +133,7 @@ def processBlock(block_id):
 
 if __name__ == "__main__":
     try:
-        processBlock(44)
+        processBlock(158)
         print("Content processed and chunks stored successfully.")
     except Exception as e:
         print(f"Exception occurred: {e}")

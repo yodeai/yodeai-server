@@ -82,13 +82,13 @@ async def answer_from_lens(data: QuestionFromLens):
     #return [data.lensID, type(data.lensID)]
     sys.stdout.write("Debug message here\n")
     sys.stdout.write(data.lensID+" "+data.activeComponent)
-    
-    question = data.question
-    lensID = data.lensID
-    userID = data.userID
-    activeComponent = data.activeComponent
-    response = answer_question_lens(question, lensID, activeComponent, userID)
-    return response
+    return 0
+    # question = data.question
+    # lensID = data.lensID
+    # userID = data.userID
+    # activeComponent = data.activeComponent
+    # response = answer_question_lens(question, lensID, activeComponent, userID)
+    # return response
 
 
 

@@ -8,7 +8,7 @@ import sys
 relevanceThreshold = 5
 notFound = "The question does not seem to be relevant to the provided content."
 
-def answer_question_lens(question: str, lensID: str, userID: str):
+def answer_question_lens(question: str, lensID: str, activeComponent: str, userID: str):
     start_time = time.time()
     response = "This is a test response from the backend, and the question is: " + question + " and the lensID is: " + lensID
     # Record the start time for getRelDocs
@@ -16,7 +16,7 @@ def answer_question_lens(question: str, lensID: str, userID: str):
     def getRelDocs(q):
         docs = []
         question_embedding=getEmbeddings(question)
-        if (lensID == "NONE"):                        
+        if (activeComponent == "global"):                        
             rpc_params = {
                 "match_count": 5, 
                 "query_embedding": question_embedding,
@@ -24,6 +24,15 @@ def answer_question_lens(question: str, lensID: str, userID: str):
             }
             #sys.stdout.write("before DB call:\n")
             data, error = supabaseClient.rpc("get_top_chunks", rpc_params).execute() 
+            return data[1]
+        
+        if (activeComponent == "inbox"):                        
+            rpc_params = {
+                "match_count": 5, 
+                "query_embedding": question_embedding,
+                "user_id": userID 
+            }
+            data, error = supabaseClient.rpc("get_top_chunks_from_inbox", rpc_params).execute() 
             return data[1]
                
         rpc_params = {

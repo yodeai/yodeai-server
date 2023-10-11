@@ -34,7 +34,7 @@ def answer_question_lens(question: str, lensID: str, activeComponent: str, userI
             rpc_params = {
                 "match_count": 5, 
                 "query_embedding": question_embedding,
-                "user_id": userID 
+                "id": userID 
             }
             data, error = supabaseClient.rpc("get_top_chunks_from_inbox", rpc_params).execute() 
             return data[1]
@@ -117,8 +117,8 @@ def test_answer_question_lens():
 if __name__ == "__main__":
             question = "what are fun birthdays like?"
             userID = "e6666aec-85eb-4873-a059-c7b2414f1b26"
-            lensID = "190"
-            response = answer_question_lens(question, lensID, "lens", userID )    
+            lensID = "NONE"
+            response = answer_question_lens(question, lensID, "inbox", userID )    
             print(response)
 
     #test_answer_question_lens()

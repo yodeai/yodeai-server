@@ -89,24 +89,25 @@ def getRelevance(question, response, text):
         score = re.match(r"\d+", resp2prompt)
         return int(score[0]) if score else 0
 
-def getDocumentsVectorStore():
-    client = supabaseClient
-    embeddings = HuggingFaceEmbeddings(model_name="all-MiniLM-L6-v2")
-    return SupabaseVectorStore(
-        client=client,
-        embedding=embeddings,
-        table_name="documents_huggingface",
-        query_name="match_documents_huggingface"
-    )
-def getQuestionsVectorStore():
-    client = supabaseClient
-    embeddings = HuggingFaceEmbeddings(model_name="all-MiniLM-L6-v2")
-    return SupabaseVectorStore(
-        client=client,
-        embedding=embeddings,
-        table_name="questions_huggingface",
-        query_name="match_questions_huggingface"
-    )
+######### Afshin: I commented out this code. It does not compile!
+# def getDocumentsVectorStore():
+#     client = supabaseClient
+#     embeddings = HuggingFaceEmbeddings(model_name="all-MiniLM-L6-v2")
+#     return SupabaseVectorStore(
+#         client=client,
+#         embedding=embeddings,
+#         table_name="documents_huggingface",
+#         query_name="match_documents_huggingface"
+#     )
+# def getQuestionsVectorStore():
+#     client = supabaseClient
+#     embeddings = HuggingFaceEmbeddings(model_name="all-MiniLM-L6-v2")
+#     return SupabaseVectorStore(
+#         client=client,
+#         embedding=embeddings,
+#         table_name="questions_huggingface",
+#         query_name="match_questions_huggingface"
+#     )
 
 
 def remove_invalid_surrogates(text):

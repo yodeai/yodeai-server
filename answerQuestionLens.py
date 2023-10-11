@@ -1,4 +1,3 @@
-
 from utils import get_completion, getEmbeddings
 from DB import supabaseClient
 import time
@@ -9,14 +8,18 @@ relevanceThreshold = 5
 notFound = "The question does not seem to be relevant to the provided content."
 
 def answer_question_lens(question: str, lensID: str, activeComponent: str, userID: str):
-    sys.stdout.write(lensID+" "+activeComponent+" "+userID)
+    #sys.stdout.write(lensID+" "+activeComponent+" "+userID)
+    #clearConsole(" before embedding")
     start_time = time.time()
     response = "This is a test response from the backend, and the question is: " + question + " and the lensID is: " + lensID
     # Record the start time for getRelDocs
     get_rel_docs_start_time = time.time()
     def getRelDocs(q):
         docs = []
-        question_embedding=getEmbeddings(question)
+        question_embedding=getEmbeddings(question)      
+
+        #clearConsole(" q embedding generated")  
+
         if (activeComponent == "global"):                        
             rpc_params = {
                 "match_count": 5, 
@@ -35,16 +38,13 @@ def answer_question_lens(question: str, lensID: str, activeComponent: str, userI
             }
             data, error = supabaseClient.rpc("get_top_chunks_from_inbox", rpc_params).execute() 
             return data[1]
-
+        #clearConsole(" calling lens func")
         rpc_params = {
             "lensid": lensID,
             "match_count": 5, 
             "query_embedding": question_embedding,
         }
-        data, error = supabaseClient.rpc("get_top_chunks_for_lens", rpc_params).execute() 
-        if error:
-            raise Exception(f"getting chunks for lens")
-              
+        data, error = supabaseClient.rpc("get_top_chunks_for_lens", rpc_params).execute()               
         return data[1]
         
         # data = mySupabase.from_('lens_blocks').select('block_id').eq('lens_id', lensID).execute().data    
@@ -105,18 +105,20 @@ def answer_question_lens(question: str, lensID: str, activeComponent: str, userI
 def test_answer_question_lens():
     #question = "what are some ways to develop autonomous language agents?"
     #lensID = "159"
-    question = "how do spiders know that there's another spider on their net?"
-    lensID = "2"
+    question = "what do birthdays look like?"
+    lensID = "190"
     # question = "What is the meaning of life?"
     # lensID = "6"
-    response = answer_question_lens(question, lensID)
+    user_id = "e6666aec-85eb-4873-a059-c7b2414f1b26"
+    response = answer_question_lens(question, lensID, "lens", userID )    
     print(response)
     
 
 if __name__ == "__main__":
-            q = "what are fun birthdays like?"
+            question = "what are fun birthdays like?"
             userID = "e6666aec-85eb-4873-a059-c7b2414f1b26"
-            response = answer_question_lens(q, "NONE", userID)
+            lensID = "190"
+            response = answer_question_lens(question, lensID, "lens", userID )    
             print(response)
 
     #test_answer_question_lens()

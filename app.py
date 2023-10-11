@@ -45,23 +45,23 @@ class Question(BaseModel):
 async def ask_form(request: Request):
     return templates.TemplateResponse("asklens.html", {"request": request})
 
-@app.post("/answer")
-async def answer_text(q: Question):
-    # Perform your logic here to get the answer
-    answer = answer_question(q.question)
-    return {"answer": answer}
+# @app.post("/answer")
+# async def answer_text(q: Question):
+#     # Perform your logic here to get the answer
+#     answer = answer_question(q.question)
+#     return {"answer": answer}
 
-@app.get("/searchableFeed/{question}", response_class=JSONResponse)
-async def searchable_feed(question):
-    # Perform your logic here to get the answer
-    answer = get_searchable_feed(question)
-    return {"answer": answer}
+# @app.get("/searchableFeed/{question}", response_class=JSONResponse)
+# async def searchable_feed(question):
+#     # Perform your logic here to get the answer
+#     answer = get_searchable_feed(question)
+#     return {"answer": answer}
 
-@app.patch("/updatePopularity")
-async def answer_text(id, diff):
-    # Perform your logic here to get the answer
-    answer = update_question_popularity(id, diff)
-    return {"answer": answer}
+# @app.patch("/updatePopularity")
+# async def answer_text(id, diff):
+#     # Perform your logic here to get the answer
+#     answer = update_question_popularity(id, diff)
+#     return {"answer": answer}
 
 @app.post("/processBlock")
 async def route_process_block(block: dict):
@@ -77,11 +77,11 @@ async def route_process_block(block: dict):
 
 @app.post("/answerFromLens")
 async def answer_from_lens(data: QuestionFromLens):
-    sys.stdout.write("starting answerFromLens\n\n\n\n\n")
+    #sys.stdout.write("starting answerFromLens\n\n\n\n\n")
     # Extracting question and lensID from the request body
     #return [data.lensID, type(data.lensID)]
-    sys.stdout.write("Debug message here\n")
-    sys.stdout.write(data.lensID+" "+data.activeComponent)
+    #sys.stdout.write("Debug message here\n")
+    #sys.stdout.write(data.lensID+" "+data.activeComponent)
     question = data.question
     lensID = data.lensID
     userID = data.userID

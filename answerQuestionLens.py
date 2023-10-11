@@ -34,13 +34,16 @@ def answer_question_lens(question: str, lensID: str, activeComponent: str, userI
             }
             data, error = supabaseClient.rpc("get_top_chunks_from_inbox", rpc_params).execute() 
             return data[1]
-               
+
         rpc_params = {
             "lensid": lensID,
             "match_count": 5, 
             "query_embedding": question_embedding,
         }
         data, error = supabaseClient.rpc("get_top_chunks_for_lens", rpc_params).execute() 
+        if error:
+            raise Exception(f"getting chunks for lens {error[1]}")
+              
         return data[1]
         
         # data = mySupabase.from_('lens_blocks').select('block_id').eq('lens_id', lensID).execute().data    

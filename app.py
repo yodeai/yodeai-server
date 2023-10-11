@@ -77,18 +77,17 @@ async def route_process_block(block: dict):
 
 @app.post("/answerFromLens")
 async def answer_from_lens(data: QuestionFromLens):
-    sys.stdout.write("starting answerFromLens\n\n\n\n\n")
+    #sys.stdout.write("starting answerFromLens\n\n\n\n\n")
     # Extracting question and lensID from the request body
     #return [data.lensID, type(data.lensID)]
-    sys.stdout.write("Debug message here\n")
-    sys.stdout.write(data.lensID+" "+data.activeComponent)
-    return 0
-    # question = data.question
-    # lensID = data.lensID
-    # userID = data.userID
-    # activeComponent = data.activeComponent
-    # response = answer_question_lens(question, lensID, activeComponent, userID)
-    # return response
+    #sys.stdout.write("Debug message here\n")
+    #sys.stdout.write(data.lensID+" "+data.activeComponent)
+    question = data.question
+    lensID = data.lensID
+    userID = data.userID
+    activeComponent = data.activeComponent
+    response = answer_question_lens(question, lensID, activeComponent, userID)
+    return response
 
 
 

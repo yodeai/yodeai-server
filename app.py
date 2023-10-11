@@ -14,6 +14,7 @@ from answerQuestionLens import answer_question_lens
 from processBlock import processBlock  
 from pydantic import BaseModel
 import sys
+from debug.tools import clearConsole 
 
 app = FastAPI()
 class Question(BaseModel):
@@ -78,10 +79,12 @@ async def answer_from_lens(data: QuestionFromLens):
     #return [data.lensID, type(data.lensID)]
     sys.stdout.write("Debug message here\n")
     sys.stdout.write(data.lensID)
+    clearConsole(data)
     question = data.question
     lensID = data.lensID
     userID = data.userID
-    response = answer_question_lens(question, lensID, userID)
+    activeComponent = data.activeComponent
+    response = answer_question_lens(question, lensID, activeComponent, userID)
     return response
 
 

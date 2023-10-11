@@ -24,6 +24,7 @@ class QuestionFromLens(BaseModel):
     question: str
     lensID: str
     userID: str
+    activeComponent: str
 
 templates = Jinja2Templates(directory="templates")
 

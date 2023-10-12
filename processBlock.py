@@ -15,7 +15,6 @@ def replace_two_whitespace(input_string):
     return result_string
 
 def processBlock(block_id):
-    
     try:
         existing_row, error = supabaseClient.table('block') \
         .select('updated_at', 'created_at', 'owner_id') \
@@ -120,17 +119,7 @@ def processBlock(block_id):
             'chunk_start': 0,
             'chunk_length': len(chunk)
         }).execute()
-   
-    # After processing all chunks, update the status of the block to 'ready'
-    update_response, update_error = supabaseClient.table('block')\
-        .update({'status': 'ready'})\
-        .eq('block_id', block_id)\
-        .execute()
-    # Handle potential errors during the update
-    if not update_response or len(update_response) < 2 or not update_response[1]:
-        raise Exception(f"Error updating status for block with id {block_id}: {update_error}")
-        
-
+    
 if __name__ == "__main__":
     try:
         processBlock(234)

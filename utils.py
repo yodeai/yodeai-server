@@ -17,6 +17,8 @@ import boto3
 from dotenv import load_dotenv
 load_dotenv(dotenv_path='.env.local')
 openai.api_key = os.getenv("OPENAI_API_KEY")
+from sentence_transformers import SentenceTransformer
+
 AWS_ACCESS_KEY_ID = os.getenv('AWS_ACCESS_KEY_ID')
 AWS_SECRET_ACCESS_KEY = os.getenv('AWS_SECRET_ACCESS_KEY')
 
@@ -41,7 +43,7 @@ def exponential_backoff(retries=5, backoff_in_seconds=1, out=sys.stdout):
         return wrapper
     return backoff
 
-@exponential_backoff(retries=5, backoff_in_seconds=1, out=sys.stdout)
+@exponential_backoff(retries=6, backoff_in_seconds=1, out=sys.stdout)
 def get_completion(prompt, model="gpt-3.5-turbo"):
     messages = [{"role": "user", "content": prompt}]
     response = ChatCompletion.create(
@@ -51,7 +53,18 @@ def get_completion(prompt, model="gpt-3.5-turbo"):
     )
     return response.choices[0].message["content"]
 
+def fetchLinksFromDatabase():
+    data, count = supabaseClient.table('links').select('title, url').execute()
+    if len(data[1]) == 0:
+        raise Exception("no data found in links database")
+    data = data[1]
+    linkMap = {}
 
+    if data:
+        for link in data:
+            linkMap[link["title"]] = link["url"]
+
+    return linkMap
 
 def addHyperlinksToResponse(response, linkMap):
     keyList = list(linkMap.keys())
@@ -136,4 +149,10 @@ def getEmbeddings(texts, model='BGELARGE_MODEL'):
     if embeddings is None or 'embeddings' not in embeddings:
         raise Exception("Error in getting embeddings.")
     return embeddings['embeddings']
+    # print("This is texts")
+    # print(texts)
+    # model = SentenceTransformer('sentence-transformers/all-MiniLM-L6-v2')
+    # data = {"wait_for_model": True,"inputs": texts}
+    # embeddings = model.encode(json.dumps(data))
+    # return embeddings
 

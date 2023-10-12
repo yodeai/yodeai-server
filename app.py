@@ -22,6 +22,7 @@ def create_app() -> FastAPI:
     current_app.celery_app = create_celery()
     return current_app
 import sys
+from debug.tools import clearConsole 
 
 app = create_app()
 celery = app.celery_app
@@ -30,12 +31,16 @@ class Question(BaseModel):
 
 class QuestionFromLens(BaseModel):
     question: str
-    lens_id: str
+    lensID: str
+    userID: str
+    activeComponent: str
 
 class QuestionPopularityUpdateFromLens(BaseModel):
     row_id: str
-    lens_id: str
+    lensID: str
+    activeComponent: str
     userID: str
+    
 
 templates = Jinja2Templates(directory="templates")
 
@@ -62,23 +67,30 @@ async def ask_form(request: Request):
     return templates.TemplateResponse("asklens.html", {"request": request})
 
 
-@app.post("/searchableFeed")
-async def searchable_feed(data: QuestionFromLens):
-    # Perform your logic here to get the answer
-    answer = get_searchable_feed(data.question, data.lens_id)
-    return {"answer": answer}
+# @app.post("/searchableFeed")
+# async def searchable_feed(data: QuestionFromLens):
+#     # Perform your logic here to get the answer
+#     answer = get_searchable_feed(data.question, data.lensID)
+#     return {"answer": answer}
 
-@app.patch("/increasePopularity")
-async def increase_popularity(data: QuestionPopularityUpdateFromLens):
-    # Perform your logic here to get the answer
-    answer = update_question_popularity(data.row_id, 1, data.lens_id)
-    return {"answer": answer}
+# @app.patch("/increasePopularity")
+# async def increase_popularity(data: QuestionPopularityUpdateFromLens):
+#     # Perform your logic here to get the answer
+#     answer = update_question_popularity(data.row_id, 1, data.lensID)
+#     return {"answer": answer}
 
-@app.patch("/decreasePopularity")
-async def decrease_popularity(data: QuestionPopularityUpdateFromLens):
-    # Perform your logic here to get the answer
-    answer = update_question_popularity(data.row_id, -1, data.lens_id)
-    return {"answer": answer}
+# @app.patch("/decreasePopularity")
+# async def decrease_popularity(data: QuestionPopularityUpdateFromLens):
+#     # Perform your logic here to get the answer
+#     answer = update_question_popularity(data.row_id, -1, data.lensID)
+#     return {"answer": answer}
+
+# @app.post("/answer")
+# async def answer_text(q: Question):
+#     # Perform your logic here to get the answer
+#     answer = answer_question(q.question)
+#     return {"answer": answer}
+
 
 @app.post("/processBlock")
 async def route_process_block(block: dict):
@@ -90,12 +102,14 @@ async def route_process_block(block: dict):
 
 @app.post("/answerFromLens")
 async def answer_from_lens(data: QuestionFromLens):
-    # Extracting question and lensID from the request body
+    #return [data.lensID, type(data.lensID)]
+    #sys.stdout.write("Debug message here\n")
+    #sys.stdout.write(data.lensID+" "+data.activeComponent)
     question = data.question
-    lensID = data.lens_id
-    print("HEY")
-    print(data)
-    response = answer_question_lens(question, lensID)
+    lensID = data.lensID
+    userID = data.userID
+    activeComponent = data.activeComponent
+    response = answer_question_lens(question, lensID, activeComponent, userID)
     return response
 
 

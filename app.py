@@ -9,19 +9,34 @@ from fastapi.responses import HTMLResponse
 from fastapi.templating import Jinja2Templates
 from sklearn.metrics.pairwise import cosine_similarity
 from fastapi.middleware.cors import CORSMiddleware
-#from answerQuestion import answer_question, get_searchable_feed, update_question_popularity
-from answerQuestionLens import answer_question_lens   
-from processBlock import processBlock  
+from answerQuestionLens import answer_question_lens, get_searchable_feed, update_question_popularity 
+from celery_tasks.tasks import process_block_task 
 from pydantic import BaseModel
+from config.celery_utils import create_celery
+from config.celery_utils import get_task_info
+from celery.signals import task_success, task_failure, task_internal_error
+from utils import exponential_backoff, supabaseClient
+import sys
+def create_app() -> FastAPI:
+    current_app = FastAPI()
+    current_app.celery_app = create_celery()
+    return current_app
 import sys
 from debug.tools import clearConsole 
 
-app = FastAPI()
+app = create_app()
+celery = app.celery_app
 class Question(BaseModel):
     text: str
 
 class QuestionFromLens(BaseModel):
     question: str
+    lensID: str
+    userID: str
+    activeComponent: str
+
+class QuestionPopularityUpdateFromLens(BaseModel):
+    row_id: str
     lensID: str
     activeComponent: str
     userID: str
@@ -40,10 +55,35 @@ app.add_middleware(
 class Question(BaseModel):
     question: str
 
+@app.get("/task/{task_id}")
+async def get_task_status(task_id: str) -> dict:
+    """
+    Return the status of the submitted Task
+    """
+    return get_task_info(task_id)
 
 @app.get("/asklens", response_class=HTMLResponse)
 async def ask_form(request: Request):
     return templates.TemplateResponse("asklens.html", {"request": request})
+
+
+# @app.post("/searchableFeed")
+# async def searchable_feed(data: QuestionFromLens):
+#     # Perform your logic here to get the answer
+#     answer = get_searchable_feed(data.question, data.lensID)
+#     return {"answer": answer}
+
+# @app.patch("/increasePopularity")
+# async def increase_popularity(data: QuestionPopularityUpdateFromLens):
+#     # Perform your logic here to get the answer
+#     answer = update_question_popularity(data.row_id, 1, data.lensID)
+#     return {"answer": answer}
+
+# @app.patch("/decreasePopularity")
+# async def decrease_popularity(data: QuestionPopularityUpdateFromLens):
+#     # Perform your logic here to get the answer
+#     answer = update_question_popularity(data.row_id, -1, data.lensID)
+#     return {"answer": answer}
 
 # @app.post("/answer")
 # async def answer_text(q: Question):
@@ -51,34 +91,17 @@ async def ask_form(request: Request):
 #     answer = answer_question(q.question)
 #     return {"answer": answer}
 
-# @app.get("/searchableFeed/{question}", response_class=JSONResponse)
-# async def searchable_feed(question):
-#     # Perform your logic here to get the answer
-#     answer = get_searchable_feed(question)
-#     return {"answer": answer}
-
-# @app.patch("/updatePopularity")
-# async def answer_text(id, diff):
-#     # Perform your logic here to get the answer
-#     answer = update_question_popularity(id, diff)
-#     return {"answer": answer}
 
 @app.post("/processBlock")
 async def route_process_block(block: dict):
     block_id = block.get("block_id")
     if not block_id:
         raise HTTPException(status_code=400, detail="block_id must be provided")
-    
-    try:
-        processBlock(block_id)
-        return {"status": "Content processed and chunks stored successfully."}
-    except Exception as e:
-        raise HTTPException(status_code=400, detail=str(e))
+    task = process_block_task.apply_async(args=[block_id])
+    return JSONResponse({"task_id": task.id})
 
 @app.post("/answerFromLens")
 async def answer_from_lens(data: QuestionFromLens):
-    #sys.stdout.write("starting answerFromLens\n\n\n\n\n")
-    # Extracting question and lensID from the request body
     #return [data.lensID, type(data.lensID)]
     #sys.stdout.write("Debug message here\n")
     #sys.stdout.write(data.lensID+" "+data.activeComponent)
@@ -90,8 +113,6 @@ async def answer_from_lens(data: QuestionFromLens):
     return response
 
 
-
-
 @app.get("/test") # this is testing Hugging Face API for embeddings
 def demo():
     # Set up the request headers and data
@@ -100,11 +121,15 @@ def demo():
     "Content-Type": "application/json"         
     }
 
-    data = {"inputs": ["This is a sentence.", "This is another sentence.", "this is a sentence about Japanese food", "Sushi is nice"]}
+
+    data = {"wait_for_model": True, "inputs": ["This is a sentence.", "This is another sentence.", "this is a sentence about Japanese food", "Sushi is nice"]}
 
     # Send the request to the Hugging Face API
-    response = requests.post(os.environ.get('BGELARGE_MODEL'), headers=headers, data=json.dumps(data))
-    #print(response.content)
+    @exponential_backoff(retries=5, backoff_in_seconds=1, out=sys.stdout)
+    def get_response(headers, data):
+        response = requests.post(os.environ.get('BGELARGE_MODEL'), headers=headers, data=json.dumps(data))
+        return response
+    response = get_response(headers, data)
 
     if response.status_code != 200:
         print("Error in Hugging Face API Response:", response.content.decode("utf-8"))
@@ -128,6 +153,15 @@ def demo():
         print(f"Sentence {i+1} similarity: {row}")
 
     return {"similarity_matrix": similarity_matrix.tolist()}
+
+@task_success.connect
+def task_success_notifier(sender=None, result=None, **kwargs):
+    # After processing all chunks, update the status of the block to 'ready'
+    print("updating block", result['block_id'])
+    update_response, update_error = supabaseClient.table('block')\
+        .update({'status': 'ready'})\
+        .eq('block_id', result['block_id'])\
+        .execute()
 
 if __name__ == "__main__":
     import uvicorn

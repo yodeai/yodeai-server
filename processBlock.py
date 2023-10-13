@@ -7,12 +7,32 @@ from urllib.parse import urlparse
 import tempfile
 from utils import s3
 from utils import remove_invalid_surrogates
-
+from utils import get_completion
 import re
 
 def replace_two_whitespace(input_string):
     result_string = re.sub(r'(\s)\1+', r'\1', input_string)
     return result_string
+
+def extract_title(text):
+    if (len(text) == 0):
+        return "Untitled"
+    if (len(text) > 1000):
+        text = text[0:1000]    
+    #prompt = f"Choose a title for the following document inside tripple quotes. What is the title? You response should contain the title alone. If there is no title, then respond with ``Untitiled''. Document: ```{text}'''"
+    prompt = f"Choose a title for the following document inside tripple quotes. You response should contain the title alone. If you cannot find a natural title, then respond with ``Untitiled''. Document: ```{text}'''"
+    response = get_completion(prompt)
+    return response
+
+
+def update_title(title, block_id):
+    update_response, update_error = supabaseClient.table('block')\
+        .update({'title': title})\
+        .eq('block_id', block_id)\
+        .execute()
+    if not update_response or len(update_response) < 2 or not update_response[1]:
+        raise Exception(f"Error updating title for block with id {block_id}: {update_error}")
+
 
 def processBlock(block_id):
     try:
@@ -72,8 +92,8 @@ def processBlock(block_id):
         # Fetch the PDF file from S3
         s3_object = s3.get_object(Bucket=bucket_name, Key=key_name)
         print ("s3_object: "+ str(s3_object))
-        pdf_file = s3_object['Body']
-        print ("pdf_file: "+ str(pdf_file))
+        pdf_file = s3_object['Body']        
+        #print ("pdf_file: "+ str(pdf_file))
         
         # Write the content to a temporary file
         with tempfile.NamedTemporaryFile(delete=True, suffix=".pdf") as temp_pdf:
@@ -87,6 +107,10 @@ def processBlock(block_id):
             content = ""
             for page in pages:
                 content = content + page.page_content
+        pdf_title = extract_title(content)
+        update_title(pdf_title, block_id)
+
+            
     
     content = replace_two_whitespace(content)
 
@@ -122,7 +146,7 @@ def processBlock(block_id):
     
 if __name__ == "__main__":
     try:
-        processBlock(234)
+        processBlock(363)
         print("Content processed and chunks stored successfully.")
     except Exception as e:
         print(f"Exception occurred: {e}")

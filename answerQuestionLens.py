@@ -78,8 +78,7 @@ def answer_question_lens(question: str, lensID: str, activeComponent: str, userI
     for d in relevant_chunks:        
         text += d['content'] + "\n\n"        
     prompt = "You are answering questions asked by a user. Answer the question: " + question + " in a helpful and concise way and in at most one paragraph, using the following text inside tripple quotes:\n '''" + text + "''' \n <<<REMEMBER:  If the question is irrelevant to the text, do not try to make up an answer, just say that the question is irrelevant to the context.>>>"
-    #sys.stdout.write("\n\n\n----------prompt:\n")
-    #sys.stdout.write(prompt)
+    clearConsole(prompt)
     
     
     # Record the start time for get_completion

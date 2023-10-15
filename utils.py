@@ -4,8 +4,6 @@ import random
 import sys
 import os
 from openai import ChatCompletion
-#from langchain.vectorstores import SupabaseVectorStore
-#from langchain.embeddings import HuggingFaceEmbeddings
 import re
 import requests
 import json

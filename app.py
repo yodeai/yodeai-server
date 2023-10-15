@@ -3,18 +3,18 @@ import requests
 import json
 from dotenv import load_dotenv
 load_dotenv(dotenv_path='.env.local')
-from fastapi import FastAPI, Request, Form, HTTPException
+from fastapi import FastAPI, Request,  HTTPException
 from fastapi.responses import JSONResponse
 from fastapi.responses import HTMLResponse
 from fastapi.templating import Jinja2Templates
 from sklearn.metrics.pairwise import cosine_similarity
 from fastapi.middleware.cors import CORSMiddleware
-from answerQuestionLens import answer_question_lens, get_searchable_feed, update_question_popularity 
+from answerQuestionLens import answer_question_lens
 from celery_tasks.tasks import process_block_task 
 from pydantic import BaseModel
 from config.celery_utils import create_celery
 from config.celery_utils import get_task_info
-from celery.signals import task_success, task_failure, task_internal_error
+from celery.signals import task_success
 from utils import exponential_backoff, supabaseClient
 import sys
 def create_app() -> FastAPI:
@@ -22,7 +22,6 @@ def create_app() -> FastAPI:
     current_app.celery_app = create_celery()
     return current_app
 import sys
-from debug.tools import clearConsole 
 
 app = create_app()
 celery = app.celery_app
@@ -106,7 +105,7 @@ async def answer_from_lens(data: QuestionFromLens):
     #sys.stdout.write("Debug message here\n")
     #sys.stdout.write(data.lensID+" "+data.activeComponent)
     question = data.question
-    lensID = data.lensID
+    lensID = None if data.lensID == "NONE" else data.lensID
     userID = data.userID
     activeComponent = data.activeComponent
     response = answer_question_lens(question, lensID, activeComponent, userID)

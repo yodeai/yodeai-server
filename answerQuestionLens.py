@@ -1,9 +1,8 @@
 
-from utils import addHyperlinksToResponse, fetchLinksFromDatabase, removeDuplicates, getRelevance, get_completion, getEmbeddings
+from utils import get_completion, getEmbeddings
 from DB import supabaseClient
 import time
 from debug.tools import clearConsole
-import sys
 
 relevanceThreshold = 5
 notFound = "The question does not seem to be relevant to the provided content."
@@ -12,7 +11,6 @@ def answer_question_lens(question: str, lensID: str, activeComponent: str, userI
     #sys.stdout.write(lensID+" "+activeComponent+" "+userID)
     #clearConsole(" before embedding")
     start_time = time.time()
-    response = "This is a test response from the backend, and the question is: " + question + " and the lensID is: " + lensID
     # Record the start time for getRelDocs
     get_rel_docs_start_time = time.time()
     question_embedding=getEmbeddings(question)      

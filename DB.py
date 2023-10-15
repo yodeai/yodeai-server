@@ -1,8 +1,5 @@
-import time
-import random
-import sys
 import os
-from supabase import create_client, Client
+from supabase import create_client
 from dotenv import load_dotenv
 load_dotenv(dotenv_path='.env.local')
 

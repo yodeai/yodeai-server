@@ -2,7 +2,6 @@ from DB import supabaseClient
 from utils import getEmbeddings
 from langchain.text_splitter import RecursiveCharacterTextSplitter
 from langchain.document_loaders import PyPDFLoader
-from debug.tools import clearConsole
 from urllib.parse import urlparse
 import tempfile
 from utils import s3

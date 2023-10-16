@@ -125,6 +125,9 @@ def remove_invalid_surrogates(text):
     text = re.sub(r'[\uD800-\uDBFF](?![\uDC00-\uDFFF])', '', text)
     # Remove invalid low surrogates
     text = re.sub(r'(?<![\uD800-\uDBFF])[\uDC00-\uDFFF]', '', text)
+    # Remove Unicode/null characters
+    text = re.sub(r'\u0000', '', text)
+    text = re.sub(r'\x00', '', text)
     return text
 
 # Current options for model are "BGELARGE_MODEL" and "MINILM_MODEL"

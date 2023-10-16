@@ -18,8 +18,7 @@ def extract_title(text):
         return "Untitled"
     if (len(text) > 1000):
         text = text[0:1000]    
-    #prompt = f"Choose a title for the following document inside tripple quotes. What is the title? You response should contain the title alone. If there is no title, then respond with ``Untitiled''. Document: ```{text}'''"
-    prompt = f"Choose a title for the following document inside tripple quotes. You response should contain the title alone. If you cannot find a natural title, then respond with ``Untitiled''. Document: ```{text}'''"
+    prompt = f"Choose a title for the following document inside triple quotes. You response should contain the title alone. If you cannot find a suitable title, then respond with Untitled. Document: ```{text}'''"
     response = get_completion(prompt)
     return response
 

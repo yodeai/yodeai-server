@@ -19,10 +19,10 @@ def extract_title(text):
         return "Untitled"
     if (len(text) > 1000):
         text = text[0:1000]    
-    prompt = f"Choose a title for the following text inside triple quotes. You response should contain the title alone. If you cannot choose a  title, then respond with Untitled. Text:\\ ```{text}'''"
-    clearConsole(prompt)
+    #prompt = f"Choose a title for the following text inside triple quotes. You response should contain the title alone. If you cannot choose a  title, then respond with Untitled. \n Text: ```{text}'''"
+    #prompt = f"The following is the beginning of a document. ChooseYou response should contain the title alone.  \n Text: ```{text}'''"
+    prompt = f"This is the beginning of a document. What's a good title for the document? Your response should include the title alone. \n Document: ```{text}'''"    
     response = get_completion(prompt)
-    clearConsole(response)
     return response
 
 
@@ -32,9 +32,7 @@ def get_preview(text):
     if (len(text) > 3000):
         text = text[0:3000]               
     prompt = f"You are generating a short summary for the following text inside triple qoutes in one or two sentences. This  summary will be shown to the user as a preview of  the entire text. It should be written as if it's part of the text.  Text: ```{text}'''"
-    clearConsole(prompt) 
     response = get_completion(prompt)
-    clearConsole(response)
     return response
 
 
@@ -172,7 +170,8 @@ def processBlock(block_id):
     
 if __name__ == "__main__":
     try:
-        processBlock(581)
+        #580,555
+        processBlock(582)
         print("Content processed and chunks stored successfully.")
     except Exception as e:
         print(f"Exception occurred: {e}")

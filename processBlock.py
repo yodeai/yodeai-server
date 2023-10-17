@@ -1,4 +1,5 @@
 from DB import supabaseClient
+from debug.tools import clearConsole
 from utils import getEmbeddings
 from langchain.text_splitter import RecursiveCharacterTextSplitter
 from langchain.document_loaders import PyPDFLoader
@@ -18,8 +19,22 @@ def extract_title(text):
         return "Untitled"
     if (len(text) > 1000):
         text = text[0:1000]    
-    prompt = f"Choose a title for the following document inside triple quotes. You response should contain the title alone. If you cannot find a suitable title, then respond with Untitled. Document: ```{text}'''"
+    prompt = f"Choose a title for the following text inside triple quotes. You response should contain the title alone. If you cannot choose a  title, then respond with Untitled. Text:\\ ```{text}'''"
+    clearConsole(prompt)
     response = get_completion(prompt)
+    clearConsole(response)
+    return response
+
+
+def get_preview(text):
+    if (len(text) == 0):
+        ""
+    if (len(text) > 3000):
+        text = text[0:3000]               
+    prompt = f"You are generating a short summary for the following text inside triple qoutes in one or two sentences. This  summary will be shown to the user as a preview of  the entire text. It should be written as if it's part of the text.  Text: ```{text}'''"
+    clearConsole(prompt) 
+    response = get_completion(prompt)
+    clearConsole(response)
     return response
 
 
@@ -30,6 +45,15 @@ def update_title(title, block_id):
         .execute()
     if not update_response or len(update_response) < 2 or not update_response[1]:
         raise Exception(f"Error updating title for block with id {block_id}: {update_error}")
+
+
+def update_preview(preview, block_id):
+    update_response, update_error = supabaseClient.table('block')\
+        .update({'preview': preview})\
+        .eq('block_id', block_id)\
+        .execute()
+    if not update_response or len(update_response) < 2 or not update_response[1]:
+        raise Exception(f"Error updating preview for block with id {block_id}: {update_error}")
 
 
 def processBlock(block_id):
@@ -108,6 +132,10 @@ def processBlock(block_id):
         pdf_title = extract_title(content)
         update_title(pdf_title, block_id)
 
+        pdf_preview = get_preview(content)
+        update_preview(pdf_preview, block_id)
+
+
             
     
     content = replace_two_whitespace(content)
@@ -144,7 +172,7 @@ def processBlock(block_id):
     
 if __name__ == "__main__":
     try:
-        processBlock(363)
+        processBlock(581)
         print("Content processed and chunks stored successfully.")
     except Exception as e:
         print(f"Exception occurred: {e}")

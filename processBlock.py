@@ -9,6 +9,7 @@ from utils import s3
 from utils import remove_invalid_surrogates
 from utils import get_completion
 import re
+import numpy as np
 
 def replace_two_whitespace(input_string):
     result_string = re.sub(r'(\s)\1+', r'\1', input_string)
@@ -28,9 +29,10 @@ def extract_title(text):
 
 def get_preview(text):
     if (len(text) == 0):
-        ""
+        return ""
     if (len(text) > 3000):
         text = text[0:3000]               
+    #prompt = f"You are generating a short summary for the following text inside triple qoutes in one or two sentences. This  summary will be shown to the user as a preview of  the entire text. It should be written as if it's part of the text; avoid language like ``this text studies''.  Text: ```{text}'''"
     prompt = f"You are generating a short summary for the following text inside triple qoutes in one or two sentences. This  summary will be shown to the user as a preview of  the entire text. It should be written as if it's part of the text.  Text: ```{text}'''"
     response = get_completion(prompt)
     return response
@@ -76,13 +78,13 @@ def processBlock(block_id):
         except Exception as e:
             print(f"Exception occurred while adding block to inbox: {e}")
 
-    
+ 
     # Update the status of the block to 'processing'
     update_response, update_error = supabaseClient.table('block')\
         .update({'status': 'processing'})\
         .eq('block_id', block_id)\
         .execute()
-    
+
     # Handle potential errors during the update
     if not update_response or len(update_response) < 2 or not update_response[1]:
         raise Exception(f"Error updating status for block with id {block_id}: {update_error}")
@@ -155,6 +157,7 @@ def processBlock(block_id):
         raise Exception("Error in getting embeddings.")
     
     for idx, (chunk, embedding) in enumerate(zip(cleaned_chunks, embeddings)):
+        
         #print (f"Processing chunk {idx} of block {block_id}")
         
         # Creating a new row in chunks table for each split
@@ -167,11 +170,23 @@ def processBlock(block_id):
             'chunk_start': 0,
             'chunk_length': len(chunk)
         }).execute()
+        
+        clearConsole(type(embeddings[0][0]))
+        #clearConsole(embeddings[0])
+        
+        np_embeddings = np.array(embeddings)        
+        np_sum = np_embeddings.sum(axis=0)
+        np_ave = np_sum/len(embeddings)
+        ave_embeddings = np_ave.tolist()
+        update_object = {'ave_embedding': ave_embeddings}
+        response, error = supabaseClient.table('block').update(update_object).eq('block_id', block_id).execute()
+        if error:
+            print("Error updating ave_embedding:", error)
     
 if __name__ == "__main__":
     try:
         #580,555
-        processBlock(582)
+        processBlock(586)
         print("Content processed and chunks stored successfully.")
     except Exception as e:
         print(f"Exception occurred: {e}")

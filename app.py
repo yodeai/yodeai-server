@@ -17,6 +17,22 @@ from config.celery_utils import get_task_info
 from celery.signals import task_success
 from utils import exponential_backoff, supabaseClient
 import sys
+from fastapi_mail import FastMail, MessageSchema, ConnectionConfig
+from pydantic import EmailStr
+from uuid import uuid4
+
+class LensInvite(BaseModel):
+    sender: str
+    lensId: str
+    email: str
+    role: str
+
+class EmailSettings(BaseModel):
+    email_server: str
+    email_port: int
+    email_username: str
+    email_password: str
+    sender_email: EmailStr
 def create_app() -> FastAPI:
     current_app = FastAPI()
     current_app.celery_app = create_celery()
@@ -64,6 +80,64 @@ async def get_task_status(task_id: str) -> dict:
 @app.get("/asklens", response_class=HTMLResponse)
 async def ask_form(request: Request):
     return templates.TemplateResponse("asklens.html", {"request": request})
+
+@app.post('/shareLens')
+async def share_lens(sharing_details: dict):
+    recipients = [sharing_details["email"]]
+    lensId = sharing_details["lensId"]
+    sender = sharing_details["sender"]
+    role = sharing_details["role"]
+    token = str(uuid4())
+    inviteLink = f"{os.environ.get('BASE_URL')}/acceptInvite/{token}"
+    insertData = {
+        "sender": sender,
+        "recipient": recipients[0],
+        "token": token,
+        "lens_id": lensId,
+        "access_type": role,
+    }
+    data, count = supabaseClient.table('lens_invites').insert(insertData).execute()
+
+    template = f"""
+		<html>
+		<body>
+		<p>Hey there {recipients[0]}!
+		<br>{sender} is inviting you to collaborate on the lens {lensId} with the role of: {role} </p>
+        <p>Click <a href={inviteLink}>here</a> to accept the invite</p>
+		</body>
+		</html>
+		"""
+    message = MessageSchema(
+		subject=f"Yodeai {sender} shared a lens with you!",
+		recipients=recipients, # List of recipients, as many as you can pass 
+		body=template,
+		subtype="html"
+		)
+
+    # Example configuration
+    email_config = EmailSettings(
+        email_server="smtp.gmail.com",
+        email_port=587,
+        email_username=os.environ.get('EMAIL'),
+        email_password=os.environ.get('APP_PASSWORD'),
+        sender_email=os.environ.get('EMAIL'),
+    )
+    print(email_config)
+
+    # Create a ConnectionConfig object
+    conf = ConnectionConfig(
+        MAIL_USERNAME=email_config.email_username,
+        MAIL_PASSWORD=email_config.email_password,
+        MAIL_SERVER=email_config.email_server,
+        MAIL_PORT=email_config.email_port,
+        MAIL_FROM=email_config.sender_email,
+        MAIL_STARTTLS=True,  # Example value
+        MAIL_SSL_TLS=False,  # Example value
+    )
+    fm = FastMail(conf)
+    await fm.send_message(message)
+    print(message)
+    return JSONResponse(status_code=200, content={"message": "email has been sent"})
 
 
 # @app.post("/searchableFeed")

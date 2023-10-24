@@ -7,7 +7,7 @@ from debug.tools import clearConsole
 
 relevanceThreshold = 5
 notFound = "The question does not seem to be relevant to the provided content."
-
+irrelevantText = 'Sorry, the question is irrelevant to the text.'
 def answer_question_lens(question: str, lensID: str, activeComponent: str, userID: str):
     #sys.stdout.write(lensID+" "+activeComponent+" "+userID)
     #clearConsole(" before embedding")
@@ -76,7 +76,7 @@ def answer_question_lens(question: str, lensID: str, activeComponent: str, userI
     text = ""    
     for d in relevant_chunks:        
         text += d['content'] + "\n\n"        
-    prompt = "You are answering questions asked by a user. Answer the question: " + question + " in a helpful and concise way and in at most one paragraph, using the following text inside tripple quotes:\n '''" + text + "''' \n <<<REMEMBER:  If the question is irrelevant to the text, do not try to make up an answer, just say that the question is irrelevant to the context.>>>"
+    prompt = f"You are answering questions asked by a user. Answer the question: " + question + " in a helpful and concise way and in at most one paragraph, using the following text inside triple quotes:\n '''" + text + "''' \n <<<REMEMBER:  If the question is irrelevant to the text, do not try to make up an answer, just return the following text:" + irrelevantText+ ">>>"
     clearConsole(prompt)
     
     
@@ -89,7 +89,10 @@ def answer_question_lens(question: str, lensID: str, activeComponent: str, userI
     #getRel = getRelevance(question, response, text)
     #if getRel == None or getRel <= relevanceThreshold:
     #    response = notFound
-    metadata = {"blocks": list(set(relevant_block_ids))}
+    if response == irrelevantText:
+        metadata = {}
+    else:
+        metadata = {"blocks": list(set(relevant_block_ids))}
     
     print("done with process vector search")
     print(f"Total time taken: {time.time() - start_time:.2f} seconds")

@@ -20,8 +20,6 @@ def extract_title(text):
         return "Untitled"
     if (len(text) > 1000):
         text = text[0:1000]    
-    #prompt = f"Choose a title for the following text inside triple quotes. You response should contain the title alone. If you cannot choose a  title, then respond with Untitled. \n Text: ```{text}'''"
-    #prompt = f"The following is the beginning of a document. ChooseYou response should contain the title alone.  \n Text: ```{text}'''"
     prompt = f"This is the beginning of a document. What's a good title for the document? Your response should include the title alone. \n Document: ```{text}'''"    
     response = get_completion(prompt)
     return response
@@ -29,7 +27,7 @@ def extract_title(text):
 
 def get_preview(text):
     if (len(text) == 0):
-        return ""
+        return "Not enough content for a summary."
     if (len(text) > 3000):
         text = text[0:3000]
     if (len(text) < 200):

@@ -31,7 +31,10 @@ def get_preview(text):
     if (len(text) == 0):
         return ""
     if (len(text) > 3000):
-        text = text[0:3000]               
+        text = text[0:3000]
+    if (len(text) < 200):
+        return text
+
     #prompt = f"You are generating a short summary for the following text inside triple qoutes in one or two sentences. This  summary will be shown to the user as a preview of  the entire text. It should be written as if it's part of the text; avoid language like ``this text studies''.  Text: ```{text}'''"
     prompt = f"You are generating a short summary for the following text inside triple qoutes in one or two sentences. This  summary will be shown to the user as a preview of  the entire text. It should be written as if it's part of the text.  Text: ```{text}'''"
     response = get_completion(prompt)
@@ -131,14 +134,10 @@ def processBlock(block_id):
                 content = content + page.page_content
         pdf_title = extract_title(content)
         update_title(pdf_title, block_id)
-
-        pdf_preview = get_preview(content)
-        update_preview(pdf_preview, block_id)
-
-
-            
-    
+ 
     content = replace_two_whitespace(content)
+    content_preview = get_preview(content)
+    update_preview(content_preview, block_id)
 
     text_splitter = RecursiveCharacterTextSplitter(
         chunk_size=800,
@@ -171,22 +170,29 @@ def processBlock(block_id):
             'chunk_length': len(chunk)
         }).execute()
         
-        clearConsole(type(embeddings[0][0]))
+
         #clearConsole(embeddings[0])
-        
         np_embeddings = np.array(embeddings)        
         np_sum = np_embeddings.sum(axis=0)
         np_ave = np_sum/len(embeddings)
-        ave_embeddings = np_ave.tolist()
-        update_object = {'ave_embedding': ave_embeddings}
-        response, error = supabaseClient.table('block').update(update_object).eq('block_id', block_id).execute()
-        if error:
+        ave_embedding = np_ave.tolist()
+        
+        #update_object = {'ave_embedding': ave_embeddings}
+        response, error = supabaseClient.table('block').update({'ave_embedding': ave_embedding}).eq('block_id', block_id).execute()
+        if error[1]:
             print("Error updating ave_embedding:", error)
-    
+        update_response, update_error = supabaseClient.table('block')\
+        .update({'status': 'ready'})\
+        .eq('block_id', block_id)\
+        .execute()
+    return content_preview
+        
+
+
 if __name__ == "__main__":
     try:
         #580,555
-        processBlock(586)
+        processBlock(234)
         print("Content processed and chunks stored successfully.")
     except Exception as e:
         print(f"Exception occurred: {e}")

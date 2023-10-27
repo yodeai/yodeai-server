@@ -101,14 +101,15 @@ async def share_lens(sharing_details: dict):
     template = f"""
 		<html>
 		<body>
-		<p>Hey there {recipients[0]}!
-		<br>{sender} is inviting you to collaborate on the lens {lensId} with the role of: {role} </p>
-        <p>Click <a href={inviteLink}>here</a> to accept the invite</p>
+		<p>Hi {recipients[0]}!
+        <br></br>
+		<p>{sender} is inviting you to collaborate on the lens {lensId} with the role of: {role} </p>
+        <p>Click <a href={inviteLink}>here</a> to accept the invite. </p>
 		</body>
 		</html>
 		"""
     message = MessageSchema(
-		subject=f"Yodeai {sender} shared a lens with you!",
+		subject=f"Yodeai: {sender} shared a lens with you!",
 		recipients=recipients, # List of recipients, as many as you can pass 
 		body=template,
 		subtype="html"

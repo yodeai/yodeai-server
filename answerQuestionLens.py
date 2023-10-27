@@ -4,6 +4,7 @@ from DB import supabaseClient
 import time
 from debug.tools import clearConsole
 
+
 relevanceThreshold = 5
 notFound = "The question does not seem to be relevant to the provided content."
 irrelevantText = 'Sorry, the question is irrelevant to the text.'

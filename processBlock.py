@@ -27,7 +27,7 @@ def extract_title(text):
 
 def get_preview(text):
     if (len(text) == 0):
-        return "Not enough content for a summary."
+        return "No content for a summary."
     if (len(text) > 3000):
         text = text[0:3000]
     if (len(text) < 200):
@@ -190,7 +190,9 @@ def processBlock(block_id):
 if __name__ == "__main__":
     try:
         #580,555
-        processBlock(234)
+        blockIDs = []
+        for b in blockIDs:
+            processBlock(b)
         print("Content processed and chunks stored successfully.")
     except Exception as e:
         print(f"Exception occurred: {e}")

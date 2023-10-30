@@ -2,7 +2,10 @@ from DB import supabaseClient
 from debug.tools import clearConsole
 from utils import getEmbeddings
 from langchain.text_splitter import RecursiveCharacterTextSplitter
+from langchain.embeddings import OpenAIEmbeddings
 from langchain.document_loaders import PyPDFLoader
+from langchain.chains.summarize import load_summarize_chain
+from langchain import PromptTemplate
 from urllib.parse import urlparse
 import tempfile
 from utils import s3
@@ -10,6 +13,13 @@ from utils import remove_invalid_surrogates
 from utils import get_completion
 import re
 import numpy as np
+import openai
+from langchain.chat_models import ChatOpenAI
+from sklearn.cluster import KMeans
+import math
+from langchain.schema import Document
+
+
 
 def replace_two_whitespace(input_string):
     result_string = re.sub(r'(\s)\1+', r'\1', input_string)
@@ -29,7 +39,7 @@ def get_preview(text):
     if (len(text) == 0):
         return "No content for a summary."
     if (len(text) > 3000):
-        text = text[0:3000]
+        text = text[:3000]
     if (len(text) < 200):
         return text
 
@@ -37,6 +47,86 @@ def get_preview(text):
     prompt = f"You are generating a short summary for the following text inside triple qoutes in one or two sentences. This  summary will be shown to the user as a preview of  the entire text. It should be written as if it's part of the text.  Text: ```{text}'''"
     response = get_completion(prompt)
     return response
+
+def stuff_summary(text): # very basic stuff summary, only work on smaller texts
+    text_splitter = RecursiveCharacterTextSplitter(separators=["\n\n", "\n", "\t"], chunk_size=10000, chunk_overlap=500)
+    docs = text_splitter.create_documents([text])
+    stuff_prompt = """
+    Write a concise summary of the following text delimited by triple backquotes.
+    ```{text}```
+    SUMMARY:
+    """
+    llm3 = ChatOpenAI(temperature=0,
+                 openai_api_key="OPENAI_API_KEY",
+                 max_tokens=1000,
+                 model='gpt-3.5-turbo')
+    stuff_prompt_template = PromptTemplate(template=stuff_prompt, input_variables=["text"])
+    stuff_chain = load_summarize_chain(llm=llm3, chain_type="stuff", prompt=stuff_prompt_template)
+    return stuff_chain.run(docs)
+
+def brv_summary(text): # this should be used when the text is very long
+    text_splitter = RecursiveCharacterTextSplitter(separators=["\n\n", "\n", "\t"], chunk_size=10000, chunk_overlap=3000)
+    docs = text_splitter.create_documents([text])
+    embeddings = OpenAIEmbeddings(openai_api_key="OPENAI_API_KEY")
+    vectors = embeddings.embed_documents([x.page_content for x in docs])
+    num_clusters = int(math.sqrt(len(docs)))+1
+    kmeans = KMeans(n_clusters=num_clusters, random_state=42).fit(vectors)
+    closest_indices = []
+    for i in range(num_clusters):
+        distances = np.linalg.norm(vectors - kmeans.cluster_centers_[i], axis=1)
+        closest_index = np.argmin(distances)
+        closest_indices.append(closest_index)
+    selected_indices = sorted(closest_indices)
+    llm3 = ChatOpenAI(temperature=0,
+                 openai_api_key="OPENAI_API_KEY",
+                 max_tokens=1000,
+                 model='gpt-3.5-turbo')
+    map_prompt = """You will be given a part of a book/long article. This section will be enclosed in triple backticks (```)
+    Your goal is to give a summary of this section so that a reader will have a full understanding of what happened.
+    ```{text}```
+    FULL SUMMARY:
+    """
+    map_prompt_template = PromptTemplate(template=map_prompt, input_variables=["text"])
+    map_chain = load_summarize_chain(llm=llm3,
+                             chain_type="stuff",
+                             prompt=map_prompt_template)
+    selected_docs = [docs[doc] for doc in selected_indices]
+    summary_list = []
+    for i, doc in enumerate(selected_docs):
+        chunk_summary = map_chain.run([doc])
+        summary_list.append(chunk_summary)
+    summaries = "\n".join(summary_list)
+    summaries = Document(page_content=summaries)
+    llm4 = ChatOpenAI(temperature=0,
+                 openai_api_key="OPENAI_API_KEY",
+                 max_tokens=3000,
+                 model='gpt-4')
+    combine_prompt = """
+    You will be given a series of summaries from a book/long article. The summaries will be enclosed in triple backticks (```)
+    Your goal is to give a brief summary of what happened in the book.
+    ```{text}```
+    OVERALL SUMMARY:
+    """
+    combine_prompt_template = PromptTemplate(template=combine_prompt, input_variables=["text"])
+    reduce_chain = load_summarize_chain(llm=llm4,
+                             chain_type="stuff",
+                             prompt=combine_prompt_template)
+    return reduce_chain.run([summaries])
+
+
+
+def map_reduce_summary(text): # map reduce summary, good for medium length text
+    text_splitter = RecursiveCharacterTextSplitter(separators=["\n\n", "\n", "\t"], chunk_size=10000, chunk_overlap=500)
+    docs = text_splitter.create_documents([text])
+    llm = ChatOpenAI(temperature=0, openai_api_key="OPENAI_API_KEY")
+    map_prompt = """Write a concise summary of the following: "{text}" CONCISE SUMMARY:"""
+    map_prompt_template = PromptTemplate(template=map_prompt, input_variables=["text"])
+    summary_chain = load_summarize_chain(llm=llm,
+                                        chain_type='map_reduce',
+                                        map_prompt=map_prompt_template)
+    return summary_chain.run(docs)
+
+
 
 
 def update_title(title, block_id):

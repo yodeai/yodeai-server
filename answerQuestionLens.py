@@ -101,7 +101,6 @@ def answer_question_lens(question: str, lensID: str, activeComponent: str, userI
         "embedding": question_embedding,
         "popularity": 0,
         "question_text": question,
-        "answer_preview": response,
         "answer_full": response,
         "asked_on_whatsapp": False,  
         "lens_id": lensID,

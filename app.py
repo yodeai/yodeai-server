@@ -49,6 +49,7 @@ class QuestionFromLens(BaseModel):
     lensID: str
     userID: str
     activeComponent: str
+    published: bool
 
 class QuestionPopularityUpdateFromLens(BaseModel):
     row_id: str
@@ -183,7 +184,8 @@ async def answer_from_lens(data: QuestionFromLens):
     lensID = None if data.lensID == "NONE" else data.lensID
     userID = data.userID
     activeComponent = data.activeComponent
-    response = answer_question_lens(question, lensID, activeComponent, userID)
+    published = data.published
+    response = answer_question_lens(question, lensID, activeComponent, userID, published)
     return response
 
 

@@ -8,7 +8,7 @@ from debug.tools import clearConsole
 relevanceThreshold = 5
 notFound = "The question does not seem to be relevant to the provided content."
 irrelevantText = 'Sorry, the question is irrelevant to the text.'
-def answer_question_lens(question: str, lensID: str, activeComponent: str, userID: str):
+def answer_question_lens(question: str, lensID: str, activeComponent: str, userID: str, published: bool):
     #sys.stdout.write(lensID+" "+activeComponent+" "+userID)
     #clearConsole(" before embedding")
     start_time = time.time()
@@ -18,6 +18,15 @@ def answer_question_lens(question: str, lensID: str, activeComponent: str, userI
     def getRelDocs(q):
         docs = []
 
+        if published:
+            rpc_params = {
+            "lensid": lensID,
+            "match_count": 5, 
+            "query_embedding": question_embedding,
+            }
+            #sys.stdout.write("before DB call:\n")
+            data, error = supabaseClient.rpc("get_top_chunks_for_lens_published", rpc_params).execute() 
+            return data[1]
         #clearConsole(" q embedding generated")  
 
         if (activeComponent == "global"):                        
@@ -129,7 +138,6 @@ def test_answer_question_lens():
     # lensID = "6"
     user_id = "e6666aec-85eb-4873-a059-c7b2414f1b26"
     response = answer_question_lens(question, lensID, "lens", userID )    
-    print(response)
 
 
 # def answer_question_lens(question,lensID, whatsappDetails=None):
@@ -255,5 +263,4 @@ if __name__ == "__main__":
     userID = "e6666aec-85eb-4873-a059-c7b2414f1b26"
     lensID = "NONE"
     response = answer_question_lens(question, lensID, "inbox", userID )    
-    print(response)
     test_answer_question_lens()

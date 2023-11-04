@@ -168,14 +168,21 @@ async def decrease_popularity(data: QuestionPopularityUpdateFromLens):
 #     answer = answer_question(q.question)
 #     return {"answer": answer}
 
+# Store ongoing tasks
+ongoing_tasks = {}
 
 @app.post("/processBlock")
 async def route_process_block(block: dict):
     block_id = block.get("block_id")
     if not block_id:
         raise HTTPException(status_code=400, detail="block_id must be provided")
-    task = process_block_task.apply_async(args=[block_id])
+    if block_id in ongoing_tasks:
+        ongoing_tasks[block_id].revoke(terminate=True)
+    task = process_block_task.apply_async(args=[block_id], countdown=10)
+    ongoing_tasks[block_id] = task
+    
     return JSONResponse({"task_id": task.id})
+
 
 @app.post("/answerFromLens")
 async def answer_from_lens(data: QuestionFromLens):

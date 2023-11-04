@@ -9,7 +9,7 @@ from fastapi.responses import HTMLResponse
 from fastapi.templating import Jinja2Templates
 from sklearn.metrics.pairwise import cosine_similarity
 from fastapi.middleware.cors import CORSMiddleware
-from answerQuestionLens import answer_question_lens
+from answerQuestionLens import answer_question_lens, get_searchable_feed, update_question_popularity
 from celery_tasks.tasks import process_block_task 
 from pydantic import BaseModel
 from config.celery_utils import create_celery
@@ -53,10 +53,12 @@ class QuestionFromLens(BaseModel):
 
 class QuestionPopularityUpdateFromLens(BaseModel):
     row_id: str
+    lens_id: str
+    user_id: str
+
+class QuestionForSearchableFeed(BaseModel):
+    question: str
     lensID: str
-    activeComponent: str
-    userID: str
-    
 
 templates = Jinja2Templates(directory="templates")
 
@@ -142,23 +144,23 @@ async def share_lens(sharing_details: dict):
     return JSONResponse(status_code=200, content={"message": "email has been sent"})
 
 
-# @app.post("/searchableFeed")
-# async def searchable_feed(data: QuestionFromLens):
-#     # Perform your logic here to get the answer
-#     answer = get_searchable_feed(data.question, data.lensID)
-#     return {"answer": answer}
+@app.post("/searchableFeed")
+async def searchable_feed(data: QuestionForSearchableFeed):
+    # Perform your logic here to get the answer
+    answer = get_searchable_feed(data.question, data.lensID)
+    return {"answer": answer}
 
-# @app.patch("/increasePopularity")
-# async def increase_popularity(data: QuestionPopularityUpdateFromLens):
-#     # Perform your logic here to get the answer
-#     answer = update_question_popularity(data.row_id, 1, data.lensID)
-#     return {"answer": answer}
+@app.patch("/increasePopularity")
+async def increase_popularity(data: QuestionPopularityUpdateFromLens):
+    # Perform your logic here to get the answer
+    answer = update_question_popularity(data.lens_id, data.user_id, data.row_id, 1)
+    return {"answer": answer}
 
-# @app.patch("/decreasePopularity")
-# async def decrease_popularity(data: QuestionPopularityUpdateFromLens):
-#     # Perform your logic here to get the answer
-#     answer = update_question_popularity(data.row_id, -1, data.lensID)
-#     return {"answer": answer}
+@app.patch("/decreasePopularity")
+async def decrease_popularity(data: QuestionPopularityUpdateFromLens):
+    # Perform your logic here to get the answer
+    answer = update_question_popularity(data.lens_id, data.user_id, data.row_id, -1)
+    return {"answer": answer}
 
 # @app.post("/answer")
 # async def answer_text(q: Question):

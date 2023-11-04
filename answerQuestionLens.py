@@ -3,7 +3,7 @@ from utils import get_completion, getEmbeddings
 from DB import supabaseClient
 import time
 from debug.tools import clearConsole
-
+import sys
 
 relevanceThreshold = 5
 notFound = "The question does not seem to be relevant to the provided content."
@@ -14,7 +14,7 @@ def answer_question_lens(question: str, lensID: str, activeComponent: str, userI
     start_time = time.time()
     # Record the start time for getRelDocs
     get_rel_docs_start_time = time.time()
-    question_embedding=getEmbeddings(question)      
+    question_embedding=getEmbeddings(question)
     def getRelDocs(q):
         docs = []
 
@@ -110,22 +110,40 @@ def answer_question_lens(question: str, lensID: str, activeComponent: str, userI
         "embedding": question_embedding,
         "popularity": 0,
         "question_text": question,
-        "answer_preview": response,
         "answer_full": response,
-        "asked_on_whatsapp": False,  
         "lens_id": lensID,
         "user_id": userID
     }
-    try:
-        data, count = supabaseClient.table('questions').insert(insertData).execute()
-    except Exception as e:
-        print("Error inserting into database", e)
+    # Check if data already exists
+    existingData, count = supabaseClient.from_('questions') \
+        .select('id') \
+        .eq('question_text', insertData['question_text']) \
+        .eq('lens_id', insertData['lens_id']) \
+        .execute()
+    
+    print("DANA", existingData)
+    if existingData is not None:
+        # A matching record already exists, get the question ID
+        questionId = existingData[1][0]["id"]
+        print(f'Data already exists. Question ID: {questionId}')
+    else:
+        # No matching record found, proceed with the insertion
+        data, error = supabaseClient.table('questions') \
+            .insert([insertData]) \
+            .execute()
+
+        if error:
+            print('Error while inserting data:', error)
+        else:
+            questionId = data[0]['id']
+            print(f'Data inserted successfully. New Question ID: {questionId}')
     
     print("fully done!")
     return {
         "question": question,
         "answer": response,
         "metadata": metadata,  
+        "question_id": questionId
     }
 
 
@@ -225,18 +243,45 @@ def test_answer_question_lens():
 #         "metadata": uniqueMetadataList  
 #     }
 
-def update_question_popularity(id, diff, lensID):
-    data, error = supabaseClient.rpc('increment', { "x": diff, "row_id": id, "lens_id": lensID }).execute()
-    print("updated question popularity", data, error)
-    return {"data": data, "error": error}
+def update_question_popularity(lensID, userID, questionID, diff):
+    # First, perform a SELECT query to check if a row with the given data already exists
+    existing_data, count = supabaseClient.table('question_votes') \
+        .select()\
+        .eq('user_id', userID)\
+        .eq('question_id', questionID)\
+        .eq('lens_id', lensID)\
+        .execute()
+    print("ARGE", existing_data)
+    inserted = False
+    # If existing_data is not None, a row with the given data already exists
+    if len(existing_data[1]) == 0:
+        # Perform an UPDATE operation
+        data, count = supabaseClient.table('question_votes') \
+            .update({'vote': diff})\
+            .eq('user_id', userID)\
+            .eq('question_id', questionID)\
+            .eq('lens_id', lensID)\
+            .execute()
+    else:
+        # Perform an INSERT operation
+        inserted = True
+        data, count = supabaseClient.table('question_votes') \
+            .insert([{
+                'user_id': userID,
+                'question_id': questionID,
+                'lens_id': lensID,
+                'vote': diff
+            }])\
+            .execute()
+
+    return {"data": data, "inserted": inserted}
 
 def get_searchable_feed(question, lensID):
     get_rel_docs_start_time = time.time()
     # Record the start time for getRelDocs
     get_rel_docs_start_time = time.time()
     def getRelDocs(q):
-        question_embedding=getEmbeddings(question, 'MINILM_MODEL')
- 
+        question_embedding=getEmbeddings(question) 
         rpc_params = {
             "match_count": 3, 
             "query_embedding": question_embedding,
@@ -248,11 +293,8 @@ def get_searchable_feed(question, lensID):
     ans1 = getRelDocs(question)
     print(f"Time taken by getRelDocs: {time.time() - get_rel_docs_start_time:.2f} seconds")
     docs = []
-    metadataList = []
     docs.extend(ans1)
-    for doc in docs:
-        metadataList.append(doc["metadata"])
-    return {"documents": docs, "metadata": metadataList}
+    return {"questions": docs,}
 
 if __name__ == "__main__":
     # q = "what are fun birthdays like?"

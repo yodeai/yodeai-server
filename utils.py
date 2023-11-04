@@ -144,6 +144,7 @@ def remove_invalid_surrogates(text):
     return text
 
 # Current options for model are "BGELARGE_MODEL" and "MINILM_MODEL"
+@exponential_backoff(retries=6, backoff_in_seconds=1, out=sys.stdout)
 def getEmbeddings(texts, model='BGELARGE_MODEL'):
     
     headers = {

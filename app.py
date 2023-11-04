@@ -178,7 +178,7 @@ async def route_process_block(block: dict):
         raise HTTPException(status_code=400, detail="block_id must be provided")
     if block_id in ongoing_tasks:
         ongoing_tasks[block_id].revoke(terminate=True)
-    task = process_block_task.apply_async(args=[block_id], countdown=10)
+    task = process_block_task.apply_async(args=[block_id], countdown=180)
     ongoing_tasks[block_id] = task
     
     return JSONResponse({"task_id": task.id})

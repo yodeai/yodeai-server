@@ -22,23 +22,36 @@ AWS_SECRET_ACCESS_KEY = os.getenv('AWS_SECRET_ACCESS_KEY')
 
 s3 = boto3.client('s3', aws_access_key_id=AWS_ACCESS_KEY_ID, aws_secret_access_key=AWS_SECRET_ACCESS_KEY)
 
-def exponential_backoff(retries=5, backoff_in_seconds=1, out=sys.stdout):
+import sys
+import time
+import random
+import timeout_decorator
+from timeout_decorator import timeout
+
+def exponential_backoff(retries=5, backoff_in_seconds=1, out=sys.stdout, timeout_in_seconds=10):
     def backoff(func):
         def wrapper(*args, **kwargs):
             x = 0
             while True:
                 try:
-                    return func(*args, **kwargs)
-                except:
+                    result = timeout(timeout_in_seconds)(func)(*args, **kwargs)
+                    return result
+                except Exception as e:
                     if x == retries:
-                        out.write(f"exception raised; number of retries is over {retries}\n")
-                        raise
-                    sleep_duration = (backoff_in_seconds * 2**x + random.uniform(0, 1))
-                    out.write(f"exception raised; sleeping for: {sleep_duration} seconds\n")
-                    time.sleep(sleep_duration)
+                        out.write(f"Exception raised; number of retries is over {retries}\n")
+                        raise e  # Re-raise the exception
+                    if isinstance(e, timeout_decorator.timeout_decorator.TimeoutError):
+                        out.write(f"Function timed out after {timeout_in_seconds} seconds; retrying\n")
+                    else:
+                        out.write(f"Exception raised; sleeping for a backoff of: {backoff_in_seconds * 2**x} seconds\n")
                     x += 1
+
+                    sleep_duration = (backoff_in_seconds * 2**x + random.uniform(0, 1))
+                    time.sleep(sleep_duration)
         return wrapper
     return backoff
+
+
 
 @exponential_backoff(retries=6, backoff_in_seconds=1, out=sys.stdout)
 def get_completion(prompt, model="gpt-3.5-turbo"):
@@ -156,4 +169,14 @@ def getEmbeddings(texts, model='BGELARGE_MODEL'):
     # data = {"wait_for_model": True,"inputs": texts}
     # embeddings = model.encode(json.dumps(data))
     # return embeddings
+
+
+def backportRows():
+    data, count = supabaseClient.table('lens').select('owner_id, lens_id, updated_at').execute()
+    data = data[1]
+    for obj in data:
+        obj["access_type"] = 'owner'
+        obj["user_id"] = obj["owner_id"]
+        del obj["owner_id"]
+    supabaseClient.table('lens_users').upsert(data, ignore_duplicates=True, on_conflict='user_id, lens_id').execute()
 

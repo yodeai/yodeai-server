@@ -4,20 +4,26 @@ from DB import supabaseClient
 import time
 from debug.tools import clearConsole
 
-
 relevanceThreshold = 5
 notFound = "The question does not seem to be relevant to the provided content."
 irrelevantText = 'Sorry, the question is irrelevant to the text.'
-def answer_question_lens(question: str, lensID: str, activeComponent: str, userID: str):
+def answer_question_lens(question: str, lensID: str, activeComponent: str, userID: str, published: bool=False):
     #sys.stdout.write(lensID+" "+activeComponent+" "+userID)
     #clearConsole(" before embedding")
     start_time = time.time()
     # Record the start time for getRelDocs
     get_rel_docs_start_time = time.time()
-    question_embedding=getEmbeddings(question)      
+    question_embedding=getEmbeddings(question)
     def getRelDocs(q):
-        docs = []
-
+        if published:
+            rpc_params = {
+            "lensid": lensID,
+            "match_count": 5, 
+            "query_embedding": question_embedding,
+            }
+            #sys.stdout.write("before DB call:\n")
+            data, error = supabaseClient.rpc("get_top_chunks_for_lens_published", rpc_params).execute() 
+            return data[1]
         #clearConsole(" q embedding generated")  
 
         if (activeComponent == "global"):                        
@@ -105,16 +111,37 @@ def answer_question_lens(question: str, lensID: str, activeComponent: str, userI
         "lens_id": lensID,
         "user_id": userID
     }
-    try:
-        data, count = supabaseClient.table('questions').insert(insertData).execute()
-    except Exception as e:
-        print("Error inserting into database", e)
-    
-    print("fully done!")
+    if lensID:
+        # Check if data already exists
+        existingData, count = supabaseClient.from_('questions') \
+            .select('id') \
+            .eq('question_text', insertData['question_text']) \
+            .eq('lens_id', insertData['lens_id']) \
+            .execute()
+        
+        if existingData is not None:
+            # A matching record already exists, get the question ID
+            questionId = existingData[1][0]["id"]
+            print(f'Data already exists. Question ID: {questionId}')
+        else:
+            # No matching record found, proceed with the insertion
+            data, error = supabaseClient.table('questions') \
+                .insert([insertData]) \
+                .execute()
+
+            if error:
+                print('Error while inserting data:', error)
+            else:
+                questionId = data[0]['id']
+                print(f'Data inserted successfully. New Question ID: {questionId}')
+    else:
+        questionId = -1
+        print("fully done!")
     return {
         "question": question,
         "answer": response,
         "metadata": metadata,  
+        "question_id": questionId
     }
 
 
@@ -127,22 +154,50 @@ def test_answer_question_lens():
     # lensID = "6"
     user_id = "e6666aec-85eb-4873-a059-c7b2414f1b26"
     response = answer_question_lens(question, lensID, "lens", userID )    
-    print(response)
 
 
 
-def update_question_popularity(id, diff, lensID):
-    data, error = supabaseClient.rpc('increment', { "x": diff, "row_id": id, "lens_id": lensID }).execute()
-    print("updated question popularity", data, error)
-    return {"data": data, "error": error}
+def update_question_popularity(lensID, userID, questionID, diff):
+    # First, perform a SELECT query to check if a row with the given data already exists
+    existing_data, count = supabaseClient.table('question_votes') \
+        .select()\
+        .eq('user_id', userID)\
+        .eq('question_id', questionID)\
+        .eq('lens_id', lensID)\
+        .execute()
+    inserted = False
+    # If existing_data is not None, a row with the given data already exists
+    if len(existing_data[1]) != 0:
+        # Perform an UPDATE operation
+        data, count = supabaseClient.table('question_votes') \
+            .update({'vote': diff})\
+            .eq('user_id', userID)\
+            .eq('question_id', questionID)\
+            .eq('lens_id', lensID)\
+            .execute()
+    else:
+        # Perform an INSERT operation
+        inserted = True
+        data, count = supabaseClient.table('question_votes') \
+            .insert([{
+                'user_id': userID,
+                'question_id': questionID,
+                'lens_id': lensID,
+                'vote': diff
+            }])\
+            .execute()
+        
+    # update the vote count
+    data, error = supabaseClient.rpc('increment', { "x": diff, "row_id": questionID, "lens_id": lensID }).execute()
+
+    return {"data": data, "inserted": inserted, "error": error}
 
 def get_searchable_feed(question, lensID):
     get_rel_docs_start_time = time.time()
     # Record the start time for getRelDocs
     get_rel_docs_start_time = time.time()
     def getRelDocs(q):
-        question_embedding=getEmbeddings(question, 'MINILM_MODEL')
- 
+        question_embedding=getEmbeddings(question) 
         rpc_params = {
             "match_count": 3, 
             "query_embedding": question_embedding,
@@ -154,11 +209,8 @@ def get_searchable_feed(question, lensID):
     ans1 = getRelDocs(question)
     print(f"Time taken by getRelDocs: {time.time() - get_rel_docs_start_time:.2f} seconds")
     docs = []
-    metadataList = []
     docs.extend(ans1)
-    for doc in docs:
-        metadataList.append(doc["metadata"])
-    return {"documents": docs, "metadata": metadataList}
+    return {"questions": docs}
 
 if __name__ == "__main__":
     # q = "what are fun birthdays like?"
@@ -168,6 +220,6 @@ if __name__ == "__main__":
     question = "what are fun birthdays like?"
     userID = "e6666aec-85eb-4873-a059-c7b2414f1b26"
     lensID = "NONE"
-    response = answer_question_lens(question, lensID, "inbox", userID )    
-    print(response)
+    response = answer_question_lens(question, lensID, "inbox", userID )   
+    print(response) 
     test_answer_question_lens()

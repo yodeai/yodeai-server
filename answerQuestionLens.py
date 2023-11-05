@@ -121,7 +121,6 @@ def answer_question_lens(question: str, lensID: str, activeComponent: str, userI
         .eq('lens_id', insertData['lens_id']) \
         .execute()
     
-    print("DANA", existingData)
     if existingData is not None:
         # A matching record already exists, get the question ID
         questionId = existingData[1][0]["id"]
@@ -170,7 +169,7 @@ def update_question_popularity(lensID, userID, questionID, diff):
     print("ARGE", existing_data)
     inserted = False
     # If existing_data is not None, a row with the given data already exists
-    if len(existing_data[1]) == 0:
+    if len(existing_data[1]) != 0:
         # Perform an UPDATE operation
         data, count = supabaseClient.table('question_votes') \
             .update({'vote': diff})\
@@ -189,8 +188,11 @@ def update_question_popularity(lensID, userID, questionID, diff):
                 'vote': diff
             }])\
             .execute()
+        
+    # update the vote count
+    data, error = supabaseClient.rpc('increment', { "x": diff, "row_id": questionID, "lens_id": lensID }).execute()
 
-    return {"data": data, "inserted": inserted}
+    return {"data": data, "inserted": inserted, "error": error}
 
 def get_searchable_feed(question, lensID):
     get_rel_docs_start_time = time.time()

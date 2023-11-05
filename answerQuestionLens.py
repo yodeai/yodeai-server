@@ -3,12 +3,11 @@ from utils import get_completion, getEmbeddings
 from DB import supabaseClient
 import time
 from debug.tools import clearConsole
-import sys
 
 relevanceThreshold = 5
 notFound = "The question does not seem to be relevant to the provided content."
 irrelevantText = 'Sorry, the question is irrelevant to the text.'
-def answer_question_lens(question: str, lensID: str, activeComponent: str, userID: str, published: bool):
+def answer_question_lens(question: str, lensID: str, activeComponent: str, userID: str, published: bool=False):
     #sys.stdout.write(lensID+" "+activeComponent+" "+userID)
     #clearConsole(" before embedding")
     start_time = time.time()
@@ -16,8 +15,6 @@ def answer_question_lens(question: str, lensID: str, activeComponent: str, userI
     get_rel_docs_start_time = time.time()
     question_embedding=getEmbeddings(question)
     def getRelDocs(q):
-        docs = []
-
         if published:
             rpc_params = {
             "lensid": lensID,
@@ -166,7 +163,6 @@ def update_question_popularity(lensID, userID, questionID, diff):
         .eq('question_id', questionID)\
         .eq('lens_id', lensID)\
         .execute()
-    print("ARGE", existing_data)
     inserted = False
     # If existing_data is not None, a row with the given data already exists
     if len(existing_data[1]) != 0:
@@ -212,7 +208,7 @@ def get_searchable_feed(question, lensID):
     print(f"Time taken by getRelDocs: {time.time() - get_rel_docs_start_time:.2f} seconds")
     docs = []
     docs.extend(ans1)
-    return {"questions": docs,}
+    return {"questions": docs}
 
 if __name__ == "__main__":
     # q = "what are fun birthdays like?"
@@ -222,5 +218,6 @@ if __name__ == "__main__":
     question = "what are fun birthdays like?"
     userID = "e6666aec-85eb-4873-a059-c7b2414f1b26"
     lensID = "NONE"
-    response = answer_question_lens(question, lensID, "inbox", userID )    
+    response = answer_question_lens(question, lensID, "inbox", userID )   
+    print(response) 
     test_answer_question_lens()

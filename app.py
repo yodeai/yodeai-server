@@ -20,6 +20,7 @@ import sys
 from fastapi_mail import FastMail, MessageSchema, ConnectionConfig
 from pydantic import EmailStr
 from uuid import uuid4
+from typing import Optional
 
 class LensInvite(BaseModel):
     sender: str
@@ -49,7 +50,7 @@ class QuestionFromLens(BaseModel):
     lensID: str
     userID: str
     activeComponent: str
-    published: bool
+    published: Optional[bool] = False
 
 class QuestionPopularityUpdateFromLens(BaseModel):
     row_id: str

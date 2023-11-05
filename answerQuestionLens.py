@@ -111,30 +111,32 @@ def answer_question_lens(question: str, lensID: str, activeComponent: str, userI
         "lens_id": lensID,
         "user_id": userID
     }
-    # Check if data already exists
-    existingData, count = supabaseClient.from_('questions') \
-        .select('id') \
-        .eq('question_text', insertData['question_text']) \
-        .eq('lens_id', insertData['lens_id']) \
-        .execute()
-    
-    if existingData is not None:
-        # A matching record already exists, get the question ID
-        questionId = existingData[1][0]["id"]
-        print(f'Data already exists. Question ID: {questionId}')
-    else:
-        # No matching record found, proceed with the insertion
-        data, error = supabaseClient.table('questions') \
-            .insert([insertData]) \
+    if lensID:
+        # Check if data already exists
+        existingData, count = supabaseClient.from_('questions') \
+            .select('id') \
+            .eq('question_text', insertData['question_text']) \
+            .eq('lens_id', insertData['lens_id']) \
             .execute()
-
-        if error:
-            print('Error while inserting data:', error)
+        
+        if existingData is not None:
+            # A matching record already exists, get the question ID
+            questionId = existingData[1][0]["id"]
+            print(f'Data already exists. Question ID: {questionId}')
         else:
-            questionId = data[0]['id']
-            print(f'Data inserted successfully. New Question ID: {questionId}')
-    
-    print("fully done!")
+            # No matching record found, proceed with the insertion
+            data, error = supabaseClient.table('questions') \
+                .insert([insertData]) \
+                .execute()
+
+            if error:
+                print('Error while inserting data:', error)
+            else:
+                questionId = data[0]['id']
+                print(f'Data inserted successfully. New Question ID: {questionId}')
+    else:
+        questionId = -1
+        print("fully done!")
     return {
         "question": question,
         "answer": response,

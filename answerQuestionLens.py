@@ -119,24 +119,21 @@ def answer_question_lens(question: str, lensID: str, activeComponent: str, userI
             .eq('lens_id', insertData['lens_id']) \
             .execute()
         
-        if existingData is not None:
+        if existingData is not None and len(existingData[1]) != 0:
             # A matching record already exists, get the question ID
+            print("existing data", existingData)
             questionId = existingData[1][0]["id"]
             print(f'Data already exists. Question ID: {questionId}')
         else:
             # No matching record found, proceed with the insertion
-            data, error = supabaseClient.table('questions') \
+            data, count = supabaseClient.table('questions') \
                 .insert([insertData]) \
                 .execute()
-
-            if error:
-                print('Error while inserting data:', error)
-            else:
-                questionId = data[0]['id']
-                print(f'Data inserted successfully. New Question ID: {questionId}')
+            questionId = data[0]['id']
+            print(f'Data inserted successfully. New Question ID: {questionId}')
     else:
         questionId = -1
-        print("fully done!")
+    print("fully done!")
     return {
         "question": question,
         "answer": response,

@@ -15,14 +15,14 @@ def answer_question_lens(question: str, lensID: str, activeComponent: str, userI
     # Record the start time for getRelDocs
     get_rel_docs_start_time = time.time()
     question_embedding=getEmbeddings(question)      
-    def getRelDocs(q):
+    def getRelDocs(q, match_count = 5):
         docs = []
 
         #clearConsole(" q embedding generated")  
 
         if (activeComponent == "global"):                        
             rpc_params = {
-                "match_count": 5, 
+                "match_count": match_count, 
                 "query_embedding": question_embedding,
                 "user_id": userID 
             }
@@ -32,7 +32,7 @@ def answer_question_lens(question: str, lensID: str, activeComponent: str, userI
         
         if (activeComponent == "inbox"):                        
             rpc_params = {
-                "match_count": 5, 
+                "match_count": match_count, 
                 "query_embedding": question_embedding,
                 "id": userID 
             }
@@ -41,7 +41,7 @@ def answer_question_lens(question: str, lensID: str, activeComponent: str, userI
         #clearConsole(" calling lens func")
         rpc_params = {
             "lensid": lensID,
-            "match_count": 5, 
+            "match_count": match_count, 
             "query_embedding": question_embedding,
         }
         data, error = supabaseClient.rpc("get_top_chunks_for_lens", rpc_params).execute()               
@@ -121,15 +121,12 @@ def answer_question_lens(question: str, lensID: str, activeComponent: str, userI
 
 
 def test_answer_question_lens():
-    #question = "what are some ways to develop autonomous language agents?"
-    #lensID = "159"
-    question = "what do birthdays look like?"
-    lensID = "190"
-    # question = "What is the meaning of life?"
-    # lensID = "6"
-    user_id = "e6666aec-85eb-4873-a059-c7b2414f1b26"
-    response = answer_question_lens(question, lensID, "lens", userID )    
-    print(response)
+    question = "what are possible ways to get kidney transplantation?"
+    userID = "30038db0-8818-4124-8b09-2ee5e87de1c8"
+    lensID = "NONE"
+    response = answer_question_lens(question, lensID, "global", userID )    
+    print(response)   
+
 
 
 # def answer_question_lens(question,lensID, whatsappDetails=None):
@@ -226,11 +223,11 @@ def get_searchable_feed(question, lensID):
     get_rel_docs_start_time = time.time()
     # Record the start time for getRelDocs
     get_rel_docs_start_time = time.time()
-    def getRelDocs(q):
+    def getRelDocs(q, match_count = 3):
         question_embedding=getEmbeddings(question, 'MINILM_MODEL')
  
         rpc_params = {
-            "match_count": 3, 
+            "match_count": match_count, 
             "query_embedding": question_embedding,
             "lens_id": lensID
         }
@@ -246,14 +243,5 @@ def get_searchable_feed(question, lensID):
         metadataList.append(doc["metadata"])
     return {"documents": docs, "metadata": metadataList}
 
-if __name__ == "__main__":
-    # q = "what are fun birthdays like?"
-    # userID = "e6666aec-85eb-4873-a059-c7b2414f1b26"
-    # response = answer_question_lens(q, "NONE", userID)
-    # print(response)
-    question = "what are fun birthdays like?"
-    userID = "e6666aec-85eb-4873-a059-c7b2414f1b26"
-    lensID = "NONE"
-    response = answer_question_lens(question, lensID, "inbox", userID )    
-    print(response)
+if __name__ == "__main__":  
     test_answer_question_lens()

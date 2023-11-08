@@ -14,7 +14,7 @@ def answer_question_lens(question: str, lensID: str, activeComponent: str, userI
     # Record the start time for getRelDocs
     get_rel_docs_start_time = time.time()
     question_embedding=getEmbeddings(question)
-    def getRelDocs(q):
+    def getRelDocs(q,  match_count = 5):
         if published:
             rpc_params = {
             "lensid": lensID,
@@ -151,7 +151,7 @@ def test_answer_question_lens():
     # question = "What is the meaning of life?"
     # lensID = "6"
     user_id = "e6666aec-85eb-4873-a059-c7b2414f1b26"
-    response = answer_question_lens(question, lensID, "lens", userID )    
+    response = answer_question_lens(question, lensID, "lens", user_id)    
 
 
 

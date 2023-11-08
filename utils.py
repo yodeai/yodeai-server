@@ -28,27 +28,44 @@ import random
 import timeout_decorator
 from timeout_decorator import timeout
 
-def exponential_backoff(retries=5, backoff_in_seconds=1, out=sys.stdout, timeout_in_seconds=10):
-    def backoff(func):
-        def wrapper(*args, **kwargs):
-            x = 0
-            while True:
-                try:
-                    result = timeout(timeout_in_seconds)(func)(*args, **kwargs)
-                    return result
-                except Exception as e:
-                    if x == retries:
-                        out.write(f"Exception raised; number of retries is over {retries}\n")
-                        raise e  # Re-raise the exception
-                    if isinstance(e, timeout_decorator.timeout_decorator.TimeoutError):
-                        out.write(f"Function timed out after {timeout_in_seconds} seconds; retrying\n")
-                    else:
-                        out.write(f"Exception raised; sleeping for a backoff of: {backoff_in_seconds * 2**x} seconds\n")
-                    x += 1
+def exponential_backoff(retries=5, backoff_in_seconds=1, out=sys.stdout, timeout_in_seconds=None):
+    if timeout_in_seconds is None:
+        def backoff(func):
+            def wrapper(*args, **kwargs):
+                x = 0
+                while True:
+                    try:
+                        return func(*args, **kwargs)
+                    except:
+                        if x == retries:
+                            out.write(f"exception raised; number of retries is over {retries}\n")
+                            raise
+                        sleep_duration = (backoff_in_seconds * 2**x + random.uniform(0, 1))
+                        out.write(f"exception raised; sleeping for: {sleep_duration} seconds\n")
+                        time.sleep(sleep_duration)
+                        x += 1
+            return wrapper
+    else:
+        def backoff(func):
+            def wrapper(*args, **kwargs):
+                x = 0
+                while True:
+                    try:
+                        result = timeout(timeout_in_seconds)(func)(*args, **kwargs)
+                        return result
+                    except Exception as e:
+                        if x == retries:
+                            out.write(f"Exception raised; number of retries is over {retries}\n")
+                            raise e  # Re-raise the exception
+                        if isinstance(e, timeout_decorator.timeout_decorator.TimeoutError):
+                            out.write(f"Function timed out after {timeout_in_seconds} seconds; retrying\n")
+                        else:
+                            out.write(f"Exception raised; sleeping for a backoff of: {backoff_in_seconds * 2**x} seconds\n")
+                        x += 1
 
-                    sleep_duration = (backoff_in_seconds * 2**x + random.uniform(0, 1))
-                    time.sleep(sleep_duration)
-        return wrapper
+                        sleep_duration = (backoff_in_seconds * 2**x + random.uniform(0, 1))
+                        time.sleep(sleep_duration)
+            return wrapper
     return backoff
 
 

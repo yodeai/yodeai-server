@@ -9,7 +9,7 @@ from fastapi.responses import HTMLResponse
 from fastapi.templating import Jinja2Templates
 from sklearn.metrics.pairwise import cosine_similarity
 from fastapi.middleware.cors import CORSMiddleware
-from answerQuestionLens import answer_question_lens
+from answerQuestionLens import answer_question_lens, get_searchable_feed, update_question_popularity
 from celery_tasks.tasks import process_block_task 
 from pydantic import BaseModel
 from config.celery_utils import create_celery
@@ -20,6 +20,7 @@ import sys
 from fastapi_mail import FastMail, MessageSchema, ConnectionConfig
 from pydantic import EmailStr
 from uuid import uuid4
+from typing import Optional
 
 class LensInvite(BaseModel):
     sender: str
@@ -49,13 +50,16 @@ class QuestionFromLens(BaseModel):
     lensID: str
     userID: str
     activeComponent: str
+    published: Optional[bool] = False
 
 class QuestionPopularityUpdateFromLens(BaseModel):
     row_id: str
+    lens_id: str
+    user_id: str
+
+class QuestionForSearchableFeed(BaseModel):
+    question: str
     lensID: str
-    activeComponent: str
-    userID: str
-    
 
 templates = Jinja2Templates(directory="templates")
 
@@ -141,23 +145,23 @@ async def share_lens(sharing_details: dict):
     return JSONResponse(status_code=200, content={"message": "email has been sent"})
 
 
-# @app.post("/searchableFeed")
-# async def searchable_feed(data: QuestionFromLens):
-#     # Perform your logic here to get the answer
-#     answer = get_searchable_feed(data.question, data.lensID)
-#     return {"answer": answer}
+@app.post("/searchableFeed")
+async def searchable_feed(data: QuestionForSearchableFeed):
+    # Perform your logic here to get the answer
+    answer = get_searchable_feed(data.question, data.lensID)
+    return {"answer": answer}
 
-# @app.patch("/increasePopularity")
-# async def increase_popularity(data: QuestionPopularityUpdateFromLens):
-#     # Perform your logic here to get the answer
-#     answer = update_question_popularity(data.row_id, 1, data.lensID)
-#     return {"answer": answer}
+@app.patch("/increasePopularity")
+async def increase_popularity(data: QuestionPopularityUpdateFromLens):
+    # Perform your logic here to get the answer
+    answer = update_question_popularity(data.lens_id, data.user_id, data.row_id, 1)
+    return {"answer": answer}
 
-# @app.patch("/decreasePopularity")
-# async def decrease_popularity(data: QuestionPopularityUpdateFromLens):
-#     # Perform your logic here to get the answer
-#     answer = update_question_popularity(data.row_id, -1, data.lensID)
-#     return {"answer": answer}
+@app.patch("/decreasePopularity")
+async def decrease_popularity(data: QuestionPopularityUpdateFromLens):
+    # Perform your logic here to get the answer
+    answer = update_question_popularity(data.lens_id, data.user_id, data.row_id, -1)
+    return {"answer": answer}
 
 # @app.post("/answer")
 # async def answer_text(q: Question):
@@ -165,14 +169,22 @@ async def share_lens(sharing_details: dict):
 #     answer = answer_question(q.question)
 #     return {"answer": answer}
 
+# Store ongoing tasks
+ongoing_tasks = {}
 
 @app.post("/processBlock")
 async def route_process_block(block: dict):
     block_id = block.get("block_id")
+    countdown = block.get("delay", 0)
     if not block_id:
         raise HTTPException(status_code=400, detail="block_id must be provided")
-    task = process_block_task.apply_async(args=[block_id])
+    if block_id in ongoing_tasks:
+        ongoing_tasks[block_id].revoke(terminate=True)
+    task = process_block_task.apply_async(args=[block_id], countdown=countdown)
+    ongoing_tasks[block_id] = task
+    
     return JSONResponse({"task_id": task.id})
+
 
 @app.post("/answerFromLens")
 async def answer_from_lens(data: QuestionFromLens):
@@ -183,7 +195,8 @@ async def answer_from_lens(data: QuestionFromLens):
     lensID = None if data.lensID == "NONE" else data.lensID
     userID = data.userID
     activeComponent = data.activeComponent
-    response = answer_question_lens(question, lensID, activeComponent, userID)
+    published = data.published
+    response = answer_question_lens(question, lensID, activeComponent, userID, published)
     return response
 
 

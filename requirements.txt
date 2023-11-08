@@ -122,6 +122,14 @@ starlette==0.27.0
 storage3==0.5.4
 StrEnum==0.4.15
 supabase==1.0.4
+celery
+flower
+gunicorn
+fastapi-mail
+pypdf==3.16.2
+boto3==1.28.62
+timeout-decorator
+
 supafunc==0.2.3
 sympy==1.12
 tenacity==8.2.3

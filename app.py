@@ -101,14 +101,15 @@ async def share_lens(sharing_details: dict):
         "access_type": role,
     }
     data, count = supabaseClient.table('lens_invites').insert(insertData).execute()
-
+    lensNameData, error = supabaseClient.table('lens').select('name').eq('lens_id', lensId).execute()
+    lensName = lensNameData[1][0]['name']
     template = f"""
 		<html>
 		<body>
 		<p>Hi {recipients[0]}!
         <br></br>
-		<p>{sender} is inviting you to collaborate on the lens {lensId} with the role of: {role} </p>
-        <p>Click <a href={inviteLink}>here</a> to accept the invite. </p>
+		<p>{sender} is inviting you to collaborate on the space '{lensName}' with the ID {lensId}, offering you the role of: {role}.</p>
+        <p>Click <a href={inviteLink}>here</a> to accept the invite for space '{lensName}'. </p>
 		</body>
 		</html>
 		"""

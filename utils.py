@@ -75,7 +75,10 @@ def exponential_backoff(retries=5, backoff_in_seconds=1, out=sys.stdout, timeout
 
 @exponential_backoff(retries=6, backoff_in_seconds=1, out=sys.stdout)
 def get_completion(prompt, model='models/text-bison-001'):    
-    completion = palm.generate_text(model='models/text-bison-001', prompt=prompt, temperature=0.2)
+    try:        
+        completion = palm.generate_text(model='models/text-bison-001', prompt=prompt, temperature=0.2)
+    except Exception as e:
+        print(f"Exception occurred while text completion: {e}")        
     return completion.result
 ## Below is OPENAI's get completition
 # def get_completion(prompt, model="gpt-3.5-turbo"):
@@ -207,10 +210,64 @@ def backportRows():
     supabaseClient.table('lens_users').upsert(data, ignore_duplicates=True, on_conflict='user_id, lens_id').execute()
 
 
-def test_utils():    
-    prompt = "I am using palm.generate_text(model='models/text-bison-001',prompt) to generate text. what other choices do i have besides text-bison-001? can you list the number of parameters of each, and that which one is more suitable for general purpose use in my code? specifically, can you compare them in terms of accuracy?"    
-    response = get_completion(prompt)
-    print(response)
+import vertexai
+from vertexai.language_models import TextGenerationModel
+from google.cloud import aiplatform
+
+def init_vertexai_SDK(
+    project = None,
+    location = None,
+    experiment = None,
+    staging_bucket = None,
+    credentials = None,
+    encryption_spec_key_name = None,
+    service_account = None,
+):
+
+    from google.cloud import aiplatform
+    aiplatform.init(
+        project=project,
+        location=location,
+        experiment=experiment,
+        staging_bucket=staging_bucket,
+        credentials=credentials,
+        encryption_spec_key_name=encryption_spec_key_name,
+        service_account=service_account,
+    )
+
+def streaming_prediction(
+    project_id,
+    location,
+) -> str:
+    # aiplatform.init(project=project_id, location=location)
+    # model_service_client = aiplatform.gapic.ModelServiceClient(client_options={"api_endpoint": f"{location}-aiplatform.googleapis.com"})
+
+    # parent = f"projects/{project_id}/locations/{location}"
+    # response = model_service_client.list_models(parent=parent)
+    # print(response)
+    # for model in response:
+    #     print(model)
+    """Streaming Text Example with a Large Language Model"""
+    #init_vertexai_SDK(project_id, location)
+    vertexai.init(project=project_id, location=location)        
+    text_generation_model = TextGenerationModel.from_pretrained("text-bison-001")
+    #print(text_generation_model.list_tuned_model_names())
+    parameters = {
+      "temperature": 0.2,  # Temperature controls the degree of randomness in token selection.
+      "max_output_tokens": 256,  # Token limit determines the maximum amount of text output.
+      "top_p": 0.8,  # Tokens are selected from most probable to least until the sum of their probabilities equals the top_p value.
+      "top_k": 40,  # A top_k of 1 means the selected token is the most probable among all tokens.
+    }  
+    responses = text_generation_model.predict_streaming(prompt="Give me ten interview questions for the role of program manager.", **parameters)
+    for response in responses:
+        print(response)
+
+
+def test_utils():  
+    streaming_prediction("ninth-bonito-399217", "us-west2")
+    # prompt = "I am using palm.generate_text(model='models/text-bison-001',prompt) to generate text. what other choices do i have besides text-bison-001? can you list the number of parameters of each, and that which one is more suitable for general purpose use in my code? specifically, can you compare them in terms of accuracy?"    
+    # response = get_completion(prompt)
+    # print(response)
 
 if __name__ == "__main__":  
     start_time = time.time()

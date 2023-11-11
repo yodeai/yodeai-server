@@ -109,7 +109,7 @@ async def share_lens(sharing_details: dict):
         <p>Hi {recipients[0]}!
         <br></br>
         <p>{sender} is inviting you to collaborate on the space '{lensName}' with  ID {lensId}, offering you the role of: {role}.</p>
-        <p>Click <a href={inviteLink}>here</a> to accept the invite for space '{lensName}'. </p>
+        <p>Click <a href={inviteLink}>here</a> to accept the invite for the space '{lensName}'. </p>
         </body>
         </html>
         """

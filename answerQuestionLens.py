@@ -14,7 +14,7 @@ def answer_question_lens(question: str, lensID: str, activeComponent: str, userI
     # Record the start time for getRelDocs
     get_rel_docs_start_time = time.time()
     question_embedding=getEmbeddings(question)
-    def getRelDocs(q):
+    def getRelDocs(q,  match_count = 5):
         if published:
             rpc_params = {
             "lensid": lensID,
@@ -28,7 +28,7 @@ def answer_question_lens(question: str, lensID: str, activeComponent: str, userI
 
         if (activeComponent == "global"):                        
             rpc_params = {
-                "match_count": 5, 
+                "match_count": match_count, 
                 "query_embedding": question_embedding,
                 "user_id": userID 
             }
@@ -38,7 +38,7 @@ def answer_question_lens(question: str, lensID: str, activeComponent: str, userI
         
         if (activeComponent == "inbox"):                        
             rpc_params = {
-                "match_count": 5, 
+                "match_count": match_count, 
                 "query_embedding": question_embedding,
                 "id": userID 
             }
@@ -47,7 +47,7 @@ def answer_question_lens(question: str, lensID: str, activeComponent: str, userI
         #clearConsole(" calling lens func")
         rpc_params = {
             "lensid": lensID,
-            "match_count": 5, 
+            "match_count": match_count, 
             "query_embedding": question_embedding,
         }
         data, error = supabaseClient.rpc("get_top_chunks_for_lens", rpc_params).execute()               
@@ -151,7 +151,7 @@ def test_answer_question_lens():
     # question = "What is the meaning of life?"
     # lensID = "6"
     user_id = "e6666aec-85eb-4873-a059-c7b2414f1b26"
-    response = answer_question_lens(question, lensID, "lens", userID )    
+    response = answer_question_lens(question, lensID, "lens", user_id)    
 
 
 
@@ -194,10 +194,11 @@ def get_searchable_feed(question, lensID):
     get_rel_docs_start_time = time.time()
     # Record the start time for getRelDocs
     get_rel_docs_start_time = time.time()
-    def getRelDocs(q):
-        question_embedding=getEmbeddings(question) 
+    def getRelDocs(q, match_count = 3):
+        question_embedding=getEmbeddings(question, 'MINILM_MODEL')
+ 
         rpc_params = {
-            "match_count": 3, 
+            "match_count": match_count, 
             "query_embedding": question_embedding,
             "lens_id": lensID
         }
@@ -210,14 +211,5 @@ def get_searchable_feed(question, lensID):
     docs.extend(ans1)
     return {"questions": docs}
 
-if __name__ == "__main__":
-    # q = "what are fun birthdays like?"
-    # userID = "e6666aec-85eb-4873-a059-c7b2414f1b26"
-    # response = answer_question_lens(q, "NONE", userID)
-    # print(response)
-    question = "what are fun birthdays like?"
-    userID = "e6666aec-85eb-4873-a059-c7b2414f1b26"
-    lensID = "NONE"
-    response = answer_question_lens(question, lensID, "inbox", userID )   
-    print(response) 
+if __name__ == "__main__":  
     test_answer_question_lens()

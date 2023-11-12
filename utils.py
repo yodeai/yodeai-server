@@ -11,6 +11,9 @@ import openai
 from DB import supabaseClient
 import boto3
 
+import google.generativeai as palm
+palm.configure(api_key=os.getenv("GOOGLE_API_KEY"))
+
 
 from dotenv import load_dotenv
 load_dotenv(dotenv_path='.env.local')
@@ -71,14 +74,20 @@ def exponential_backoff(retries=5, backoff_in_seconds=1, out=sys.stdout, timeout
 
 
 @exponential_backoff(retries=6, backoff_in_seconds=1, out=sys.stdout)
-def get_completion(prompt, model="gpt-3.5-turbo"):
-    messages = [{"role": "user", "content": prompt}]
-    response = ChatCompletion.create(
-        model=model,
-        messages=messages,
-        temperature=0,
-    )
-    return response.choices[0].message["content"]
+def get_completion(prompt, model='models/text-bison-001'):    
+    completion = palm.generate_text(model='models/text-bison-001', prompt=prompt, temperature=0.2)
+    return completion.result
+## Below is OPENAI's get completition
+# def get_completion(prompt, model="gpt-3.5-turbo"):
+#     messages = [{"role": "user", "content": prompt}]
+#     response = ChatCompletion.create(
+#         model=model,
+#         messages=messages,
+#         temperature=0,
+#     )
+#     return response.choices[0].message["content"]
+
+
 
 def fetchLinksFromDatabase():
     data, count = supabaseClient.table('links').select('title, url').execute()
@@ -197,3 +206,13 @@ def backportRows():
         del obj["owner_id"]
     supabaseClient.table('lens_users').upsert(data, ignore_duplicates=True, on_conflict='user_id, lens_id').execute()
 
+
+def test_utils():    
+    prompt = "I am using palm.generate_text(model='models/text-bison-001',prompt) to generate text. what other choices do i have besides text-bison-001? can you list the number of parameters of each, and that which one is more suitable for general purpose use in my code? specifically, can you compare them in terms of accuracy?"    
+    response = get_completion(prompt)
+    print(response)
+
+if __name__ == "__main__":  
+    start_time = time.time()
+    test_utils()
+    print(f"time: {time.time()-start_time}")

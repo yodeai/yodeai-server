@@ -112,21 +112,21 @@ async def share_lens(sharing_details: dict):
     else:
         print("Failed to update")
     template = f"""
-		<html>
-		<body>
-		<p>Hi {recipients[0]}!
+        <html>
+        <body>
+        <p>Hi {recipients[0]}!
         <br></br>
-		<p>{sender} is inviting you to collaborate on the lens {lensId} with the role of: {role} </p>
-        <p>Click <a href={inviteLink}>here</a> to accept the invite. </p>
-		</body>
-		</html>
-		"""
+        <p>{sender} is inviting you to collaborate on the space '{lensName}' with  ID {lensId}, offering you the role of: {role}.</p>
+        <p>Click <a href={inviteLink}>here</a> to accept the invite for the space '{lensName}'. </p>
+        </body>
+        </html>
+        """
     message = MessageSchema(
-		subject=f"Yodeai: {sender} shared a lens with you!",
-		recipients=recipients, # List of recipients, as many as you can pass 
-		body=template,
-		subtype="html"
-		)
+        subject=f"Yodeai: {sender} shared a lens with you!",
+        recipients=recipients, # List of recipients, as many as you can pass 
+        body=template,
+        subtype="html"
+        )
 
     # Example configuration
     email_config = EmailSettings(
@@ -264,3 +264,4 @@ if __name__ == "__main__":
     import uvicorn
     port = int(os.environ.get("PORT", 5000))
     uvicorn.run(app, host="0.0.0.0", port=port)    
+

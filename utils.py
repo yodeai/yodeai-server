@@ -218,7 +218,7 @@ def backportRows():
 
 def test_utils():    
     prompt = "I am using palm.generate_text(model='models/text-bison-001',prompt) to generate text. what other choices do i have besides text-bison-001? can you list the number of parameters of each, and that which one is more suitable for general purpose use in my code? specifically, can you compare them in terms of accuracy?"    
-    response = get_completion(prompt)
+    response = get_completion(prompt, "gpt-3.5-turbo")
     print(response)
 
 if __name__ == "__main__":  

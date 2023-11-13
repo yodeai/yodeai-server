@@ -44,8 +44,7 @@ def get_preview(text):
         return text
 
     #prompt = f"You are generating a short summary for the following text inside triple qoutes in one or two sentences. This  summary will be shown to the user as a preview of  the entire text. It should be written as if it's part of the text; avoid language like ``this text studies''.  Text: ```{text}'''"
-    prompt = f"You are generating a short summary for the following text inside triple qoutes in one or two sentences. This  
-    ary will be shown to the user as a preview of  the entire text. It should be written as if it's part of the text.  Text: ```{text}'''"
+    prompt = f"You are generating a short summary for the following text inside triple qoutes in one or two sentences. This summary will be shown to the user as a preview of  the entire text. It should be written as if it's part of the text.  Text: ```{text}'''"
     response = get_completion(prompt, "gpt-3.5-turbo")
     return response
 

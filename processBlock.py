@@ -31,7 +31,7 @@ def extract_title(text):
     if (len(text) > 1000):
         text = text[0:1000]    
     prompt = f"This is the beginning of a document. What's a good title for the document? Your response should include the title alone. \n Document: ```{text}'''"    
-    response = get_completion(prompt)
+    response = get_completion(prompt, "gpt-3.5-turbo")
     return response
 
 
@@ -44,8 +44,9 @@ def get_preview(text):
         return text
 
     #prompt = f"You are generating a short summary for the following text inside triple qoutes in one or two sentences. This  summary will be shown to the user as a preview of  the entire text. It should be written as if it's part of the text; avoid language like ``this text studies''.  Text: ```{text}'''"
-    prompt = f"You are generating a short summary for the following text inside triple qoutes in one or two sentences. This  summary will be shown to the user as a preview of  the entire text. It should be written as if it's part of the text.  Text: ```{text}'''"
-    response = get_completion(prompt)
+    prompt = f"You are generating a short summary for the following text inside triple qoutes in one or two sentences. This  
+    ary will be shown to the user as a preview of  the entire text. It should be written as if it's part of the text.  Text: ```{text}'''"
+    response = get_completion(prompt, "gpt-3.5-turbo")
     return response
 
 def stuff_summary(text): # very basic stuff summary, only work on smaller texts

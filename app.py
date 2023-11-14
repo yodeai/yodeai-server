@@ -99,10 +99,18 @@ async def share_lens(sharing_details: dict):
         "token": token,
         "lens_id": lensId,
         "access_type": role,
+        "status": "sent"
     }
-    data, count = supabaseClient.table('lens_invites').insert(insertData).execute()
-    lensNameData, error = supabaseClient.table('lens').select('name').eq('lens_id', lensId).execute()
-    lensName = lensNameData[1][0]['name']
+
+    upsertData, upsertCount = supabaseClient.table('lens_invites').upsert(
+        [insertData],
+        on_conflict="sender, recipient, lens_id"
+    ).execute()
+    
+    if upsertCount == 1:
+        print("Updated sharing successfuly")
+    else:
+        print("Failed to update")
     template = f"""
         <html>
         <body>

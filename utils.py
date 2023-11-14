@@ -75,6 +75,15 @@ def exponential_backoff(retries=5, backoff_in_seconds=1, out=sys.stdout, timeout
 
 @exponential_backoff(retries=6, backoff_in_seconds=1, out=sys.stdout)
 def get_completion(prompt, model='models/text-bison-001'):    
+    if (model == "gpt-3.5-turbo"):
+        messages = [{"role": "user", "content": prompt}]
+        response = ChatCompletion.create(
+            model=model,
+            messages=messages,
+            temperature=0,
+        )
+        return response.choices[0].message["content"]   
+    # the model is text-bison     
     completion = palm.generate_text(model='models/text-bison-001', prompt=prompt, temperature=0.2)
     return completion.result
 ## Below is OPENAI's get completition
@@ -209,7 +218,7 @@ def backportRows():
 
 def test_utils():    
     prompt = "I am using palm.generate_text(model='models/text-bison-001',prompt) to generate text. what other choices do i have besides text-bison-001? can you list the number of parameters of each, and that which one is more suitable for general purpose use in my code? specifically, can you compare them in terms of accuracy?"    
-    response = get_completion(prompt)
+    response = get_completion(prompt, "gpt-3.5-turbo")
     print(response)
 
 if __name__ == "__main__":  

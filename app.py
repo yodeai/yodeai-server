@@ -183,7 +183,6 @@ ongoing_tasks = {}
 
 @app.post("/processBlock")
 async def route_process_block(block: dict):
-    print("revcieved block", block)
     block_id = block.get("block_id")
     countdown = block.get("delay", 0)
     if not block_id:

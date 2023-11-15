@@ -21,6 +21,7 @@ from fastapi_mail import FastMail, MessageSchema, ConnectionConfig
 from pydantic import EmailStr
 from uuid import uuid4
 from typing import Optional
+import asyncio
 
 class LensInvite(BaseModel):
     sender: str
@@ -178,8 +179,38 @@ async def decrease_popularity(data: QuestionPopularityUpdateFromLens):
 #     answer = answer_question(q.question)
 #     return {"answer": answer}
 
-# Store ongoing tasks
-ongoing_tasks = {}
+
+# Store pending tasks
+pending_tasks = {}
+
+async def wait_and_send_task(block_id, countdown):
+    await asyncio.sleep(countdown)
+    # Check again before sending to see if the task is still pending
+    if block_id in pending_tasks:
+        # Send the task to the broker or execute it
+        send_task_to_broker(block_id)
+        # Remove the task from pending tasks
+        del pending_tasks[block_id]
+
+def send_task_to_broker(block_id):
+    # Replace this with the logic to send the task to the broker
+    print(f"Sending task for block_id {block_id} to the broker")
+    task = process_block_task.apply_async(args=[block_id])
+    return JSONResponse({"task_id": task.id})
+
+def schedule_task(block_id, countdown):
+    # Check if there's already a pending task for the same block_id
+    if block_id in pending_tasks:
+        # Cancel the existing pending task (optional, based on your logic)
+        del pending_tasks[block_id]
+
+    # Store the new task with its countdown
+    pending_tasks[block_id] = {"countdown": countdown}
+
+    # Check again before starting the countdown
+    if block_id in pending_tasks:
+        # Start the countdown mechanism
+        asyncio.create_task(wait_and_send_task(block_id, countdown))
 
 @app.post("/processBlock")
 async def route_process_block(block: dict):
@@ -187,13 +218,15 @@ async def route_process_block(block: dict):
     countdown = block.get("delay", 0)
     if not block_id:
         raise HTTPException(status_code=400, detail="block_id must be provided")
-    if block_id in ongoing_tasks:
-        ongoing_tasks[block_id].revoke(terminate=True)
-    task = process_block_task.apply_async(args=[block_id], countdown=countdown)
-    ongoing_tasks[block_id] = task
-    
-    return JSONResponse({"task_id": task.id})
+    schedule_task(block_id, countdown)
 
+@app.post("/processBlock")
+async def route_process_block(block: dict):
+    block_id = block.get("block_id")
+    countdown = block.get("delay", 0)
+    if not block_id:
+        raise HTTPException(status_code=400, detail="block_id must be provided")
+    schedule_task(block_id, countdown)
 
 @app.post("/answerFromLens")
 async def answer_from_lens(data: QuestionFromLens):

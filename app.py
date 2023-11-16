@@ -102,6 +102,8 @@ async def share_lens(sharing_details: dict):
         "access_type": role,
         "status": "sent"
     }
+    lensNameData, error = supabaseClient.table('lens').select('name').eq('lens_id', lensId).execute()
+    lensName = lensNameData[1][0]['name']
 
     upsertData, upsertCount = supabaseClient.table('lens_invites').upsert(
         [insertData],
@@ -182,6 +184,7 @@ async def decrease_popularity(data: QuestionPopularityUpdateFromLens):
 
 # Store pending tasks
 pending_tasks = {}
+ongoing_tasks = {}
 
 async def wait_and_send_task(block_id, countdown):
     await asyncio.sleep(countdown)
@@ -192,10 +195,14 @@ async def wait_and_send_task(block_id, countdown):
         # Remove the task from pending tasks
         del pending_tasks[block_id]
 
+
 def send_task_to_broker(block_id):
     # Replace this with the logic to send the task to the broker
     print(f"Sending task for block_id {block_id} to the broker")
+    if block_id in ongoing_tasks:
+        ongoing_tasks[block_id].revoke(terminate=True)
     task = process_block_task.apply_async(args=[block_id])
+    ongoing_tasks[block_id] = task
     return JSONResponse({"task_id": task.id})
 
 def schedule_task(block_id, countdown):

@@ -227,14 +227,6 @@ async def route_process_block(block: dict):
         raise HTTPException(status_code=400, detail="block_id must be provided")
     schedule_task(block_id, countdown)
 
-@app.post("/processBlock")
-async def route_process_block(block: dict):
-    block_id = block.get("block_id")
-    countdown = block.get("delay", 0)
-    if not block_id:
-        raise HTTPException(status_code=400, detail="block_id must be provided")
-    schedule_task(block_id, countdown)
-
 @app.post("/answerFromLens")
 async def answer_from_lens(data: QuestionFromLens):
     #return [data.lensID, type(data.lensID)]

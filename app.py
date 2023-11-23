@@ -10,7 +10,7 @@ from fastapi.templating import Jinja2Templates
 from sklearn.metrics.pairwise import cosine_similarity
 from fastapi.middleware.cors import CORSMiddleware
 from answerQuestionLens import answer_question_lens, get_searchable_feed, update_question_popularity
-from celery_tasks.tasks import process_block_task 
+from celery_tasks.tasks import process_block_task, process_ancestors_task
 from pydantic import BaseModel
 from config.celery_utils import create_celery
 from config.celery_utils import get_task_info
@@ -198,7 +198,7 @@ async def wait_and_send_task(block_id, countdown):
 
 def send_task_to_broker(block_id):
     # Replace this with the logic to send the task to the broker
-    print(f"Sending task for block_id {block_id} to the broker")
+    print(f"Sending process block task for block_id {block_id} to the broker")
     if block_id in ongoing_tasks:
         ongoing_tasks[block_id].revoke(terminate=True)
     task = process_block_task.apply_async(args=[block_id])
@@ -226,6 +226,17 @@ async def route_process_block(block: dict):
     if not block_id:
         raise HTTPException(status_code=400, detail="block_id must be provided")
     schedule_task(block_id, countdown)
+
+@app.post("/processAncestors")
+async def route_process_ancestors(information: dict):
+    block_id = information.get("block_id")
+    lens_id = information.get("lens_id")
+    remove = information.get("remove")
+    if not block_id or not lens_id:
+        raise HTTPException(status_code=400, detail="block_id/lens_id must be provided")
+    print(f"Sending ancestors task for block_id {block_id} to the broker")
+    task = process_ancestors_task.apply_async(args=[block_id, lens_id, remove])
+    return JSONResponse({"task_id": task.id, "type": "process_ancestors"})
 
 @app.post("/answerFromLens")
 async def answer_from_lens(data: QuestionFromLens):
@@ -282,14 +293,15 @@ def demo():
 
     return {"similarity_matrix": similarity_matrix.tolist()}
 
-@task_success.connect
-def task_success_notifier(sender=None, result=None, **kwargs):
-    # After processing all chunks, update the status of the block to 'ready'
-    print("updating block", result['block_id'])
-    update_response, update_error = supabaseClient.table('block')\
-        .update({'status': 'ready'})\
-        .eq('block_id', result['block_id'])\
-        .execute()
+# @task_success.connect
+# def task_success_notifier(sender=None, result=None, **kwargs):
+#     task_name = result.get('task_name')
+#     # After processing all chunks, update the status of the block to 'ready'
+#     print("updating block", result['block_id'])
+#     update_response, update_error = supabaseClient.table('block')\
+#         .update({'status': 'ready'})\
+#         .eq('block_id', result['block_id'])\
+#         .execute()
 
 if __name__ == "__main__":
     import uvicorn

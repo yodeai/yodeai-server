@@ -148,6 +148,7 @@ def update_preview(preview, block_id):
 
 
 def processBlock(block_id):
+    print("starting to process block")
     try:
         existing_row, error = supabaseClient.table('block') \
         .select('updated_at', 'created_at', 'owner_id') \
@@ -157,7 +158,8 @@ def processBlock(block_id):
         print(f"Exception occurred while retrieving updated_at, created_at: {e}")
 
     # if the block_id does not exist in the block table, then add it to the inbox
-    if existing_row[1][0]['created_at'] == existing_row[1][0]['updated_at']:                                
+    print("Existing row", existing_row)
+    if existing_row and existing_row[1] and existing_row[1][0]['created_at'] == existing_row[1][0]['updated_at']:                                
         try:                               
             insert_response, insert_error = supabaseClient.table('inbox') \
             .insert([{'user_id': existing_row[1][0]['owner_id'], 'block_id': block_id}]) \
@@ -178,7 +180,7 @@ def processBlock(block_id):
 
     # Handle potential errors during the update
     if not update_response or len(update_response) < 2 or not update_response[1]:
-        raise Exception(f"Error updating status for block with id {block_id}: {update_error}")
+        raise Exception(f"Error updating status for block with id {block_id}: {update_response}")
     
     # Deleting existing chunks for the block_id before processing
     res =supabaseClient.table('chunk').delete().eq('block_id', block_id).execute()
@@ -186,7 +188,7 @@ def processBlock(block_id):
         raise Exception(f"Error deleting chunks with block_id {block_id}: {res.error_msg if hasattr(res, 'error_msg') else 'Unknown error'}")
      
     data, error = supabaseClient.table('block').select('content','block_type','file_url').eq('block_id', block_id).execute()
-    
+    print("error", error)
     if error and error[1]:
         raise Exception(f"Error fetching block with id {block_id}: {error[1]}")
     if not data or not data[1]:
@@ -194,7 +196,8 @@ def processBlock(block_id):
     if len(data[1]) > 1:
         raise Exception(f"Multiple blocks found with id {block_id}")
     
-    #clearConsole(data)
+    print("data", data)
+
     if (data[1][0]['block_type'] == "note"):
         content = data[1][0]['content']
     elif (data[1][0]['block_type'] == "pdf"):

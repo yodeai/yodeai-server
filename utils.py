@@ -31,6 +31,11 @@ import random
 import timeout_decorator
 from timeout_decorator import timeout
 
+def remove_leadingntrailing_special_chars(input_string):    
+    cleaned_string = re.sub(r'^[\'"`\s]+', '', input_string)
+    cleaned_string = re.sub(r'[\'"`]+$', '', cleaned_string)
+    return cleaned_string
+
 def exponential_backoff(retries=5, backoff_in_seconds=1, out=sys.stdout, timeout_in_seconds=None):
     if timeout_in_seconds is None:
         def backoff(func):
@@ -85,7 +90,9 @@ def get_completion(prompt, model='models/text-bison-001'):
         return response.choices[0].message["content"]   
     # the model is text-bison     
     completion = palm.generate_text(model='models/text-bison-001', prompt=prompt, temperature=0.2)
-    return completion.result
+    cleaned_result = remove_leadingntrailing_special_chars(completion.result)
+    return cleaned_result
+
 ## Below is OPENAI's get completition
 # def get_completion(prompt, model="gpt-3.5-turbo"):
 #     messages = [{"role": "user", "content": prompt}]

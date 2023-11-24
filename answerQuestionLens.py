@@ -211,4 +211,8 @@ def get_searchable_feed(question, lensID):
     return {"questions": docs}
 
 if __name__ == "__main__":  
-    test_answer_question_lens()
+    #test_answer_question_lens()
+    get_searchable_feed("What time are the lectures of Integrative Biology 35ac?", 188)
+
+
+    

@@ -129,7 +129,6 @@ def answer_question_lens(question: str, lensID: str, activeComponent: str, userI
             data, count = supabaseClient.table('questions') \
                 .insert([insertData]) \
                 .execute()
-            print("data", data[1][0])
             questionId = data[1][0]["id"]
             print(f'Data inserted successfully. New Question ID: {questionId}')
     else:

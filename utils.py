@@ -188,30 +188,29 @@ def remove_invalid_surrogates(text):
 # Current options for model are "BGELARGE_MODEL" and "MINILM_MODEL"
 @exponential_backoff(retries=6, backoff_in_seconds=1, out=sys.stdout)
 def getEmbeddings(texts, model='BGELARGE_MODEL'):
-    
     headers = {
         "Authorization": f"Bearer {os.environ.get('HUGGINGFACEHUB_API_KEY')}",
-        "Content-Type": "application/json"         
+        "Content-Type": "application/json"
     }
-
-    #print(texts)
-    data = {"inputs": texts}
-    
+    data = {"inputs": [texts]}
     response = requests.post(os.environ.get(model), headers=headers, data=json.dumps(data))
     if response.status_code != 200:
-        print("Error in Hugging Face API Response:", response.content.decode("utf-8"))
+        print("Error in Hugging Face API Response in embeddings:", response.content.decode("utf-8"))
         return None
 
-    embeddings = json.loads(response.content.decode("utf-8"))
+    try:
+        response_content = response.content.decode("utf-8")
+        embeddings = response.json()
+    except json.JSONDecodeError:
+        print("Error decoding JSON in Hugging Face API Response.")
+        return None
+
     if embeddings is None or 'embeddings' not in embeddings:
-        raise Exception("Error in getting embeddings.")
+        print("Error in getting embeddings.")
+        return None
+
     return embeddings['embeddings']
-    # print("This is texts")
-    # print(texts)
-    # model = SentenceTransformer('sentence-transformers/all-MiniLM-L6-v2')
-    # data = {"wait_for_model": True,"inputs": texts}
-    # embeddings = model.encode(json.dumps(data))
-    # return embeddings
+
 
 
 def backportRows():

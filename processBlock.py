@@ -159,7 +159,7 @@ def processBlock(block_id):
 
     # if the block_id does not exist in the block table, then add it to the inbox                             
     processing_for_first_time = 0
-    if existing_row[1][0]['created_at'] == existing_row[1][0]['updated_at']:                                
+    if existing_row and existing_row[1] and existing_row[1][0]['created_at'] == existing_row[1][0]['updated_at']:                                
         processing_for_first_time = 1
         try:                               
             insert_response, insert_error = supabaseClient.table('inbox') \

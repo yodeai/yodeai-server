@@ -157,7 +157,9 @@ def processBlock(block_id):
         print(f"Exception occurred while retrieving updated_at, created_at: {e}")
 
     # if the block_id does not exist in the block table, then add it to the inbox
+    processing_for_first_time = 0
     if existing_row[1][0]['created_at'] == existing_row[1][0]['updated_at']:                                
+        processing_for_first_time = 1
         try:                               
             insert_response, insert_error = supabaseClient.table('inbox') \
             .insert([{'user_id': existing_row[1][0]['owner_id'], 'block_id': block_id}]) \
@@ -220,8 +222,9 @@ def processBlock(block_id):
             content = ""
             for page in pages:
                 content = content + page.page_content
-        pdf_title = extract_title(content)
-        update_title(pdf_title, block_id)
+        if (processing_for_first_time):
+            pdf_title = extract_title(content)
+            update_title(pdf_title, block_id)
  
     content = replace_two_whitespace(content)
     content_preview = get_preview(content)

@@ -192,9 +192,13 @@ def getEmbeddings(texts, model='BGELARGE_MODEL'):
         "Authorization": f"Bearer {os.environ.get('HUGGINGFACEHUB_API_KEY')}",
         "Content-Type": "application/json"
     }
-    if isinstance(texts, str):
-        texts = [texts]
+    
+    # commenting Dana's code below 
+    # if isinstance(texts, str):
+    #     texts = [texts]
+        
     data = {"inputs": texts}
+
     response = requests.post(os.environ.get(model), headers=headers, data=json.dumps(data))
     if response.status_code != 200:
         print("Error in Hugging Face API Response in embeddings:", response.content.decode("utf-8"))

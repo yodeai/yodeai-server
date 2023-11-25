@@ -24,14 +24,15 @@ def answer_question_lens(question: str, lensID: str, activeComponent: str, userI
             #sys.stdout.write("before DB call:\n")
             data, error = supabaseClient.rpc("get_top_chunks_for_lens_published", rpc_params).execute() 
             return data[1]
-        #clearConsole(" q embedding generated")  
 
-        if (activeComponent == "global"):                        
+        if (activeComponent == "global"):
             rpc_params = {
                 "match_count": match_count, 
                 "query_embedding": question_embedding,
                 "user_id": userID 
             }
+            print("len:")
+            print(len(question_embedding))
             #sys.stdout.write("before DB call:\n")
             data, error = supabaseClient.rpc("get_top_chunks", rpc_params).execute() 
             return data[1]
@@ -145,12 +146,13 @@ def answer_question_lens(question: str, lensID: str, activeComponent: str, userI
 def test_answer_question_lens():
     #question = "what are some ways to develop autonomous language agents?"
     #lensID = "159"
-    question = "what do birthdays look like?"
+    question = "what do birthdays look like? and what types for games do people play?"
     lensID = "190"
     # question = "What is the meaning of life?"
     # lensID = "6"
     user_id = "e6666aec-85eb-4873-a059-c7b2414f1b26"
-    response = answer_question_lens(question, lensID, "lens", user_id)    
+    response = answer_question_lens(question, lensID, "global", user_id)    
+    print(response)
 
 
 
@@ -211,8 +213,8 @@ def get_searchable_feed(question, lensID):
     return {"questions": docs}
 
 if __name__ == "__main__":  
-    #test_answer_question_lens()
-    get_searchable_feed("What time are the lectures of Integrative Biology 35ac?", 188)
+    test_answer_question_lens()
+    #get_searchable_feed("What time are the lectures of Integrative Biology 35ac?", 188)
 
 
     

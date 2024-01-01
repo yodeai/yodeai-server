@@ -110,7 +110,8 @@ def answer_question_lens(question: str, lensID: str, activeComponent: str, userI
         "question_text": question,
         "answer_full": response,
         "lens_id": lensID,
-        "user_id": userID
+        "user_id": userID,
+        "block_ids": metadata["blocks"]
     }
     if lensID:
         # Check if data already exists

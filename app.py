@@ -236,7 +236,7 @@ async def exchange_code_for_google_tokens(code: str):
                 "code": code,
                 "client_id": os.getenv("GOOGLE_CLIENT_ID"),
                 "client_secret": os.getenv("GOOGLE_CLIENT_SECRET"),
-                "redirect_uri": "http://localhost:3000/auth",
+                "redirect_uri": "https://yodeai-git-google-integration-2-yodeai.vercel.app/auth",
                 "grant_type": "authorization_code",
             },
         )
@@ -245,7 +245,6 @@ async def exchange_code_for_google_tokens(code: str):
 @app.post("/googleAuth")
 async def google_auth(body: dict):
     code = body.get("code")
-    print("CODE", code)
     google_tokens = await exchange_code_for_google_tokens(code)
 
     # You can now store google_tokens in your database or use it as needed

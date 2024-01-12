@@ -199,8 +199,9 @@ def processBlock(block_id):
     
     print("data", data)
 
-    if (data[1][0]['block_type'] == "note"):
+    if (data[1][0]['block_type'] == "note" or data[1][0]['block_type'] == "google_doc" ):
         content = data[1][0]['content']
+        print("nice")
     elif (data[1][0]['block_type'] == "pdf"):
         parsed_url = urlparse(data[1][0]['file_url'])
         bucket_name = parsed_url.netloc.split('.')[0]  # Extracts 'yodeai' from the hostname

@@ -22,6 +22,7 @@ from pydantic import EmailStr
 from uuid import uuid4
 from typing import Optional
 import asyncio
+import httpx
 
 class LensInvite(BaseModel):
     sender: str
@@ -226,6 +227,30 @@ async def route_process_block(block: dict):
     if not block_id:
         raise HTTPException(status_code=400, detail="block_id must be provided")
     schedule_task(block_id, countdown)
+
+async def exchange_code_for_google_tokens(code: str):
+    async with httpx.AsyncClient() as client:
+        response = await client.post(
+            "https://oauth2.googleapis.com/token",
+            data={
+                "code": code,
+                "client_id": os.getenv("GOOGLE_CLIENT_ID"),
+                "client_secret": os.getenv("GOOGLE_CLIENT_SECRET"),
+                "redirect_uri": "http://localhost:3000/auth",
+                "grant_type": "authorization_code",
+            },
+        )
+        return response.json()
+    
+@app.post("/googleAuth")
+async def google_auth(body: dict):
+    code = body.get("code")
+    print("CODE", code)
+    google_tokens = await exchange_code_for_google_tokens(code)
+
+    # You can now store google_tokens in your database or use it as needed
+    return {"google_tokens": google_tokens}
+
 
 @app.post("/processAncestors")
 async def route_process_ancestors(information: dict):

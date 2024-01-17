@@ -53,6 +53,7 @@ class QuestionFromLens(BaseModel):
     userID: str
     activeComponent: str
     published: Optional[bool] = False
+    google_user_id: Optional[str] = None
 
 class QuestionPopularityUpdateFromLens(BaseModel):
     row_id: str
@@ -236,7 +237,7 @@ async def exchange_code_for_google_tokens(code: str):
                 "code": code,
                 "client_id": os.getenv("GOOGLE_CLIENT_ID"),
                 "client_secret": os.getenv("GOOGLE_CLIENT_SECRET"),
-                "redirect_uri": "https://yodeai-git-google-integration-2-yodeai.vercel.app/auth",
+                "redirect_uri": "http://localhost:3000/auth",
                 "grant_type": "authorization_code",
             },
         )
@@ -272,7 +273,8 @@ async def answer_from_lens(data: QuestionFromLens):
     userID = data.userID
     activeComponent = data.activeComponent
     published = data.published
-    response = answer_question_lens(question, lensID, activeComponent, userID, published)
+    google_user_id = None if data.google_user_id == "NONE" else data.google_user_id
+    response = answer_question_lens(question, lensID, activeComponent, userID, published, google_user_id)
     return response
 
 

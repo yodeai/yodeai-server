@@ -7,7 +7,7 @@ from debug.tools import clearConsole
 relevanceThreshold = 5
 notFound = "The question does not seem to be relevant to the provided content."
 irrelevantText = 'Sorry, the question is irrelevant to the text.'
-def answer_question_lens(question: str, lensID: str, activeComponent: str, userID: str, published: bool=False):
+def answer_question_lens(question: str, lensID: str, activeComponent: str, userID: str, published: bool=False, google_user_id: str=None):
     #sys.stdout.write(lensID+" "+activeComponent+" "+userID)
     #clearConsole(" before embedding")
     start_time = time.time()
@@ -29,29 +29,34 @@ def answer_question_lens(question: str, lensID: str, activeComponent: str, userI
             rpc_params = {
                 "match_count": match_count, 
                 "query_embedding": question_embedding,
-                "user_id": userID 
+                "user_id": userID ,
+                "googleid": google_user_id,
             }
             print("len:")
             print(len(question_embedding))
             #sys.stdout.write("before DB call:\n")
-            data, error = supabaseClient.rpc("get_top_chunks", rpc_params).execute() 
+            data, error = supabaseClient.rpc("get_top_chunks_google", rpc_params).execute() 
             return data[1]
         
         if (activeComponent == "inbox"):                        
             rpc_params = {
                 "match_count": match_count, 
                 "query_embedding": question_embedding,
-                "id": userID 
+                "googleid": google_user_id,
+                "userid": userID,
             }
-            data, error = supabaseClient.rpc("get_top_chunks_from_inbox", rpc_params).execute() 
+            data, error = supabaseClient.rpc("get_top_chunks_for_inbox_google", rpc_params).execute() 
             return data[1]
         #clearConsole(" calling lens func")
         rpc_params = {
             "lensid": lensID,
             "match_count": match_count, 
             "query_embedding": question_embedding,
+            "googleid": google_user_id,
+            "user_id": userID
         }
-        data, error = supabaseClient.rpc("get_top_chunks_for_lens", rpc_params).execute()               
+        
+        data, error = supabaseClient.rpc("get_top_chunks_for_lens_google", rpc_params).execute()               
         return data[1]
         
         # data = mySupabase.from_('lens_blocks').select('block_id').eq('lens_id', lensID).execute().data    
@@ -111,7 +116,7 @@ def answer_question_lens(question: str, lensID: str, activeComponent: str, userI
         "answer_full": response,
         "lens_id": lensID,
         "user_id": userID,
-        "block_ids": metadata["blocks"]
+        "block_ids": metadata["blocks"] if "blocks" in metadata else []
     }
     if lensID:
         # Check if data already exists

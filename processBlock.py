@@ -18,6 +18,9 @@ from langchain.chat_models import ChatOpenAI
 from sklearn.cluster import KMeans
 import math
 from langchain.schema import Document
+from dotenv import load_dotenv
+import os
+load_dotenv(dotenv_path='.env.local')
 
 
 
@@ -57,7 +60,7 @@ def stuff_summary(text): # very basic stuff summary, only work on smaller texts
     SUMMARY:
     """
     llm3 = ChatOpenAI(temperature=0,
-                 openai_api_key="OPENAI_API_KEY",
+                 openai_api_key='OPENAI_API_KEY',
                  max_tokens=1000,
                  model='gpt-3.5-turbo')
     stuff_prompt_template = PromptTemplate(template=stuff_prompt, input_variables=["text"])
@@ -201,7 +204,6 @@ def processBlock(block_id):
 
     if (data[1][0]['block_type'] == "note" or data[1][0]['block_type'] == "google_doc" ):
         content = data[1][0]['content']
-        print("nice")
     elif (data[1][0]['block_type'] == "pdf"):
         parsed_url = urlparse(data[1][0]['file_url'])
         bucket_name = parsed_url.netloc.split('.')[0]  # Extracts 'yodeai' from the hostname

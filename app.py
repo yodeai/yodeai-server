@@ -10,7 +10,7 @@ from fastapi.templating import Jinja2Templates
 from sklearn.metrics.pairwise import cosine_similarity
 from fastapi.middleware.cors import CORSMiddleware
 from answerQuestionLens import answer_question_lens, get_searchable_feed, update_question_popularity
-from celery_tasks.tasks import process_block_task, process_ancestors_task
+from celery_tasks.tasks import process_block_task, process_ancestors_task, competitive_analysis_task
 from pydantic import BaseModel
 from config.celery_utils import create_celery
 from config.celery_utils import get_task_info
@@ -23,7 +23,7 @@ from uuid import uuid4
 from typing import Optional
 import asyncio
 import httpx
-
+from competitive_analysis import update_whiteboard_status
 class LensInvite(BaseModel):
     sender: str
     lensId: str
@@ -251,7 +251,19 @@ async def google_auth(body: dict):
     # You can now store google_tokens in your database or use it as needed
     return {"google_tokens": google_tokens}
 
+@app.post("/competitiveAnalysis")
+async def route_competitive_analysis(data: dict):
+    company_mapping = data.get("company_mapping")
+    whiteboard_id = data.get("whiteboard_id")
+    areas = data.get("areas")
+    # Get the plugin
+    if not whiteboard_id or not company_mapping or not areas:
+        raise HTTPException(status_code=400, detail="whiteboard id, urls, and areas must be provided")
+    update_whiteboard_status("queued", whiteboard_id)
+    task = competitive_analysis_task.apply_async(args=[company_mapping, areas, whiteboard_id])
+    return JSONResponse({"task_id": task.id, "type": "competitive_analysis"})
 
+    
 @app.post("/processAncestors")
 async def route_process_ancestors(information: dict):
     block_id = information.get("block_id")

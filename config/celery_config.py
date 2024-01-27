@@ -25,7 +25,8 @@ class BaseConfig:
         Queue("celery"),
         # custom queue
         Queue("processBlock"),
-        Queue("processAncestors")
+        Queue("processAncestors"),
+        Queue("competitiveAnalysis")
     ]
 
     CELERY_TASK_ROUTES = (route_task,)

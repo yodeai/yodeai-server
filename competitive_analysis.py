@@ -554,14 +554,16 @@ def generate_company_overview(parent_url, areas_of_analysis_embedding):
     add_to_block_and_chunk(parent_url, parent_url)
     return generate_cell(COMPANY_SUMMARY, parent_url, areas_of_analysis_embedding)
 
-def crawl_and_generate_data_wrapper(parent_url, urls, areas_of_analysis_embedding, skip_web_crawl=False):
-    result = crawl_and_generate_data(parent_url, urls, areas_of_analysis_embedding, skip_web_crawl)
-    print(f"Process for {parent_url} has finished.")
-    return result
-
-def crawl_and_generate_data(parent_url, urls, areas_of_analysis_embedding, skip_web_crawl=False):
+def crawl_and_generate_data(parent_url, urls, areas_of_analysis_embedding, num_urls, whiteboard_id, skip_web_crawl=False):
+    areas = areas_of_analysis_embedding.keys()
+    num_cells = num_urls * (len(areas))
     if not skip_web_crawl:
         predefined_links = gather_depth_1_links(parent_url)
+        new_percentage = float(1/(num_cells))
+        data, error = supabaseClient.rpc("update_plugin_progress", {"id": whiteboard_id, "new_progress": new_percentage}).execute() 
+        if error:
+            print(error)
+            supabaseClient.table('web_content_block').delete().eq('parent_url', parent_url).execute()
 
         with concurrent.futures.ThreadPoolExecutor(max_workers=10) as executor:
             # Submit tasks for each area concurrently
@@ -569,17 +571,25 @@ def crawl_and_generate_data(parent_url, urls, areas_of_analysis_embedding, skip_
 
             # Wait for all tasks to complete
             concurrent.futures.wait(futures)
-
     company_data = {
         "company": urls[parent_url],
         "data": []
     }
-    for area in areas_of_analysis_embedding.keys():
+    for area in areas:
         area_data_list = generate_area_data(area, parent_url, areas_of_analysis_embedding)
         company_data["data"].append(area_data_list)
+        # TODO: update progress since cell done
+        new_percentage = float(1/(num_cells))
+        data, error = supabaseClient.rpc("update_plugin_progress", {"id": whiteboard_id, "new_progress": new_percentage}).execute() 
+        if error:
+            print(error)
+            supabaseClient.table('web_content_block').delete().eq('parent_url', parent_url).execute()
+
+
     
     # Delete all rows from web_content_block with the specified parent_url
     supabaseClient.table('web_content_block').delete().eq('parent_url', parent_url).execute()
+    print(f"Process for {parent_url} has finished.")
 
     return company_data
 
@@ -600,7 +610,10 @@ def update_whiteboard_status(status, whiteboard_id):
         .execute()
     json_object = data[1][0]["plugin"]
     json_object["state"]["status"] = status
-    # Update the status of the block to 'queued'
+    if status == "processing":
+        json_object["state"]["progress"] = 0
+
+    # Update the status of the block
     update_response, update_error = supabaseClient.table('whiteboard')\
         .update({'plugin': json_object})\
         .eq('whiteboard_id', whiteboard_id)\
@@ -628,9 +641,11 @@ def create_competitive_analysis(urls, areas_of_analysis, whiteboard_id, skip_web
     start_time = time.time()
     areas_of_analysis_embedding = embed_areas(areas_of_analysis)
     update_whiteboard_status("processing", whiteboard_id)
+    # competitive analysis progress calculation
+    num_urls = len(urls)
     with concurrent.futures.ThreadPoolExecutor(max_workers=2) as executor:
         # Submit tasks and store the Future objects
-        futures = [executor.submit(crawl_and_generate_data_wrapper, parent_url, urls, areas_of_analysis_embedding, skip_web_crawl) for parent_url in urls.keys()]
+        futures = [executor.submit(crawl_and_generate_data, parent_url, urls, areas_of_analysis_embedding, num_urls, whiteboard_id, skip_web_crawl) for parent_url in urls.keys()]
 
         # Collect results from completed tasks
         for future in concurrent.futures.as_completed(futures):

@@ -573,6 +573,7 @@ def crawl_and_generate_data(parent_url, urls, areas_of_analysis_embedding, num_u
             concurrent.futures.wait(futures)
     company_data = {
         "company": urls[parent_url],
+        "company_url": parent_url,
         "data": []
     }
     for area in areas:

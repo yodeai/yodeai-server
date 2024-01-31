@@ -10,7 +10,7 @@ from fastapi.templating import Jinja2Templates
 from sklearn.metrics.pairwise import cosine_similarity
 from fastapi.middleware.cors import CORSMiddleware
 from answerQuestionLens import answer_question_lens, get_searchable_feed, update_question_popularity
-from celery_tasks.tasks import process_block_task, process_ancestors_task, competitive_analysis_task
+from celery_tasks.tasks import process_block_task, process_ancestors_task, competitive_analysis_task, user_analysis_task
 from pydantic import BaseModel
 from config.celery_utils import create_celery
 from config.celery_utils import get_task_info
@@ -262,6 +262,18 @@ async def route_competitive_analysis(data: dict):
     update_whiteboard_status("queued", whiteboard_id)
     task = competitive_analysis_task.apply_async(args=[company_mapping, areas, whiteboard_id])
     return JSONResponse({"task_id": task.id, "type": "competitive_analysis"})
+
+@app.post("/userAnalysis")
+async def route_user_analysis(data: dict):
+    topics = data.get("topics")
+    whiteboard_id = data.get("whiteboard_id")
+    lens_id = data.get("lens_id")
+    # Get the plugin
+    if not topics:
+        raise HTTPException(status_code=400, detail="whiteboard id, urls, and areas must be provided")
+    update_whiteboard_status("queued", whiteboard_id)
+    task = user_analysis_task.apply_async(args=[topics, lens_id, whiteboard_id])
+    return JSONResponse({"task_id": task.id, "type": "user_analysis"})
 
     
 @app.post("/processAncestors")

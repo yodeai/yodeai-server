@@ -1,0 +1,517 @@
+{
+  "summary": {
+    "users": [
+      {
+        "id": 0,
+        "name": "Lisa Pickoff White",
+        "commentSummary": [
+          {
+            "content": "The organization currently uses Google Drive but wants to move away from it. Organizing records requests from over 200 agencies is challenging due to vague laws and variations in files received. Tagged metadata in Document Cloud is unhelpful. Data journalist uses interviews, surveys, and focus groups to create data sets. Challenges in obtaining and organizing information from various sources are discussed. Reporters seek different types of information for their stories. Local reporters struggle with organizing unstructured information. Journalists face barriers in accessing and utilizing tools. The challenge lies in extracting usable data and recognizing specific details. The speaker discusses a tool called Project Overview. The challenge is to structure unstructured data and raise funds. The potential usefulness of a tool for organizing and finding documents is discussed.",
+            "topicKey": "Challenges of organizing unstructured information"
+          },
+          {
+            "content": "The current organization of unstructured information in Google Drive is limited and challenging, leading to a need for a new platform. Handling record requests involves subjective interpretation of vague laws, and tagged metadata in Google Drive is unhelpful. Data is collected through various methods and organized in a SQL database. Reporters struggle to access information and lack awareness of available tools. Google Drive may not be suitable for analyzing files with complex language or multiple dates. The tool Project Overview was useful but shut down due to lack of ownership and funding. The challenge is to structure unstructured data while addressing fundraising needs. Google Drive is useful for public-facing documents, while Document Cloud is helpful for making documents searchable.",
+            "topicKey": " Limitations of using Google Drive for data storage"
+          },
+          {
+            "content": "The speaker discusses the challenges faced by an organization in organizing unstructured information, including the need for a human touch in handling record requests, vague laws regarding serious injuries, and varying responses from different agencies. They mention instances of intentional information withholding and the complexity of managing files from multiple sources. The erratic nature of tagged metadata in Document Cloud leads to confusion and inconsistencies in file organization. Data is collected through various methods and organized in a SQL database. Large language models are used for document discovery and facilitating information sharing and collaboration. The speaker also mentions the challenges of using tools for reporters and structuring unstructured data.",
+            "topicKey": " Use of large language models for document discovery"
+          }
+        ]
+      },
+      {
+        "id": 1,
+        "name": "Michelle Park",
+        "commentSummary": [
+          {
+            "content": "The speaker, an engineer, shares their journey from tech and philanthropy to building a start-up and creating a community for engineers of color and underrepresented backgrounds. They discuss the efficiency of Notion for project management but prefer Google Docs for long essays. They mention a machine learning newsletter and a personalized knowledge base tool for targeted information seeking. Challenges arise in transferring content from Instagram to Notion due to embed limits and copying links. The interviewee also talks about difficulties in organizing and searching for information, including finding old tasks and syncing paper to-do lists with digital tools. They express gratitude for the positive response to their post, hinting at a potential interest in building a community.",
+            "topicKey": "Transitioning from start-up to building a community for engineers of color and underrepresented backgrounds"
+          },
+          {
+            "content": "The speaker, an engineer, transitioned to building a community for underrepresented engineers. They prefer using Notion over Google Drive for organizing data. Notion's organization capabilities align with their thought process, making project management easier. The conversation explores using machine learning for a personalized knowledge base and the challenges of organizing diverse information. The speaker faces limitations when transferring content from Instagram to Notion, resulting in workarounds and potential loss of organization. They struggle to find and organize information in Notion, especially older tasks and documents, and desire better syncing with their paper to-do list. The speaker appreciates email communication.",
+            "topicKey": " Managing unstructured data and using Notion for organization"
+          },
+          {
+            "content": "The speaker expresses frustration with disorganization and difficulty in locating files on Google Drive. They prefer using Notion for organization and note-taking, except for writing long essays, where Google Docs is preferred. They discuss a machine learning newsletter and a tool that builds a personalized knowledge base for targeted information seeking and collaboration. The speaker also faces challenges in organizing and accessing saved recipes and other content from Instagram on Notion due to embed limits and limited search features. They express gratitude for receiving a response and offer to help with locating files and disorganization on Google Drive.",
+            "topicKey": " Frustration with locating files and disorganization on Google Drive"
+          }
+        ]
+      },
+      {
+        "id": 2,
+        "name": "Shubham Roy",
+        "commentSummary": [
+          {
+            "content": "The speaker currently uses various platforms to organize unstructured information but faces slow loading times. They prefer platforms with structure but struggle with remembering different keyboard shortcuts. Collaborative work and feedback are challenging within the platform, leading to the use of external platforms. The speaker uses comments, links, and a browser called Arc to organize information. They desire features like hover summaries for PDFs and integration with multiple platforms. They seek a tool to integrate their to-do list with their calendar. The user is confused about asking questions within a space. They find the idea of visually organizing reading materials exciting. They want previous questions visible and quick summaries for PDFs. The speaker discusses challenges in organizing and retaining information from online articles and the need for tools to capture and summarize content.",
+            "topicKey": "Organizing unstructured information"
+          },
+          {
+            "content": "The speaker currently uses various platforms to organize unstructured information, but experiences slow loading times when there are too many documents. Remembering different keyboard shortcuts across platforms is challenging, leading to a preference for sticking to one platform. The user finds pen and paper more efficient for planning and organizing their week. They discuss the challenges of organizing links and documents and highlight the use of a browser called Arc. Integration with calendars would be beneficial. The user is confused about the hierarchy and structure of elements in the Yo Di platform. They found the idea of connecting different types of unstructured documents exciting. The speaker discusses visually organizing reading materials for projects. The user wants previous questions to be visible for progress tracking. The need for platforms that capture and retain information from online articles and websites is emphasized.",
+            "topicKey": " Platforms for note-taking and document storage"
+          },
+          {
+            "content": "The challenges of organizing unstructured information across multiple platforms and feeling overwhelmed by features and templates in Notion are discussed. Users may experience slow loading times and difficulty remembering keyboard shortcuts in platforms like Evernote or Notion, leading to frustration. There is friction between digital platforms and pen and paper methods for planning and organizing tasks. Difficulty in organizing and managing links and documents leads to inefficiencies. The user is confused about the hierarchy and structure of elements in the Yo Di platform. The user expects to ask questions across everything in a space, not just specific to a PDF block. The user struggled to see a unique use case for the tool initially but was excited about connecting different types of unstructured documents. The speaker found it exciting to visually organize reading materials for their Capstone project using branches and spaces. The user wants previous questions to be visible for tracking progress. Difficulty in capturing and retaining information from multiple online articles and websites leads to the need for a tool like Glass that allows for summarizing, note-taking, and question-asking.",
+            "topicKey": " Challenges with using Glass for collaboration"
+          }
+        ]
+      }
+    ],
+    "topics": [
+      {
+        "key": "Challenges of organizing unstructured information",
+        "name": "Challenges of organizing unstructured information"
+      },
+      {
+        "key": " Limitations of using Google Drive for data storage",
+        "name": " Limitations of using Google Drive for data storage"
+      },
+      {
+        "key": " Use of large language models for document discovery",
+        "name": " Use of large language models for document discovery"
+      },
+      {
+        "key": "Transitioning from start-up to building a community for engineers of color and underrepresented backgrounds",
+        "name": "Transitioning from start-up to building a community for engineers of color and underrepresented backgrounds"
+      },
+      {
+        "key": " Managing unstructured data and using Notion for organization",
+        "name": " Managing unstructured data and using Notion for organization"
+      },
+      {
+        "key": " Frustration with locating files and disorganization on Google Drive",
+        "name": " Frustration with locating files and disorganization on Google Drive"
+      },
+      {
+        "key": "Organizing unstructured information",
+        "name": "Organizing unstructured information"
+      },
+      {
+        "key": " Platforms for note-taking and document storage",
+        "name": " Platforms for note-taking and document storage"
+      },
+      {
+        "key": " Challenges with using Glass for collaboration",
+        "name": " Challenges with using Glass for collaboration"
+      }
+    ]
+  },
+  "insights": [
+    {
+      "data": [
+        {
+          "comments": [
+            {
+              "id": 1,
+              "comment": "The organization currently uses a Google Drive folder structure to organize unstructured information, but is looking to move away from it."
+            },
+            {
+              "id": 2,
+              "comment": "Organizing over 200 agencies and their records requests is challenging due to vague laws, different interpretations of serious injuries, and variations in the files received."
+            },
+            {
+              "id": 3,
+              "comment": "Tagged metadata in Document Cloud is erratic and unhelpful, leading to difficulties in organizing files and finding relevant information."
+            },
+            {
+              "id": 4,
+              "comment": "Data journalist uses interviews, surveys, and focus groups to gather information and create data sets that answer reporters' questions, which are then organized using large language models and other techniques."
+            },
+            {
+              "id": 5,
+              "comment": "The speaker discusses the challenges of obtaining and organizing information from various databases and sources for investigative purposes."
+            },
+            {
+              "id": 6,
+              "comment": "Reporters seek different types of information and data for their stories, including outside data, specific incidents, agency trends, and officer names."
+            },
+            {
+              "id": 7,
+              "comment": "Local reporters face challenges in organizing unstructured information, such as searching officer names for prior history and finding relevant data on topics like mental health, homelessness, and traffic stops."
+            },
+            {
+              "id": 8,
+              "comment": "Journalists struggle with accessing and utilizing tools and information due to barriers such as time constraints and lack of skill sets, but searchable fields and tools can greatly enhance their work."
+            },
+            {
+              "id": 9,
+              "comment": "The challenge of organizing unstructured information lies in extracting usable data and overcoming issues such as irrelevant content and difficulty in recognizing specific details like incident dates."
+            },
+            {
+              "id": 10,
+              "comment": "The speaker discusses a tool called Project Overview that allowed users to see correlations between names in documents, but it eventually shut down due to lack of ownership and funding."
+            },
+            {
+              "id": 11,
+              "comment": "The speaker works with a team on a large record request project and suggests talking to one of their tech fellows for more information. They discuss a tool for reporters to go through their corpus but find it difficult to use. They mention a searchable interface and discuss the challenges of teaching large language models to parse files. The speaker mentions a list of questions generated by reporters and shares some specific examples. They mention the possibility of changing their data entry system in the future."
+            },
+            {
+              "id": 12,
+              "comment": "The challenge is to structure unstructured data into a spreadsheet-like format, while also addressing the needs of a public-facing database and a federated database, and raising funds to sustain the project."
+            },
+            {
+              "id": 13,
+              "comment": "The speaker discusses the potential usefulness of a tool for organizing and finding spreadsheets, PDFs, and news articles, particularly for public-facing projects and journalism."
+            }
+          ],
+          "topicKey": "Challenges of organizing unstructured information",
+          "topicName": "Challenges of organizing unstructured information"
+        },
+        {
+          "comments": [
+            {
+              "id": 1,
+              "comment": "The current organization of unstructured information relies on a folder structure in Google Drive, but there is a need to move away from this platform due to limitations and challenges."
+            },
+            {
+              "id": 2,
+              "comment": "The process of handling record requests from over 200 agencies involves explaining and determining what information is releasable, which can be subjective due to vague laws and different interpretations by different people."
+            },
+            {
+              "id": 3,
+              "comment": "Tagged metadata in Google Drive is erratic and unhelpful, leading to difficulties in organizing and accessing files."
+            },
+            {
+              "id": 4,
+              "comment": "Data is collected through interviews, panels, surveys, and focus groups, and then organized in a SQL database to answer reporters' questions."
+            },
+            {
+              "id": 5,
+              "comment": "The speaker discusses the challenges of obtaining and organizing police records and investigations, including issues with file transfers and underfunded local government tech."
+            },
+            {
+              "id": 6,
+              "comment": "Reporters have to seek outside data for every story, and they are interested in different types of information depending on their specific interests and the nature of the story."
+            },
+            {
+              "id": 7,
+              "comment": "Limited awareness and knowledge among reporters about the existence and capabilities of tools like Document Cloud and Google Drive for data storage and search."
+            },
+            {
+              "id": 8,
+              "comment": "Journalists often struggle to access and utilize information due to barriers such as lack of time, knowledge of available tools, and skill sets."
+            },
+            {
+              "id": 9,
+              "comment": "Google Drive may not be suitable for storing and extracting usable data from files that contain a lot of process language or multiple dates, making it challenging to accurately analyze and extract relevant information."
+            },
+            {
+              "id": 10,
+              "comment": "The tool Project Overview, built on top of Document Cloud, allowed users to see correlations of names within the same document and do shareable exploratory work, but it shut down due to lack of ownership and funding."
+            },
+            {
+              "id": 11,
+              "comment": "The speaker works with a team on a large record request project and suggests talking to one of their tech fellows. They mention a tool for reporters to go through their corpus but found it not very helpful. They discuss a searchable interface and the types of questions that could be asked from the files. The speaker mentions generating a list of questions and the limitations of their current data entry system."
+            },
+            {
+              "id": 12,
+              "comment": "The challenge is to structure unstructured data into a spreadsheet-like format, using OCR and fact-checking tools, while also addressing the need for fundraising."
+            },
+            {
+              "id": 13,
+              "comment": "Google Drive may not be as useful for handling large, complex PDF files, but it could be helpful for organizing and accessing public-facing documents like spreadsheets, news articles, and other PDFs."
+            }
+          ],
+          "topicKey": " Limitations of using Google Drive for data storage",
+          "topicName": " Limitations of using Google Drive for data storage"
+        },
+        {
+          "comments": [
+            {
+              "id": 1,
+              "comment": "The organization currently organizes unstructured information using a folder structure in Google Drive, but they are looking to move away from it and improve their system."
+            },
+            {
+              "id": 2,
+              "comment": "The speaker discusses the challenges they face in their work, including the need for a human touch in handling record requests, the vagueness of the law regarding serious injuries, and the variation in responses from different agencies. They also mention instances of agencies intentionally withholding information and the complexity of organizing and managing files from multiple sources."
+            },
+            {
+              "id": 3,
+              "comment": "The erratic nature of tagged metadata in Document Cloud makes it difficult to associate files accurately, leading to confusion and inconsistencies in file organization."
+            },
+            {
+              "id": 4,
+              "comment": "Data is collected through interviews, panels, surveys, and focus groups, and then organized in a SQL database to answer reporters' questions."
+            },
+            {
+              "id": 5,
+              "comment": "The speaker is discussing the challenges of obtaining and organizing police records for investigative purposes, including issues with file transfers and underfunded local government tech."
+            },
+            {
+              "id": 6,
+              "comment": "Reporters rely on outside data to gather information for their stories, including specific incidents, agency trends, and officer names."
+            },
+            {
+              "id": 7,
+              "comment": "Local reporters often want to search officer names for prior history, but they also have varying interests in covering topics such as mental health, homelessness, and traffic stops."
+            },
+            {
+              "id": 8,
+              "comment": "Large language models are used to organize unstructured information and facilitate document discovery."
+            },
+            {
+              "id": 9,
+              "comment": "Large language models can be used for document discovery, allowing users to browse, search, and ask questions about information, as well as share and collaborate on specific topics or projects."
+            },
+            {
+              "id": 10,
+              "comment": "The speaker discusses a tool called Project Overview that allowed users to see correlations between names in documents, but it eventually shut down due to lack of ownership and funding."
+            },
+            {
+              "id": 11,
+              "comment": "The speaker works with a team on a large record request project and mentions the challenges of using a tool to help reporters go through their corpus, as well as the potential questions that could be asked from the files."
+            },
+            {
+              "id": 12,
+              "comment": "The challenge is to structure unstructured data into a spreadsheet-like format, using OCR and fact-checking to improve accuracy and handle redactions."
+            },
+            {
+              "id": 13,
+              "comment": "Large language models like the one being discussed may be more useful for public-facing documents and journalism projects rather than deep, messy documents like 1000-page PDFs."
+            }
+          ],
+          "topicKey": " Use of large language models for document discovery",
+          "topicName": " Use of large language models for document discovery"
+        }
+      ],
+      "user": {
+        "id": 0,
+        "info": "The interviewee is a member of a news organization that collaborates with other news organizations to share record requests and data obtained from police departments and other sources.",
+        "name": "Lisa Pickoff White"
+      }
+    },
+    {
+      "data": [
+        {
+          "comments": [
+            {
+              "id": 1,
+              "comment": "The speaker is an engineer who transitioned from working in tech and philanthropy to building their own start-up and now focuses on creating a community for engineers of color and underrepresented backgrounds."
+            },
+            {
+              "id": 2,
+              "comment": "Notion is a highly organized and efficient tool for managing projects and information, but for writing long essays, Google Docs is preferred."
+            },
+            {
+              "id": 3,
+              "comment": "The speaker discusses a machine learning newsletter and a tool that builds a personalized knowledge base, allowing targeted information seeking and collaboration."
+            },
+            {
+              "id": 4,
+              "comment": "The speaker faces challenges in organizing and transferring content from Instagram to Notion, due to embed limits and the hassle of copying and pasting links."
+            },
+            {
+              "id": 5,
+              "comment": "The interviewee discusses the challenges of organizing and searching for information, including the difficulty of finding old tasks and the struggle of keeping a paper to-do list in sync with digital tools."
+            }
+          ],
+          "topicKey": "Transitioning from start-up to building a community for engineers of color and underrepresented backgrounds",
+          "topicName": "Transitioning from start-up to building a community for engineers of color and underrepresented backgrounds"
+        },
+        {
+          "comments": [
+            {
+              "id": 1,
+              "comment": "The speaker is an engineer who transitioned from working in tech and philanthropy to building a community for engineers of color and people from underrepresented backgrounds. They rely heavily on Notion for organizing their unstructured data and find it more helpful than Google Drive."
+            },
+            {
+              "id": 2,
+              "comment": "Notion is a highly organized tool that fits well with the user's thought process, making it easier to organize and expand on projects compared to Google Docs."
+            },
+            {
+              "id": 3,
+              "comment": "The conversation discusses using machine learning to build a personalized knowledge base and search engine, as well as the challenges of organizing information from different sources and types."
+            },
+            {
+              "id": 4,
+              "comment": "The speaker saves recipes and other content on Instagram but faces limitations when trying to transfer them to Notion, leading to the need for workarounds and potential loss of organization."
+            },
+            {
+              "id": 5,
+              "comment": "The speaker struggled to find and organize information in Notion, particularly when searching for old tasks or documents, and expressed a desire for better syncing between their paper to-do list and Notion."
+            }
+          ],
+          "topicKey": " Managing unstructured data and using Notion for organization",
+          "topicName": " Managing unstructured data and using Notion for organization"
+        },
+        {
+          "comments": [
+            {
+              "id": 1,
+              "comment": "Frustration with locating files and disorganization on Google Drive"
+            },
+            {
+              "id": 2,
+              "comment": "Notion is a preferred tool for organization and note-taking, except for writing long essays, where Google Docs is preferred."
+            },
+            {
+              "id": 3,
+              "comment": "The speaker discusses a machine learning newsletter and a tool that builds a personalized knowledge base, allowing for targeted information seeking and collaboration."
+            },
+            {
+              "id": 4,
+              "comment": "The speaker faces difficulties in organizing and accessing saved recipes and other content from Instagram on Notion, due to embed limits and limited search features."
+            },
+            {
+              "id": 5,
+              "comment": "The interviewee expresses frustration with locating files and disorganization on Google Drive."
+            }
+          ],
+          "topicKey": " Frustration with locating files and disorganization on Google Drive",
+          "topicName": " Frustration with locating files and disorganization on Google Drive"
+        }
+      ],
+      "user": {
+        "id": 1,
+        "info": "The interviewee is an engineer who graduated from Stanford with a degree in computer science, worked in tech, philanthropy, and government, built their own startup, and is now transitioning to building a community for engineers of color and people from underrepresented backgrounds.",
+        "name": "Michelle Park"
+      }
+    },
+    {
+      "data": [
+        {
+          "comments": [
+            {
+              "id": 1,
+              "comment": "The speaker currently organizes unstructured information across various platforms such as OneNote, Evernote, Notion, Google Docs, Whimsical, and Miro, depending on the specific needs and purposes of the information."
+            },
+            {
+              "id": 2,
+              "comment": "The user experiences slow loading times when there are too many documents, but has not faced issues with searching or organizing them due to the structure provided by platforms like notebooks or pages. However, remembering different keyboard shortcuts across platforms can be challenging, leading to a preference for one platform. The user also mentions that when things become messy or disorganized, it can be demotivating and lead to a preference for pen and paper."
+            },
+            {
+              "id": 3,
+              "comment": "The user finds it challenging to organize collaborative work and feedback on mind maps and documents within the platform, preferring to share them on external platforms like WhatsApp for quicker and more immediate feedback."
+            },
+            {
+              "id": 4,
+              "comment": "The speaker discusses their methodology for organizing unstructured information, including adding comments directly on design boards, organizing links with descriptive text or thumbnails, and using a browser called Arc to create spaces and repositories for different types of information."
+            },
+            {
+              "id": 5,
+              "comment": "The user finds it challenging to keep their information organized and wishes for features like hover summaries for PDFs and integration with multiple platforms to make task management easier."
+            },
+            {
+              "id": 6,
+              "comment": "User is seeking a way to integrate their to-do list with their calendar and is interested in a tool like Yo Di that allows for better organization and structuring of documents."
+            },
+            {
+              "id": 7,
+              "comment": "The user is confused about the functionality of asking questions within a space and whether it applies to the entire space or specific documents within it."
+            },
+            {
+              "id": 8,
+              "comment": "The user found the idea of connecting different types of unstructured documents in a visual manner exciting and unique."
+            },
+            {
+              "id": 9,
+              "comment": "The speaker discusses the idea of visually organizing reading materials for a project, using branches and spaces to break down overwhelming lists into more manageable sections."
+            },
+            {
+              "id": 10,
+              "comment": "User wants previous questions to be visible in order to track progress and would like a quick summary or tags for PDF documents to determine their value."
+            }
+          ],
+          "topicKey": "Organizing unstructured information",
+          "topicName": "Organizing unstructured information"
+        },
+        {
+          "comments": [
+            {
+              "id": 1,
+              "comment": "The speaker currently organizes unstructured information using various platforms such as OneNote, Evernote, Notion, Google Docs, Whimsical, and Miro, depending on the specific needs and purposes of the information."
+            },
+            {
+              "id": 2,
+              "comment": "Users may experience slow loading times when there are too many documents in a platform, but organizing and finding documents is generally not an issue. Remembering different keyboard shortcuts across platforms can be challenging, leading users to stick to one platform. Keeping things organized can sometimes feel overwhelming and demotivating, especially when templates or task lists are not updated correctly, causing a sense of being out of sync."
+            },
+            {
+              "id": 3,
+              "comment": "The user prefers using pen and paper for planning and organizing their week, as they find it more efficient and in sync with their current tasks."
+            },
+            {
+              "id": 4,
+              "comment": "The speaker discusses the challenges of organizing and managing links and documents, and highlights the use of a browser called Arc that helps with organizing links, storing documents, and taking notes efficiently."
+            },
+            {
+              "id": 5,
+              "comment": "Integration with multiple platforms, such as calendars, would be beneficial for note-taking and document organizing platforms."
+            },
+            {
+              "id": 6,
+              "comment": "The user is confused about the hierarchy and structure of elements in the Yo Di platform, specifically regarding lenses, blocks, and notebooks."
+            },
+            {
+              "id": 7,
+              "comment": "The user expected to ask questions across everything present inside a space, rather than specific to a PDF within the space."
+            },
+            {
+              "id": 8,
+              "comment": "The user found the idea of connecting different types of unstructured documents in a refined manner exciting and unique."
+            },
+            {
+              "id": 9,
+              "comment": "The speaker discusses the idea of visually organizing reading materials for a project using branches and spaces, making it more manageable and organized."
+            },
+            {
+              "id": 10,
+              "comment": "User wants previous questions to be visible in the document flow for better progress tracking."
+            }
+          ],
+          "topicKey": " Platforms for note-taking and document storage",
+          "topicName": " Platforms for note-taking and document storage"
+        },
+        {
+          "comments": [
+            {
+              "id": 1,
+              "comment": "Challenges with organizing unstructured information across multiple platforms and feeling overwhelmed by the features and templates in Notion."
+            },
+            {
+              "id": 2,
+              "comment": "Users may experience slow loading times and difficulty in remembering keyboard shortcuts when using platforms like Evernote or Notion, leading to potential frustration and demotivation."
+            },
+            {
+              "id": 3,
+              "comment": "Friction between using digital platforms and pen and paper method for planning and organizing tasks."
+            },
+            {
+              "id": 4,
+              "comment": "Difficulty organizing and managing links and documents, leading to inefficiencies and the need to search and download files multiple times."
+            },
+            {
+              "id": 5,
+              "comment": "Difficulty in organizing and finding information when not consistently keeping things organized."
+            },
+            {
+              "id": 6,
+              "comment": "The user is confused about the hierarchy and structure of elements in the Yo Di platform, specifically regarding lenses, blocks, and notebooks."
+            },
+            {
+              "id": 7,
+              "comment": "User expects to ask questions across everything present inside a space, rather than specific to a PDF block."
+            },
+            {
+              "id": 8,
+              "comment": "User struggled to see a unique use case for the tool initially, but was excited about the possibility of connecting different types of unstructured documents in a refined manner."
+            },
+            {
+              "id": 9,
+              "comment": "The speaker found it exciting to visually organize reading materials for their Capstone project using branches and spaces, making it more organized and less overwhelming."
+            },
+            {
+              "id": 10,
+              "comment": "User wants previous questions to be visible in order to track progress and easily go back."
+            }
+          ],
+          "topicKey": " Challenges with using Glass for collaboration",
+          "topicName": " Challenges with using Glass for collaboration"
+        }
+      ],
+      "user": {
+        "id": 2,
+        "info": "The interviewee, Taron, currently organizes unstructured information using various platforms such as OneNote, Evernote, Notion, Google Docs, Whimsical, and Miro, depending on the specific needs and purposes of the information.",
+        "name": "Shubham Roy"
+      }
+    }
+  ]
+}

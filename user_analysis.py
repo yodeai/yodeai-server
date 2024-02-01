@@ -112,6 +112,7 @@ def generate_from_scratch(lens_id, whiteboard_id):
             print("potential_topics", potential_topics)
         # Sort scored topics based on the score in descending order
         sorted_topics = potential_topics.split(",")
+        sorted_topics = [topic.strip() for topic in sorted_topics]
         print("sorted_topics", sorted_topics)
         new_percentage = float(1/(num_cells))
         data, error = supabaseClient.rpc("update_plugin_progress", {"id": whiteboard_id, "new_progress": new_percentage}).execute() 

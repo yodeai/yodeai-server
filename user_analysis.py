@@ -104,9 +104,9 @@ def generate_from_scratch(lens_id, whiteboard_id):
         # Loop through all chunks and generate scored topics
         for chunk_id, chunk_content in enumerate(cleaned_chunks):
             if potential_topics:
-                prompt = f"We have these 3 existing topics that are worded in phrases: {potential_topics}. Based on this content: ```{chunk_content}```, update the 3 existing topics if needed, and OUTPUT THEM IN A COMMA SEPARATED LINE. YOU SHOULD ONLY EITHER UPDATE OR CHANGE ONE OF THE 3 TOPICS, AND DO NOT OUTPUT MORE THAN 3 TOPICS."
+                prompt = f"We have these 3 existing topics that are worded in phrases: {potential_topics}. Based on this content: ```{chunk_content}```, update the 3 existing topics if needed, and OUTPUT THEM IN A COMMA SEPARATED LINE. YOU SHOULD ONLY EITHER UPDATE OR CHANGE ONE OF THE 3 TOPICS, AND DO NOT OUTPUT MORE THAN 3 TOPICS. AGAIN, THEY SHOULD BE COMMA SEPARATED, NOT BULLETTED"
             else:
-                prompt = f"Generate ONLY 3 topics related to: ```{chunk_content}```, and OUTPUT THEM IN A COMMA SEPARATED LINE, WITH EACH TOPIC CONSTRAINED TO A SHORT PHRASE"
+                prompt = f"Generate ONLY 3 topics related to: ```{chunk_content}```, and OUTPUT THEM IN A COMMA SEPARATED LINE, WITH EACH TOPIC CONSTRAINED TO A SHORT PHRASE. AGAIN, THEY SHOULD BE COMMA SEPARATED AND NOT BULLETTED"
             potential_topics = get_completion(prompt, MODEL_NAME)
 
             print("potential_topics", potential_topics)

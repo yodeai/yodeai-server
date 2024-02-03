@@ -269,8 +269,6 @@ async def route_user_analysis(data: dict):
     whiteboard_id = data.get("whiteboard_id")
     lens_id = data.get("lens_id")
     # Get the plugin
-    if not topics:
-        raise HTTPException(status_code=400, detail="whiteboard id, urls, and areas must be provided")
     update_whiteboard_status("queued", whiteboard_id)
     task = user_analysis_task.apply_async(args=[topics, lens_id, whiteboard_id])
     return JSONResponse({"task_id": task.id, "type": "user_analysis"})

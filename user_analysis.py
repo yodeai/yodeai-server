@@ -3,6 +3,7 @@ from langchain.text_splitter import RecursiveCharacterTextSplitter
 from utils import remove_invalid_surrogates, get_completion
 import time
 from competitive_analysis import update_whiteboard_status
+import re
 
 MODEL_NAME = "gpt-3.5-turbo"
 
@@ -49,9 +50,7 @@ def generate_from_existing_topics(topics, lens_id, whiteboard_id):
 
         block_content = get_block_content(block_id)
         document_content = block_content[0]["content"]
-        print("block_content", document_content)
         cleaned_chunks = split_text_into_chunks(document_content)
-        print("chunks", cleaned_chunks)
         background_info = extract_background_info(cleaned_chunks[0])
         current_insights = {"data": [], "user": {"id": user_id, "info": background_info, "name": name}}
 
@@ -67,7 +66,7 @@ def generate_from_existing_topics(topics, lens_id, whiteboard_id):
                         "topicKey": topic, "topicName": topic}
             current_insights["data"].append(comments)
 
-            prompt = f"Please output a maximum of a 100 word summary of these bulletted chunks:  ```{bullet_summary}'''."
+            prompt = f"Please output a summary of a MAXIMUM OF 50 WORDS for these bulletted chunks:  ```{bullet_summary}'''."
             summary = get_completion(prompt, MODEL_NAME)
 
             comment_summary.append({"content": summary, "topicKey": topic})
@@ -130,7 +129,7 @@ def generate_from_scratch(lens_id, whiteboard_id):
                         "topicKey": topic, "topicName": topic}
             current_insights["data"].append(comments)
 
-            prompt = f"Please output a maximum of a 100 word summary of these bulletted chunks:  ```{bullet_summary}'''."
+            prompt = f"Please output a summary of a MAXIMUM OF 50 WORDS for these bulletted chunks:  ```{bullet_summary}'''."
             summary = get_completion(prompt, MODEL_NAME)
 
             comment_summary.append({"content": summary, "topicKey": topic})
@@ -142,12 +141,20 @@ def generate_from_scratch(lens_id, whiteboard_id):
         json_object["summary"]["users"].append({"id": user_id, "name": name, "commentSummary": comment_summary})
     return json_object
 
+def clean_insight_area(value):
+    # Remove whitespaces and trailing punctuation
+    cleaned_value = re.sub(r'\s+', '', value)
+    cleaned_value = re.sub(r'[^\w\s]', '', cleaned_value)
+    return cleaned_value
+
 
 def generate_user_analysis(topics, lens_id, whiteboard_id):
     try:
         start_time = time.time()
         print("topics", topics)
-        if topics[0]:
+        topics = [clean_insight_area(topic) for topic in topics]
+        topics = [topic for topic in topics if topic != ""]
+        if topics:
             json_object = generate_from_existing_topics(topics, lens_id, whiteboard_id)
         else:
             json_object = generate_from_scratch(lens_id, whiteboard_id)

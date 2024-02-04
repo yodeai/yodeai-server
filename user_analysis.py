@@ -9,7 +9,7 @@ from sklearn.metrics.pairwise import cosine_similarity
 import numpy as np
 
 MODEL_NAME = "gpt-3.5-turbo"
-eps = 0.15
+eps = 0.10
 
 def get_block_ids(lens_id):
     block_ids, count = supabaseClient.table('lens_blocks').select("block_id").eq('lens_id', lens_id).execute()

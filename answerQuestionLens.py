@@ -61,7 +61,13 @@ def answer_question_lens(question: str, lensID: str, activeComponent: str, userI
             "googleid": google_user_id,
             "user_id": userID
         }
-        print("the correct active component, data, error:\n")
+        print("the correct active component, lensid:\n")
+        print(lensID)
+        print(userID)
+        print(google_user_id)
+        print(match_count)
+        print(question_embedding)
+
         data, error = supabaseClient.rpc("get_top_chunks_for_lens_google", rpc_params).execute()               
         print("data,error:\n")
         print(data)

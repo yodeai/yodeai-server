@@ -90,7 +90,7 @@ def answer_question_lens(question: str, lensID: str, activeComponent: str, userI
     for d in relevant_chunks:        
         text += d['content'] + "\n\n"        
     prompt = f"You are answering questions asked by a user. Answer the question: " + question + " in a helpful and concise way and in at most one paragraph, using the following text inside triple quotes:\n '''" + text + "''' \n <<<REMEMBER:  If you cannot find an answer with the given text in triple quotes, just return the following text:" + irrelevantText+ ">>>"
-    clearConsole(prompt)
+    print(prompt)
     
     
     # Record the start time for get_completion

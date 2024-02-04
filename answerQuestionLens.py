@@ -28,7 +28,7 @@ def answer_question_lens(question: str, lensID: str, activeComponent: str, userI
             data, error = supabaseClient.rpc("get_top_chunks_for_lens_published", rpc_params).execute() 
             return data[1]
 
-        if (activeComponent == "global"):
+        if (activeComponent == "global" or "myblocks"):
             rpc_params = {
                 "match_count": match_count, 
                 "query_embedding": question_embedding,
@@ -58,7 +58,7 @@ def answer_question_lens(question: str, lensID: str, activeComponent: str, userI
             "googleid": google_user_id,
             "user_id": userID
         }
-        print("rpc_params", lensID)
+        print("rpc_params", activeComponent)
         # print(userID)
         # print(google_user_id)
         # print(match_count)
@@ -95,16 +95,15 @@ def answer_question_lens(question: str, lensID: str, activeComponent: str, userI
     print("starting to get docs")
     
     relevant_chunks = getRelDocs(question) 
-    print("relevant_chunks:")
-    print(relevant_chunks) 
+    # 1065
     print(f"Time taken by getRelDocs: {time.time() - get_rel_docs_start_time:.2f} seconds")
 
     relevant_block_ids = [d['block_id'] for d in relevant_chunks]
+    print(relevant_block_ids)
     text = ""    
     for d in relevant_chunks:        
         text += d['content'] + "\n\n"        
     prompt = f"You are answering questions asked by a user. Answer the question: " + question + " in a helpful and concise way and in at most one paragraph, using the following text inside triple quotes:\n '''" + text + "''' \n <<<REMEMBER:  If you cannot find an answer with the given text in triple quotes, just return the following text: " + irrelevantText+ ">>>"
-    print(prompt)
     
     
     # Record the start time for get_completion

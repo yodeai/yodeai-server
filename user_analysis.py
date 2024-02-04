@@ -5,7 +5,11 @@ import time
 from competitive_analysis import update_whiteboard_status
 import re
 from utils import getEmbeddings
+from sklearn.metrics.pairwise import cosine_similarity
+import numpy as np
+
 MODEL_NAME = "gpt-3.5-turbo"
+eps = 0.10
 
 def get_block_ids(lens_id):
     block_ids, count = supabaseClient.table('lens_blocks').select("block_id").eq('lens_id', lens_id).execute()
@@ -51,6 +55,19 @@ def get_topic_embedding(topics):
         result[area] = embedding
     return result
 
+def cosine_similarity_vectors(vec1, vec2):
+    # Ensure the vectors are not empty
+    if np.linalg.norm(vec1) == 0 or np.linalg.norm(vec2) == 0:
+        return 0.0
+    # Calculate cosine similarity
+    similarity = cosine_similarity([vec1], [vec2])[0][0]
+    return similarity
+
+def find_closest_comment(comment_embedding, comment_embeddings):
+    similarities = [cosine_similarity_vectors(comment_embedding, emb) for emb in comment_embeddings]
+    max_similarity = max(similarities, default=0.0)
+    return max_similarity
+
 def generate_from_existing_topics(topics, lens_id, whiteboard_id):
     update_whiteboard_status("processing", whiteboard_id)
     topics_embedding = get_topic_embedding(topics)
@@ -58,19 +75,20 @@ def generate_from_existing_topics(topics, lens_id, whiteboard_id):
                 "insights": []}
 
     block_ids  = get_block_ids(lens_id)
-    block_names = get_block_names(block_ids)
-    num_cells = len(topics) * len(block_names)
+    block_infos = get_block_names(block_ids)
+    num_cells = len(topics) * len(block_infos)
     background_info_embedding = getEmbeddings("background information about interviewee")
 
-    for user_id, block_info in enumerate(block_names):
+    for user_id, block_info in enumerate(block_infos):
         print("user", user_id)
         block_id = block_info["block_id"]
         name = block_info["title"]
         comment_summary = []
+        block_content = get_block_content(block_id)
 
         background_info = extract_background_info(block_id, background_info_embedding)
         current_insights = {"data": [], "user": {"id": user_id, "info": background_info, "name": name}}
-
+        comment_embeddings = []
         for topic_id, topic in enumerate(topics):
             rpc_params = {
             "interview_block_id": block_id,
@@ -84,12 +102,17 @@ def generate_from_existing_topics(topics, lens_id, whiteboard_id):
             for d in relevant_chunks:        
                 text += d['content'] + "\n\n"  
 
-            prompt = f"Please output a max of 10 bullet points for this content, and start each bullet with '-':  ```{text}'''."
+            prompt = f"Please provide a concise summary for the given content, if it is relevant to {topic}. If the content is irrelevant, just output a single bullet point: '- not relevant'.  If referring to the interviewee, refer to them as 'The user'. Start each bullet point with '-':\n\n```{text}```\n\nEnsure that the bullet points are relevant to {topic}, IF A BULLET POINT IS IRRELEVANT TO THE {topic} THEN DO NOT INCLUDE IT AT ALL. DO NOT OUTPUT MORE THAN 10 BULLET POINTS, AIM TO GENERATE LESS BULLET POINTS."
             bullet_summary = get_completion(prompt, MODEL_NAME)
 
-            comments = {"comments": [{"id": i, "comment": bullet} for i, bullet in enumerate(bullet_summary.split("- ")) if bullet != ""],
+            bullets = bullet_summary.split("- ")
+
+            comments = {"comments": [{"id": i, "comment": bullet} for i, bullet in enumerate(bullets) if bullet != "" and bullet != "-" and bullet != " " and find_closest_comment(getEmbeddings(bullet), comment_embeddings) < 1-eps],
                         "topicKey": topic, "topicName": topic}
             current_insights["data"].append(comments)
+            if len(block_content[0]["content"]) < 3000:
+                for comment in bullets:
+                    comment_embeddings.append(getEmbeddings(comment))
 
             prompt = f"Please output a summary of a MAXIMUM OF 30 WORDS for these bulletted chunks:  ```{bullet_summary}'''."
             summary = get_completion(prompt, MODEL_NAME)

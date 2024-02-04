@@ -16,6 +16,7 @@ def answer_question_lens(question: str, lensID: str, activeComponent: str, userI
     get_rel_docs_start_time = time.time()
     question_embedding=getEmbeddings(question)
     
+    print("lensID:"+lensID+"\n")
     print("question_embedding len:")
     print(len(question_embedding))
     print("\n")

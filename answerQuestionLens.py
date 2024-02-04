@@ -15,6 +15,11 @@ def answer_question_lens(question: str, lensID: str, activeComponent: str, userI
     # Record the start time for getRelDocs
     get_rel_docs_start_time = time.time()
     question_embedding=getEmbeddings(question)
+    
+    print("question_embedding len:")
+    print(len(question_embedding))
+    print("\n")
+
     def getRelDocs(q,  match_count = 5):
         if published:
             rpc_params = {
@@ -56,8 +61,13 @@ def answer_question_lens(question: str, lensID: str, activeComponent: str, userI
             "googleid": google_user_id,
             "user_id": userID
         }
-        
+        print("the correct active component, data, error:\n")
         data, error = supabaseClient.rpc("get_top_chunks_for_lens_google", rpc_params).execute()               
+        print("data,error:\n")
+        print(data)
+        print("\n\n")
+        print(error)
+        print("\n\n")
         return data[1]
         
         # data = mySupabase.from_('lens_blocks').select('block_id').eq('lens_id', lensID).execute().data    
@@ -82,7 +92,9 @@ def answer_question_lens(question: str, lensID: str, activeComponent: str, userI
 
     print("starting to get docs")
     
-    relevant_chunks = getRelDocs(question)  
+    relevant_chunks = getRelDocs(question) 
+    print("relevant_chunks:")
+    print(relevant_chunks) 
     print(f"Time taken by getRelDocs: {time.time() - get_rel_docs_start_time:.2f} seconds")
 
     relevant_block_ids = [d['block_id'] for d in relevant_chunks]
@@ -204,9 +216,6 @@ def get_searchable_feed(question, lensID):
     get_rel_docs_start_time = time.time()
     def getRelDocs(q, match_count = 3):
         question_embedding=getEmbeddings(question, 'MINILM_MODEL')
-        print("question_embedding len:")
-        print(len(question_embedding))
-        print("\n")
 
         rpc_params = {
             "match_count": match_count, 
@@ -214,10 +223,6 @@ def get_searchable_feed(question, lensID):
             "lens_id": lensID
         }
         data, error = supabaseClient.rpc("match_questions_lens", rpc_params).execute() 
-        print("data,error:\n")
-        print(data)
-        print("\n\n")
-        print(error)
         return data[1]
 
     ans1 = getRelDocs(question)

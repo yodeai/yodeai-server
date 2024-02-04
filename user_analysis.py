@@ -66,7 +66,7 @@ def generate_from_existing_topics(topics, lens_id, whiteboard_id):
                         "topicKey": topic, "topicName": topic}
             current_insights["data"].append(comments)
 
-            prompt = f"Please output a summary of a MAXIMUM OF 50 WORDS for these bulletted chunks:  ```{bullet_summary}'''."
+            prompt = f"Please output a summary of a MAXIMUM OF 30 WORDS for these bulletted chunks:  ```{bullet_summary}'''."
             summary = get_completion(prompt, MODEL_NAME)
 
             comment_summary.append({"content": summary, "topicKey": topic})
@@ -105,13 +105,17 @@ def generate_from_scratch(lens_id, whiteboard_id):
             if potential_topics:
                 prompt = f"We have these 3 existing topics that are worded in phrases: {potential_topics}. Based on this content: ```{chunk_content}```, update the 3 existing topics if needed, and OUTPUT THEM IN A COMMA SEPARATED LINE. YOU SHOULD ONLY EITHER UPDATE OR CHANGE ONE OF THE 3 TOPICS, AND DO NOT OUTPUT MORE THAN 3 TOPICS. AGAIN, THEY SHOULD BE COMMA SEPARATED, NOT BULLETTED"
             else:
-                prompt = f"Generate ONLY 3 topics related to: ```{chunk_content}```, and OUTPUT THEM IN A COMMA SEPARATED LINE, WITH EACH TOPIC CONSTRAINED TO A SHORT PHRASE. AGAIN, THEY SHOULD BE COMMA SEPARATED AND NOT BULLETTED"
-            potential_topics = get_completion(prompt, MODEL_NAME)
+                prompt = f"Generate ONLY 3 topics related to: ```{chunk_content}```, and OUTPUT THEM IN A COMMA SEPARATED LINE, WITH EACH TOPIC CONSTRAINED TO A SHORT PHRASE. AGAIN, THEY SHOULD BE COMMA SEPARATED AND NOT BULLETTED, THERE SHOULD BE NO '-'"
+            
+            result = get_completion(prompt, MODEL_NAME)
+            if result != "":
+                potential_topics = result
 
             print("potential_topics", potential_topics)
         # Sort scored topics based on the score in descending order
         sorted_topics = potential_topics.split(",")
         sorted_topics = [topic.strip() for topic in sorted_topics]
+        sorted_topics = sorted_topics[:3]
         print("sorted_topics", sorted_topics)
         new_percentage = float(1/(num_cells))
         data, error = supabaseClient.rpc("update_plugin_progress", {"id": whiteboard_id, "new_progress": new_percentage}).execute() 
@@ -129,7 +133,7 @@ def generate_from_scratch(lens_id, whiteboard_id):
                         "topicKey": topic, "topicName": topic}
             current_insights["data"].append(comments)
 
-            prompt = f"Please output a summary of a MAXIMUM OF 50 WORDS for these bulletted chunks:  ```{bullet_summary}'''."
+            prompt = f"Please output a summary of a MAXIMUM OF 30 WORDS for these bulletted chunks:  ```{bullet_summary}'''."
             summary = get_completion(prompt, MODEL_NAME)
 
             comment_summary.append({"content": summary, "topicKey": topic})
@@ -142,8 +146,9 @@ def generate_from_scratch(lens_id, whiteboard_id):
     return json_object
 
 def clean_insight_area(value):
-    # Remove whitespaces and trailing punctuation
-    cleaned_value = re.sub(r'\s+', '', value)
+    # Remove trailing whitespaces on the outside of phrases
+    cleaned_value = re.sub(r'^\s+|\s+$', '', value)
+    # Remove trailing punctuation
     cleaned_value = re.sub(r'[^\w\s]', '', cleaned_value)
     return cleaned_value
 

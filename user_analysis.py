@@ -4,7 +4,7 @@ from utils import remove_invalid_surrogates, get_completion
 import time
 from competitive_analysis import update_whiteboard_status
 import re
-
+from utils import getEmbeddings
 MODEL_NAME = "gpt-3.5-turbo"
 
 def get_block_ids(lens_id):
@@ -33,8 +33,16 @@ def extract_background_info(content):
     prompt = f"This content comes from a user interview, please return background about this interviewee in ONE SENTENCE:```{content}'''"
     return get_completion(prompt, MODEL_NAME)
 
+def get_topic_embedding(topics):
+    result = {}
+    for area in topics:
+        embedding=getEmbeddings(area)
+        result[area] = embedding
+    return result
+
 def generate_from_existing_topics(topics, lens_id, whiteboard_id):
     update_whiteboard_status("processing", whiteboard_id)
+    topics_embedding = get_topic_embedding(topics)
     json_object = {"summary": {"users": [], "topics": [{"key": name, "name": name} for i, name in enumerate(topics)]},
                 "insights": []}
 
@@ -55,12 +63,21 @@ def generate_from_existing_topics(topics, lens_id, whiteboard_id):
         current_insights = {"data": [], "user": {"id": user_id, "info": background_info, "name": name}}
 
         for topic_id, topic in enumerate(topics):
-            print("topic", topic)
-            bullet_summary = ""
-            for chunk_id, chunk_content in enumerate(cleaned_chunks):
-                prompt = f"Please output one bullet point summary of:  ```{chunk_content}''' that relates to {topic}, where each bullet point starts with a '-', AND PLEASE LIMIT TO 1 BULLET POINT."
-                response = get_completion(prompt, MODEL_NAME)
-                bullet_summary += response
+            rpc_params = {
+            "interview_block_id": block_id,
+            "matchcount": 5, 
+            "queryembedding": topics_embedding[topic],
+            }
+            
+            data, error = supabaseClient.rpc("get_top_chunks_for_user_analysis", rpc_params).execute()
+            relevant_chunks = data[1]
+            print("chunks", relevant_chunks)
+            text = ""
+            for d in relevant_chunks:        
+                text += d['content'] + "\n\n"  
+
+            prompt = f"Please output a max of 10 bullet points for this content, and start each bullet with '-':  ```{text}'''."
+            bullet_summary = get_completion(prompt, MODEL_NAME)
 
             comments = {"comments": [{"id": i, "comment": bullet} for i, bullet in enumerate(bullet_summary.split("- ")) if bullet != ""],
                         "topicKey": topic, "topicName": topic}

@@ -44,12 +44,12 @@ def exponential_backoff(retries=5, backoff_in_seconds=1, out=sys.stdout, timeout
                 while True:
                     try:
                         return func(*args, **kwargs)
-                    except:
+                    except Exception as e:
                         if x == retries:
                             out.write(f"exception raised; number of retries is over {retries}\n")
                             raise
                         sleep_duration = (backoff_in_seconds * 2**x + random.uniform(0, 1))
-                        out.write(f"exception raised; sleeping for: {sleep_duration} seconds\n")
+                        out.write(f"exception raised: {str(e)}; sleeping for: {backoff_in_seconds * 2**x} seconds\n")
                         time.sleep(sleep_duration)
                         x += 1
             return wrapper
@@ -68,7 +68,7 @@ def exponential_backoff(retries=5, backoff_in_seconds=1, out=sys.stdout, timeout
                         if isinstance(e, timeout_decorator.timeout_decorator.TimeoutError):
                             out.write(f"Function timed out after {timeout_in_seconds} seconds; retrying\n")
                         else:
-                            out.write(f"Exception raised; sleeping for a backoff of: {backoff_in_seconds * 2**x} seconds\n")
+                            out.write(f"exception raised: {str(e)}; sleeping for a backoff of: {backoff_in_seconds * 2**x} seconds\n")
                         x += 1
 
                         sleep_duration = (backoff_in_seconds * 2**x + random.uniform(0, 1))
@@ -80,18 +80,25 @@ def exponential_backoff(retries=5, backoff_in_seconds=1, out=sys.stdout, timeout
 
 @exponential_backoff(retries=6, backoff_in_seconds=1, out=sys.stdout)
 def get_completion(prompt, model='models/text-bison-001'):    
-    if (model == "gpt-3.5-turbo"):
-        messages = [{"role": "user", "content": prompt}]
-        response = ChatCompletion.create(
-            model=model,
-            messages=messages,
-            temperature=0,
-        )
-        return response.choices[0].message["content"]   
-    # the model is text-bison     
-    completion = palm.generate_text(model='models/text-bison-001', prompt=prompt, temperature=0.2)
-    cleaned_result = remove_leadingntrailing_special_chars(completion.result)
-    return cleaned_result
+    try:
+        if (model == "gpt-3.5-turbo"):
+            messages = [{"role": "user", "content": prompt}]
+            response = ChatCompletion.create(
+                model=model,
+                messages=messages,
+                temperature=0,
+            )
+            return response.choices[0].message["content"]   
+        completion = palm.generate_text(model='models/text-bison-001', prompt=prompt, temperature=0.2)
+        # print("prompt",prompt)
+        # print("completion", completion)
+        # print("completion result", completion.result)
+        cleaned_result = remove_leadingntrailing_special_chars(completion.result if completion.result != None else "")
+        return cleaned_result
+    except Exception as e:
+        print(f"Exception dana: {str(e)}")
+        return ""  # or return some default value
+
 
 ## Below is OPENAI's get completition
 # def get_completion(prompt, model="gpt-3.5-turbo"):
@@ -231,7 +238,7 @@ def backportRows():
 
 def test_utils():    
     prompt = "I am using palm.generate_text(model='models/text-bison-001',prompt) to generate text. what other choices do i have besides text-bison-001? can you list the number of parameters of each, and that which one is more suitable for general purpose use in my code? specifically, can you compare them in terms of accuracy?"    
-    response = get_completion(prompt, "gpt-3.5-turbo")
+    response = get_completion(prompt)
     print(response)
 
 if __name__ == "__main__":  

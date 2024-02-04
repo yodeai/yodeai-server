@@ -16,10 +16,6 @@ def answer_question_lens(question: str, lensID: str, activeComponent: str, userI
     get_rel_docs_start_time = time.time()
     question_embedding=getEmbeddings(question)
     
-    print("question_embedding len:")
-    print(len(question_embedding))
-    print("\n")
-
     def getRelDocs(q,  match_count = 5):
         if published:
             rpc_params = {
@@ -61,12 +57,11 @@ def answer_question_lens(question: str, lensID: str, activeComponent: str, userI
             "googleid": google_user_id,
             "user_id": userID
         }
-        print("the correct active component, lensid:\n")
-        print(lensID)
-        print(userID)
-        print(google_user_id)
-        print(match_count)
-        print(question_embedding)
+        print("rpc_params", lensID)
+        # print(userID)
+        # print(google_user_id)
+        # print(match_count)
+        # print(question_embedding)
 
         data, error = supabaseClient.rpc("get_top_chunks_for_lens_google", rpc_params).execute()               
         print("data,error:\n")
@@ -238,7 +233,7 @@ def get_searchable_feed(question, lensID):
     return {"questions": docs}
 
 if __name__ == "__main__":  
-    test_answer_question_lens()
+    test_answer_question_lens(914)
     #get_searchable_feed("What time are the lectures of Integrative Biology 35ac?", 188)
 
 

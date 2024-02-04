@@ -89,7 +89,7 @@ def answer_question_lens(question: str, lensID: str, activeComponent: str, userI
     text = ""    
     for d in relevant_chunks:        
         text += d['content'] + "\n\n"        
-    prompt = f"You are answering questions asked by a user. Answer the question: " + question + " in a helpful and concise way and in at most one paragraph, using the following text inside triple quotes:\n '''" + text + "''' \n <<<REMEMBER:  If you cannot find an answer with the given text in triple quotes, just return the following text:" + irrelevantText+ ">>>"
+    prompt = f"You are answering questions asked by a user. Answer the question: " + question + " in a helpful and concise way and in at most one paragraph, using the following text inside triple quotes:\n '''" + text + "''' \n <<<REMEMBER:  If you cannot find an answer with the given text in triple quotes, just return the following text: " + irrelevantText+ ">>>"
     print(prompt)
     
     
@@ -204,13 +204,20 @@ def get_searchable_feed(question, lensID):
     get_rel_docs_start_time = time.time()
     def getRelDocs(q, match_count = 3):
         question_embedding=getEmbeddings(question, 'MINILM_MODEL')
- 
+        print("question_embedding len:")
+        print(len(question_embedding))
+        print("\n")
+
         rpc_params = {
             "match_count": match_count, 
             "query_embedding": question_embedding,
             "lens_id": lensID
         }
         data, error = supabaseClient.rpc("match_questions_lens", rpc_params).execute() 
+        print("data,error:\n")
+        print(data)
+        print("\n\n")
+        print(error)
         return data[1]
 
     ans1 = getRelDocs(question)

@@ -89,10 +89,6 @@ def get_completion(prompt, model='models/text-bison-001'):
                 temperature=0,
             )
             return response.choices[0].message["content"]   
-        # the model is text-bison     
-        import pprint
-        for model in palm.list_models():
-            pprint.pprint(model)
         completion = palm.generate_text(model='models/text-bison-001', prompt=prompt, temperature=0.2)
         # print("prompt",prompt)
         # print("completion", completion)

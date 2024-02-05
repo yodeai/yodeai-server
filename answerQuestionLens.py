@@ -52,7 +52,7 @@ def answer_question_lens(question: str, lensID: str, activeComponent: str, userI
             return data[1]
         #clearConsole(" calling lens func")
         
-        # params for the get_top_chunks_for_lens_google version (command commented below)
+        
         rpc_params = {
             "lensid": lensID,
             "match_count": match_count, 
@@ -60,6 +60,7 @@ def answer_question_lens(question: str, lensID: str, activeComponent: str, userI
             "googleid": google_user_id,
             "user_id": userID
         }
+        
         # rpc_params = {
         #     "lensid": lensID,
         #     "match_count": match_count, 

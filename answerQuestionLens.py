@@ -51,20 +51,27 @@ def answer_question_lens(question: str, lensID: str, activeComponent: str, userI
             data, error = supabaseClient.rpc("get_top_chunks_for_inbox_google", rpc_params).execute() 
             return data[1]
         #clearConsole(" calling lens func")
+        
+        # params for the get_top_chunks_for_lens_google version (command commented below)
+        # rpc_params = {
+        #     "lensid": lensID,
+        #     "match_count": match_count, 
+        #     "query_embedding": question_embedding,
+        #     "googleid": google_user_id,
+        #     "user_id": userID
+        # }
         rpc_params = {
             "lensid": lensID,
             "match_count": match_count, 
             "query_embedding": question_embedding,
-            "googleid": google_user_id,
-            "user_id": userID
-        }
+        }        
         print("rpc_params", activeComponent)
         # print(userID)
         # print(google_user_id)
         # print(match_count)
         # print(question_embedding)
-
-        data, error = supabaseClient.rpc("get_top_chunks_for_lens_google", rpc_params).execute()               
+        data, error = supabaseClient.rpc("get_top_chunks_for_lens", rpc_params).execute()               
+        #data, error = supabaseClient.rpc("get_top_chunks_for_lens_google", rpc_params).execute()               
         print("data,error:\n")
         print(data)
         print("\n\n")

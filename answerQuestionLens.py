@@ -51,7 +51,8 @@ def answer_question_lens(question: str, lensID: str, activeComponent: str, userI
             data, error = supabaseClient.rpc("get_top_chunks_for_inbox_google", rpc_params).execute() 
             return data[1]
         #clearConsole(" calling lens func")
-        print("lensid", lensID)
+        
+        
         rpc_params = {
             "lensid": lensID,
             "match_count": match_count, 
@@ -59,12 +60,18 @@ def answer_question_lens(question: str, lensID: str, activeComponent: str, userI
             "googleid": google_user_id,
             "user_id": userID
         }
+        
+        # rpc_params = {
+        #     "lensid": lensID,
+        #     "match_count": match_count, 
+        #     "query_embedding": question_embedding,
+        # }        
         print("rpc_params", activeComponent)
         # print(userID)
         # print(google_user_id)
         # print(match_count)
         # print(question_embedding)
-
+        #data, error = supabaseClient.rpc("get_top_chunks_for_lens", rpc_params).execute()               
         data, error = supabaseClient.rpc("get_top_chunks_for_lens_google", rpc_params).execute()               
         print("data,error:\n")
         print(data)
@@ -109,7 +116,7 @@ def answer_question_lens(question: str, lensID: str, activeComponent: str, userI
     
     # Record the start time for get_completion
     get_completion_start_time = time.time()
-    response = get_completion(prompt)
+    response = get_completion(prompt, MODEL_NAME)
     # Print the time taken by get_completion
     print(f"Time taken by get_completion: {time.time() - get_completion_start_time:.2f} seconds")
         

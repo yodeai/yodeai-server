@@ -28,7 +28,7 @@ def answer_question_lens(question: str, lensID: str, activeComponent: str, userI
             data, error = supabaseClient.rpc("get_top_chunks_for_lens_published", rpc_params).execute() 
             return data[1]
 
-        if (activeComponent == "global" or "myblocks"):
+        if (activeComponent == "global" or activeComponent == "myblocks"):
             rpc_params = {
                 "match_count": match_count, 
                 "query_embedding": question_embedding,
@@ -51,6 +51,7 @@ def answer_question_lens(question: str, lensID: str, activeComponent: str, userI
             data, error = supabaseClient.rpc("get_top_chunks_for_inbox_google", rpc_params).execute() 
             return data[1]
         #clearConsole(" calling lens func")
+        print("lensid", lensID)
         rpc_params = {
             "lensid": lensID,
             "match_count": match_count, 

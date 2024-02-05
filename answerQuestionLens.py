@@ -108,7 +108,7 @@ def answer_question_lens(question: str, lensID: str, activeComponent: str, userI
     
     # Record the start time for get_completion
     get_completion_start_time = time.time()
-    response = get_completion(prompt)
+    response = get_completion(prompt, MODEL_NAME)
     # Print the time taken by get_completion
     print(f"Time taken by get_completion: {time.time() - get_completion_start_time:.2f} seconds")
         

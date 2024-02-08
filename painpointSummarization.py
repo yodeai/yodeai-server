@@ -7,6 +7,8 @@ from langchain.document_loaders import PyPDFLoader
 from docx import Document
 from DB import supabaseClient
 
+gpt_model_name = "gpt-3.5-turbo"
+
 # Replace 'your_folder_path' with the path to the folder you want to read files from.
 folder_path = '../reviews'
 
@@ -33,7 +35,7 @@ rawData = {}
 
 def getPainPoints(review):
     prompt = f"I want to extract the main pain points that the user is facing from the review I provide below. Create a list of these pain points. Each item on the list should focus on a specific pain point that the user mentioned. Start the description of each item on the list with a short expressive name that summarizes the theme of that pain point. Remember, only list pain points, not positive comments from the user.  User Review: ``{review}''"   
-    response = get_completion(prompt, "gpt-3.5-turbo")
+    response = get_completion(prompt, gpt_model_name)
     return response
 
 def splitReviewPainpoints(input_string):
@@ -80,27 +82,6 @@ def getRawData():
             rawData[index] = {"body":split}  
             index += 1
     return None
-
-
-
-
-
-
-def getSummaryData4RawDataBlock(text):
-    prompt =  f"You are summarizing pain points extracted from user reviews in a concise way. Firstly, give the following list of pain points an informative title that reflects the main theme of the pain points.  Then, in a new line write a summary preferably no more than 200 words for the following text: ```{text}''' Your answer should be formatted as follows: in the first line, write ``Title:'' followed with the title , and  in the second line write  ``Summary:'' followed with the summary."
-    #clearConsole(prompt)
-    response = get_completion(prompt)
-    title_starts = 1+response.find(":")
-    title_ends = response.find("\n")    
-    title = response[title_starts:title_ends].strip()
-    all_but_title = response[title_ends:]
-    summary_starts = 1+all_but_title.find(":")
-    summary = all_but_title[summary_starts:].strip()
-    if (len(text)<1000):
-        summary = text
-    clearConsole(response)
-    return {"title": title, "summary": summary}
-
 
 
 
@@ -151,14 +132,7 @@ def loadData():
         #count += 1
     return ans
 
-def addEmbeddings():
-    data, error = supabaseClient.table('block_for_lisa').select('block_id', 'summary', 'embedding').order('block_id').execute()
-    ans = data[1]
-    for index,element in enumerate(data[1]):
-        print(f"getting embedding for {index}")
-        element['embedding'] = getEmbeddings(element['summary'])
-    supabaseClient.table('block_for_lisa').upsert(ans, returning='minimal')
-    return
+
 
 from DB import getBlockIDsOfLens, getBlockTitles, supabaseClient
 from debug.tools import clearConsole
@@ -183,7 +157,7 @@ def getSubstantiveness(text):
     if ((not text) or (len(text)<5)):
         return 0
     prompt = f"Does the following text have any concrete substantive information? Assign a score between 0 to 10, with 10 being the most substantive. Answer with a single number, the score alone. Text: ``{text}'' "
-    response = get_completion(prompt)
+    response = get_completion(prompt, gpt_model_name)
     clearConsole( extractFirstInteger(response))
     return extractFirstInteger(response)
 
@@ -206,40 +180,42 @@ def getRelevantBlocksInCluster(cluster, blockInfo, topk):
 
 def getClusterSummaryInfo(cluster, blocksInCluster):
     if (len(blocksInCluster)==0): 
-        return {"title": "", "summary": ""}  
+        return {"content": ""}  
     elif (len(blocksInCluster)==1):
         blockID = blocksInCluster[0]['blockID']
-        return {"title": data[blockID]['title'], "summary": data[blockID]['summary']}
+        return {"content": data[blockID]['content']}
     
     blocksInCluster = blocksInCluster[0:8]
     text = ""
     for b in blocksInCluster:
-        text += data[b['blockID']]['summary']
+        text += data[b['blockID']]['content']
         text += "\n\n"
 
     prompt = f"""You are summarizing the following text inside qoutes in a concise way.     
-    The text contains multiple parts, each about a document or an email exchanges between people. These parts are separated by blank lines. 
-    Firstly, find an informative title that reflects the main theme for the entire text. 
-    Then, in a new line write a summary for the entire text preferably no more than 200 words that preserves concrete information such as names that are central to the narratives in the text.
-    Text: "{text}" \n Your answer should be formatted as follows: in the first line, write "Title:" followed with the title, and in the second line write "Summary:" followed with the summary."""
+    The text contains multiple parts. Each part is about a user pain point. These parts are separated by blank lines. 
+    Write a brief summary for the entire text that captures the main theme for all of the given pain points,  preferably no more than 20 words.
+    Text: "{text}" Your answer should be formatted as follows: in the first line, write "Main theme:" followed with  your response. """
+
+    # prompt = f"""You are summarizing the following text inside qoutes in a concise way.     
+    # The text contains multiple parts, each about a document or an email exchanges between people. These parts are separated by blank lines. 
+    # Firstly, find an informative title that reflects the main theme for the entire text. 
+    # Then, in a new line write a summary for the entire text preferably no more than 200 words that preserves concrete information such as names that are central to the narratives in the text.
+    # Text: "{text}" \n Your answer should be formatted as follows: in the first line, write "Title:" followed with the title, and in the second line write "Summary:" followed with the summary."""
     
     # if (cluster == debugCluster):
     #     print(f"\n\n debugCluster {debugCluster}  promot: {prompt}")
     #     for b in blocksInCluster:
     #         print(f"block in {debugCluster}: {b}\n")
-    response = get_completion(prompt)
-    title_starts = 1+response.find(":")
-    title_ends = response.find("\n")    
-    title = response[title_starts:title_ends].strip()
-    all_but_title = response[title_ends:]
-    summary_starts = 1+all_but_title.find(":")
-    summary = all_but_title[summary_starts:].strip()
-    return {"title": title, "summary": summary}
+    response = get_completion(prompt, gpt_model_name)
+    content_starts = 1+response.find(":")
+    content = response[content_starts:].strip()
+    return {"content": content}
 
 def add2queue(tail, clusterIndex, summaryInfo):
+    #ans.append({'content': row['content'], 'embedding': ast.literal_eval(row['embedding']), 'reviewer_id': row['reviewer_id']})
     if (len(data)<=tail):                
-        data.append({'title': "", 'summary': "", 'embedding': [], 'file_name': ""})
-    data[tail] = {'title': summaryInfo['title'], 'summary': summaryInfo['summary'], 'embedding': getEmbeddings(summaryInfo['summary']), 'file_name': ""}
+        data.append({'content': "",  'embedding': [], 'reviewer_id': ""})
+    data[tail] = {'content': summaryInfo['content'],  'embedding': getEmbeddings(summaryInfo['content']), 'reviewer_id': ""}
     return
 
 
@@ -259,9 +235,9 @@ def refineTree():
 def writeNode(node): 
     blockData = ""
     if (len(children[node])>0):
-        blockData = f"node: {node}\n Title: {data[node]['title']}\n Summary: {data[node]['summary']}\n children: {children[node]}\n\n"
+        blockData = f"node: {node}\n Content: {data[node]['content']}\n  children: {children[node]}\n\n"
     else: 
-        blockData = f"node: {node}\n Title: {data[node]['title']}\n Summary: {data[node]['summary']}\n file name: {data[node]['file_name']}\n\n"
+        blockData = f"node: {node}\n Content: {data[node]['content']}\n  Reviewer ID: {data[node]['reviewer_id']}\n\n"
     updateFile(output_file, blockData)
     # for c in childrenInfo:
     #     childID = c['blockID']
@@ -345,12 +321,12 @@ np.random.seed(42)
 
 #makeDB()
 data = loadData()
-for entry in data:
-    print(entry['content'])
-    print(entry['reviewer_id'])
-#clusterData()
-#refineTree()
-#writeOutput()
+# for entry in data:
+#     print(entry['content'])
+#     print(entry['reviewer_id'])
+clusterData()
+refineTree()
+writeOutput()
 
 
 

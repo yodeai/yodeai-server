@@ -69,7 +69,6 @@ def find_closest_comment(comment_embedding, comment_embeddings):
     return max_similarity
 
 def generate_from_existing_topics(topics, lens_id, whiteboard_id):
-    update_whiteboard_status("processing", whiteboard_id)
     topics_embedding = get_topic_embedding(topics)
     json_object = {"summary": {"users": [], "topics": [{"key": name, "name": name} for i, name in enumerate(topics)]},
                 "insights": []}
@@ -166,6 +165,7 @@ def generate_topics(lens_id):
 def generate_user_analysis(topics, lens_id, whiteboard_id):
     try:
         start_time = time.time()
+        update_whiteboard_status("processing", whiteboard_id)
         print("topics", topics)
         topics = [clean_insight_area(topic) for topic in topics]
         topics = [topic for topic in topics if topic != ""]

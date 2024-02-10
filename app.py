@@ -273,6 +273,16 @@ async def route_user_analysis(data: dict):
     task = user_analysis_task.apply_async(args=[topics, lens_id, whiteboard_id])
     return JSONResponse({"task_id": task.id, "type": "user_analysis"})
 
+
+@app.post("/revokeTask")
+async def route_user_analysis(data: dict):
+    task_id = data.get("task_id")
+    if task_id:
+        # Revoke the task
+        celery.control.revoke(task_id, terminate=True)
+        return JSONResponse({'status': 'Task revoked successfully'})
+    else:
+        return JSONResponse({'error': 'Task ID not provided'})
     
 @app.post("/processAncestors")
 async def route_process_ancestors(information: dict):

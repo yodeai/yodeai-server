@@ -251,6 +251,19 @@ async def google_auth(body: dict):
     # You can now store google_tokens in your database or use it as needed
     return {"google_tokens": google_tokens}
 
+def update_whiteboard_task_id(task_id, whiteboard_id):
+    # Get the plugin
+    data, _ = supabaseClient.table('whiteboard')\
+        .select('plugin')\
+        .eq('whiteboard_id', whiteboard_id)\
+        .execute()
+
+    # Update the status of the block
+    update_response, update_error = supabaseClient.table('whiteboard')\
+        .update({'task_id': task_id})\
+        .eq('whiteboard_id', whiteboard_id)\
+        .execute()
+
 @app.post("/competitiveAnalysis")
 async def route_competitive_analysis(data: dict):
     company_mapping = data.get("company_mapping")
@@ -261,6 +274,7 @@ async def route_competitive_analysis(data: dict):
         raise HTTPException(status_code=400, detail="whiteboard id, urls, and areas must be provided")
     update_whiteboard_status("queued", whiteboard_id)
     task = competitive_analysis_task.apply_async(args=[company_mapping, areas, whiteboard_id])
+    update_whiteboard_task_id(task.id, whiteboard_id)
     return JSONResponse({"task_id": task.id, "type": "competitive_analysis"})
 
 @app.post("/userAnalysis")
@@ -271,8 +285,21 @@ async def route_user_analysis(data: dict):
     # Get the plugin
     update_whiteboard_status("queued", whiteboard_id)
     task = user_analysis_task.apply_async(args=[topics, lens_id, whiteboard_id])
+    update_whiteboard_task_id(task.id, whiteboard_id)
     return JSONResponse({"task_id": task.id, "type": "user_analysis"})
 
+
+@app.post("/revokeTask")
+async def route_user_analysis(data: dict):
+    task_id = data.get("task_id")
+    if task_id:
+        # Revoke the task
+        celery.control.revoke(task_id, terminate=True)
+        print("Revoked!")
+        return JSONResponse({'status': 'Task revoked successfully'})
+    else:
+        print("Error revoking")
+        return JSONResponse({'error': 'Task ID not provided'})
     
 @app.post("/processAncestors")
 async def route_process_ancestors(information: dict):

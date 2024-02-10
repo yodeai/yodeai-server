@@ -295,8 +295,10 @@ async def route_user_analysis(data: dict):
     if task_id:
         # Revoke the task
         celery.control.revoke(task_id, terminate=True)
+        print("Revoked!")
         return JSONResponse({'status': 'Task revoked successfully'})
     else:
+        print("Error revoking")
         return JSONResponse({'error': 'Task ID not provided'})
     
 @app.post("/processAncestors")

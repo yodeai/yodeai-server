@@ -88,6 +88,14 @@ def generate_from_existing_topics(topics, lens_id, whiteboard_id):
         background_info = extract_background_info(block_id, background_info_embedding)
         current_insights = {"data": [], "user": {"id": user_id, "info": background_info, "name": name}}
         comment_embeddings = []
+        # prompt = f"Does this title include a person's name? It is ok if it includes other words as well. This is the title: {name}. OUTPUT YES OR NO ONLY."
+        # response = get_completion(prompt, MODEL_NAME).lower()
+        # print(f"this is the response for user {name}", response)
+        # if ("no" in response):
+        #     new_percentage = float((1/(num_cells))*len(topics))
+        #     data, error = supabaseClient.rpc("update_plugin_progress", {"id": whiteboard_id, "new_progress": new_percentage}).execute() 
+        #     continue
+        
         for topic_id, topic in enumerate(topics):
             rpc_params = {
             "interview_block_id": block_id,
@@ -101,7 +109,7 @@ def generate_from_existing_topics(topics, lens_id, whiteboard_id):
             for d in relevant_chunks:        
                 text += d['content'] + "\n\n"  
 
-            prompt = f"Please provide a concise summary for the given content, if it is relevant to {topic}. If the content is irrelevant, just output a single bullet point: '- not relevant'.  If referring to the interviewee, refer to them as 'The user'. Start each bullet point with '-':\n\n```{text}```\n\nEnsure that the bullet points are relevant to {topic}, IF A BULLET POINT IS IRRELEVANT TO THE {topic} THEN DO NOT INCLUDE IT AT ALL. DO NOT OUTPUT MORE THAN 10 BULLET POINTS, AIM TO GENERATE LESS BULLET POINTS."
+            prompt = f"Please provide a concise summary for the given content, if it is relevant to {topic}. If the content is irrelevant, and does not have a user interview, just output a single bullet point: '- not relevant'.  If referring to the interviewee, refer to them as 'The user'. Start each bullet point with '-':\n\n```{text}```\n\nEnsure that the bullet points are relevant to {topic}, IF A BULLET POINT IS IRRELEVANT TO THE {topic} THEN OUTPUT '- not relevant'. DO NOT OUTPUT MORE THAN 10 BULLET POINTS, AIM TO GENERATE LESS BULLET POINTS."
             bullet_summary = get_completion(prompt, MODEL_NAME)
 
             bullets = bullet_summary.split("- ")
@@ -148,19 +156,13 @@ def generate_topics(lens_id):
         for d in relevant_chunks:        
             text += d['content'] + "\n\n"  
         if topics_text:
-            prompt = f"Please update these 3 interview topics (MAKE THEM GENERALIZABLE AND SHORT PHRASES): {topics_text} according to this content: ```{text}''' and output the three topics again and start each bullet with '-':."
+            prompt = f"Please update these 3 interview topics (MAKE THEM GENERALIZABLE AND SHORT PHRASES): {topics_text} according to this content: ```{text}''' and output the three topics again and start each bullet with '-'. DO NOT OUTPUT MORE THAN 3 TOPICS."
             topics_text = get_completion(prompt, MODEL_NAME)
         else:
-            prompt = f"Please output 3 main topics (MAKE THEM GENERALIZABLE AND SHORT PHRASES) that can be extracted from this interview content, and start each bullet with '-':  ```{text}'''."
+            prompt = f"Please output 3 main topics (MAKE THEM GENERALIZABLE AND SHORT PHRASES) that can be extracted from this interview content, and start each bullet with '-':  ```{text}'''. DO NOT OUTPUT MORE THAN 3 TOPICS."
             topics_text = get_completion(prompt, MODEL_NAME)
         print("topics", topics_text)
     return topics_text.split("-")
-
-    # generate 3 topics from the chunks
-    # iteratively update the 3 topics with each user
-
-
-
 
 def generate_user_analysis(topics, lens_id, whiteboard_id):
     try:
@@ -173,6 +175,7 @@ def generate_user_analysis(topics, lens_id, whiteboard_id):
             topics = generate_topics(lens_id)
             topics = [clean_insight_area(topic) for topic in topics]
             topics = [topic for topic in topics if topic != ""]
+            topics = topics[:3]
         
         json_object = generate_from_existing_topics(topics, lens_id, whiteboard_id)
 

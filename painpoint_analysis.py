@@ -11,7 +11,8 @@ import time
 
 MODEL_NAME = "gpt-4"
 NUM_CLUSTERS = 5
-LENS_ID = 972
+# LENS_ID = 972
+LENS_ID = 959
 KMEANS = 'KMEANS'
 DEFAULT="DEFAULT"
 PAINPOINT="PAINPOINT"
@@ -25,14 +26,14 @@ default_painpoints = ['Buggy, glitchy, and keeps crashing', 'Removal of communit
 
 def update_spreadsheet_status(status, spreadsheet_id):
     # Get the plugin
-    data, _ = supabaseClient.table('whiteboard')\
+    data, _ = supabaseClient.table('spreadsheet')\
         .select('plugin')\
         .eq('spreadsheet_id', spreadsheet_id)\
         .execute()
     json_object = data[1][0]["plugin"]
     json_object["state"]["status"] = status
     if status == "processing":
-        json_object["state"]["progress"] = 0
+        json_object["state"]["progress"] = 0.0
 
     # Update the status of the block
     update_response, update_error = supabaseClient.table('spreadsheet')\
@@ -97,7 +98,7 @@ def splitReviewPainpoints(input_string):
         splits.append(part)
     return splits
 
-def cluster_painpoints_for_topics(lens_id, method=KMEANS):
+def cluster_painpoints_for_topics(lens_id, num_topics=NUM_CLUSTERS, method=KMEANS):
     start_time = time.time()
     block_ids = get_block_ids(lens_id)
     painpoints = []
@@ -108,7 +109,7 @@ def cluster_painpoints_for_topics(lens_id, method=KMEANS):
     painpoint_embeddings_list = [getEmbeddings(painpoint) for painpoint in painpoints]
     painpoint_embeddings = {str(painpoint_embeddings_list[i]): painpoint for i, painpoint in enumerate(painpoints)}
     if method == KMEANS:
-        kmeans = KMeans(n_clusters=NUM_CLUSTERS, random_state=42, n_init=10)
+        kmeans = KMeans(n_clusters=num_topics, random_state=42, n_init=10)
         kmeans.fit(painpoint_embeddings_list)
         # Get cluster assignments for each chunk
         cluster_assignments = kmeans.labels_
@@ -132,14 +133,14 @@ def cluster_painpoints_for_topics(lens_id, method=KMEANS):
         print(f"Time taken: {time.time() - start_time:.2f} seconds")
         return topics
 
-def cluster_for_topics(lens_id, method=KMEANS):
+def cluster_for_topics(lens_id, num_clusters=NUM_CLUSTERS, method=KMEANS):
     start_time = time.time()
     block_ids = get_block_ids(lens_id)
     chunks_mapping = get_chunks_from_block_ids(block_ids)
     chunks_list_str = list(chunks_mapping.keys())
     chunks_list = [json.loads(chunk_emb) for chunk_emb in chunks_list_str]
     if method == KMEANS:
-        kmeans = KMeans(n_clusters=NUM_CLUSTERS, random_state=42, n_init=10)
+        kmeans = KMeans(n_clusters=num_clusters, random_state=42, n_init=10)
         kmeans.fit(chunks_list)
         # Get cluster assignments for each chunk
         cluster_assignments = kmeans.labels_
@@ -183,10 +184,11 @@ def relation_score(review, painpoint):
         # print("Unable to extract a numerical score from the response.")
         return 0
 
-def cluster_reviews(lens_id, painpoints, spreadsheet_id, method=KMEANS):
+def cluster_reviews(lens_id, painpoints, spreadsheet_id, num_clusters, method=KMEANS):
     update_spreadsheet_status("processing", spreadsheet_id)
     if not painpoints:
-        painpoints = cluster_for_topics(lens_id)
+        print("num clusters", num_clusters)
+        painpoints = cluster_for_topics(lens_id, num_clusters)
     start_time = time.time()
     painpoint_embeddings = [getEmbeddings(painpoint) for painpoint in painpoints]
     block_ids = get_block_ids(lens_id)
@@ -234,37 +236,58 @@ def cluster_reviews(lens_id, painpoints, spreadsheet_id, method=KMEANS):
                             dates.add(month_year)
                         painpoint_to_block_id[representative_painpoint][month_year].append(chunk['block_id'])
                         print("Block: ", chunk['block_id'])
-                        print("Content: ", chunk['content'])
             print("\n")
-        data, error = supabaseClient.rpc("update_plugin_progress_spreadsheet", {"id": spreadsheet_id, "new_progress": 1/len(cluster_chunks)}).execute() 
+        new_percentage = float(1/len(painpoints))
+        data, error = supabaseClient.rpc("update_plugin_progress_spreadsheet", {"id": spreadsheet_id, "new_progress": new_percentage}).execute() 
         
         result = convert_data(painpoint_to_block_id, dates)
         print(f"Time taken: {time.time() - start_time:.2f} seconds")
         return result
-
+def custom_sort(month):
+    # Split month and year
+    month_str, year_str = month.split("/")
+    
+    # Convert month and year to integers
+    month_num = int(month_str)
+    year_num = int(year_str)
+    
+    # Return a tuple of (year, month) for sorting
+    return (year_num, month_num)
+def convert_date(date_str):
+    # Convert the date string to a datetime object
+    date_obj = datetime.strptime(date_str, '%m/%Y')
+    
+    # Get the month name and year
+    month_name = date_obj.strftime('%B')
+    year = date_obj.year
+    
+    # Return the formatted month name and year
+    return f"{month_name} {year}"
 def convert_data(painpoints, months):
     result = []
 
     # Create the header row
-    header_row = ["Painpoint"]
-    for month in sorted(months):
-        header_row.append(month)
+    header_row = [0, 0, "Painpoint"]
     result.append(header_row)
+    months = sorted(months, key=custom_sort)
+
+    for i, month in enumerate(months):
+        result.append([0, i+1, convert_date(month)])
 
     for i, (painpoint, data) in enumerate(painpoints.items(), start=1):
-        row_data = [painpoint]
-        for month in sorted(months):
-            block_ids = data.get(month, [])
-            row_data.append(len(block_ids))
+        row_data = [i, 0, painpoint]
         result.append(row_data)
+        for j, month in enumerate(months):
+            block_ids = data.get(month, [])
+            result.append([i, j+1, len(block_ids)])
     with open("dana_reviews_output.csv", 'w', newline='') as csvfile:
         csvwriter = csv.writer(csvfile)
         csvwriter.writerows(result)
     return result
 # print("cluster reviews")
-# print(cluster_reviews(LENS_ID, default_painpoints))
-print("KMEANS for painpoints")
-print(cluster_painpoints_for_topics(LENS_ID, KMEANS))
+# print(cluster_reviews(LENS_ID, default_painpoints, -1))
+# print("KMEANS for painpoints")
+# print(cluster_painpoints_for_topics(LENS_ID, KMEANS))
 # print("KMEANS for chunks")
 # print(cluster_for_topics(LENS_ID, KMEANS))
 # print("DBSCAN")

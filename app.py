@@ -297,9 +297,10 @@ async def route_user_analysis(data: dict):
     topics = data.get("painpoints")
     spreadsheet_id = data.get("spreadsheet_id")
     lens_id = data.get("lens_id")
+    num_clusters = data.get("num_clusters")
     # Get the plugin
     update_spreadsheet_status("queued", spreadsheet_id)
-    task = painpoint_analysis_task.apply_async(args=[topics, lens_id, spreadsheet_id])
+    task = painpoint_analysis_task.apply_async(args=[topics, lens_id, spreadsheet_id, num_clusters])
     update_spreadsheet_task_id(task.id, spreadsheet_id)
     return JSONResponse({"task_id": task.id, "type": "painpoint_analysis"})
 

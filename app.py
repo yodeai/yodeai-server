@@ -10,7 +10,7 @@ from fastapi.templating import Jinja2Templates
 from sklearn.metrics.pairwise import cosine_similarity
 from fastapi.middleware.cors import CORSMiddleware
 from answerQuestionLens import answer_question_lens, get_searchable_feed, update_question_popularity
-from celery_tasks.tasks import process_block_task, process_ancestors_task, competitive_analysis_task, user_analysis_task
+from celery_tasks.tasks import process_block_task, process_ancestors_task, competitive_analysis_task, user_analysis_task, painpoint_analysis_task
 from pydantic import BaseModel
 from config.celery_utils import create_celery
 from config.celery_utils import get_task_info
@@ -24,6 +24,7 @@ from typing import Optional
 import asyncio
 import httpx
 from competitive_analysis import update_whiteboard_status
+from painpoint_analysis import update_spreadsheet_status
 class LensInvite(BaseModel):
     sender: str
     lensId: str
@@ -252,16 +253,18 @@ async def google_auth(body: dict):
     return {"google_tokens": google_tokens}
 
 def update_whiteboard_task_id(task_id, whiteboard_id):
-    # Get the plugin
-    data, _ = supabaseClient.table('whiteboard')\
-        .select('plugin')\
-        .eq('whiteboard_id', whiteboard_id)\
-        .execute()
-
     # Update the status of the block
     update_response, update_error = supabaseClient.table('whiteboard')\
         .update({'task_id': task_id})\
         .eq('whiteboard_id', whiteboard_id)\
+        .execute()
+    
+
+def update_spreadsheet_task_id(task_id, spreadsheet_id):
+    # Update the status of the block
+    update_response, update_error = supabaseClient.table('spreadsheet')\
+        .update({'task_id': task_id})\
+        .eq('spreadsheet_id', spreadsheet_id)\
         .execute()
 
 @app.post("/competitiveAnalysis")
@@ -287,6 +290,20 @@ async def route_user_analysis(data: dict):
     task = user_analysis_task.apply_async(args=[topics, lens_id, whiteboard_id])
     update_whiteboard_task_id(task.id, whiteboard_id)
     return JSONResponse({"task_id": task.id, "type": "user_analysis"})
+
+
+@app.post("/painpointAnalysis")
+async def route_user_analysis(data: dict):
+    topics = data.get("painpoints")
+    spreadsheet_id = data.get("spreadsheet_id")
+    lens_id = data.get("lens_id")
+    num_clusters = data.get("num_clusters")
+    # Get the plugin
+    update_spreadsheet_status("queued", spreadsheet_id)
+    task = painpoint_analysis_task.apply_async(args=[topics, lens_id, spreadsheet_id, num_clusters])
+    update_spreadsheet_task_id(task.id, spreadsheet_id)
+    return JSONResponse({"task_id": task.id, "type": "painpoint_analysis"})
+
 
 
 @app.post("/revokeTask")

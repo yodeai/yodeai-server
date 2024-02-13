@@ -7,6 +7,20 @@ from utils import supabaseClient
 from datetime import datetime
 from competitive_analysis import create_competitive_analysis, update_whiteboard_status, update_whiteboard_nodes
 from user_analysis import generate_user_analysis
+from painpoint_analysis import cluster_reviews, update_spreadsheet_nodes, update_spreadsheet_status
+
+
+@shared_task(name='processAncestors:painpoint_analysis_task', bind=True,autoretry_for=(Exception,), retry_jitter=True, retry_backoff=5, retry_kwargs={"max_retries": 1}, task_ignore_result = True)
+def painpoint_analysis_task(self, topics, lens_id, spreadsheet_id):
+    try:
+        output_data = cluster_reviews(lens_id, topics, spreadsheet_id)
+        update_spreadsheet_status("success", spreadsheet_id)
+        update_spreadsheet_nodes(output_data, spreadsheet_id)
+        return {"whiteboard_id": spreadsheet_id, "status": "user analysis done"}
+    except Exception as e:
+        print("Exception")
+        raise HTTPException(status_code=400, detail=str(e))
+    
 
 @shared_task(name='competitiveAnalysis:user_analysis_task', bind=True,autoretry_for=(Exception,), retry_jitter=True, retry_backoff=5, retry_kwargs={"max_retries": 1}, task_ignore_result = True)
 def user_analysis_task(self, topics, lens_id, whiteboard_id):

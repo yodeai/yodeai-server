@@ -285,9 +285,10 @@ async def route_user_analysis(data: dict):
     topics = data.get("topics")
     whiteboard_id = data.get("whiteboard_id")
     lens_id = data.get("lens_id")
+    block_ids = data.get("block_ids") or []
     # Get the plugin
     update_whiteboard_status("queued", whiteboard_id)
-    task = user_analysis_task.apply_async(args=[topics, lens_id, whiteboard_id])
+    task = user_analysis_task.apply_async(args=[topics, lens_id, whiteboard_id, block_ids])
     update_whiteboard_task_id(task.id, whiteboard_id)
     return JSONResponse({"task_id": task.id, "type": "user_analysis"})
 

@@ -96,7 +96,7 @@ def get_completion(prompt, model='models/text-bison-001'):
         cleaned_result = remove_leadingntrailing_special_chars(completion.result if completion.result != None else "")
         return cleaned_result
     except Exception as e:
-        print(f"Exception dana: {str(e)}")
+        print(f"Exception: {str(e)}")
         return ""  # or return some default value
 
 

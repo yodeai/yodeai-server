@@ -16,7 +16,8 @@ def get_block_ids(lens_id):
     return block_ids[1]
 
 def get_block_names(block_ids):
-    block_ids_list = [block_info['block_id'] for block_info in block_ids]
+    # block_ids_list = [block_info['block_id'] for block_info in block_ids]
+    block_ids_list = block_ids
     block_names, count = supabaseClient.table('block').select('block_id', 'title').in_('block_id', block_ids_list).execute()
     return block_names[1]
 
@@ -68,14 +69,13 @@ def find_closest_comment(comment_embedding, comment_embeddings):
     max_similarity = max(similarities, default=0.0)
     return max_similarity
 
-def generate_from_existing_topics(topics, lens_id, whiteboard_id):
+def generate_from_existing_topics(topics, lens_id, whiteboard_id, block_ids, new_percentage):
     topics_embedding = get_topic_embedding(topics)
     json_object = {"summary": {"users": [], "topics": [{"key": name, "name": name} for i, name in enumerate(topics)]},
                 "insights": []}
 
-    block_ids  = get_block_ids(lens_id)
+    # block_ids  = get_block_ids(lens_id)
     block_infos = get_block_names(block_ids)
-    num_cells = len(topics) * len(block_infos)
     background_info_embedding = getEmbeddings("background information about interviewee")
 
     for user_id, block_info in enumerate(block_infos):
@@ -88,14 +88,6 @@ def generate_from_existing_topics(topics, lens_id, whiteboard_id):
         background_info = extract_background_info(block_id, background_info_embedding)
         current_insights = {"data": [], "user": {"id": user_id, "info": background_info, "name": name}}
         comment_embeddings = []
-        # prompt = f"Does this title include a person's name? It is ok if it includes other words as well. This is the title: {name}. OUTPUT YES OR NO ONLY."
-        # response = get_completion(prompt, MODEL_NAME).lower()
-        # print(f"this is the response for user {name}", response)
-        # if ("no" in response):
-        #     new_percentage = float((1/(num_cells))*len(topics))
-        #     data, error = supabaseClient.rpc("update_plugin_progress", {"id": whiteboard_id, "new_progress": new_percentage}).execute() 
-        #     continue
-        
         for topic_id, topic in enumerate(topics):
             rpc_params = {
             "interview_block_id": block_id,
@@ -109,23 +101,25 @@ def generate_from_existing_topics(topics, lens_id, whiteboard_id):
             for d in relevant_chunks:        
                 text += d['content'] + "\n\n"  
 
-            prompt = f"Please provide a concise summary for the given content, if it is relevant to {topic}. If the content is irrelevant, and does not have a user interview, just output a single bullet point: '- not relevant'.  If referring to the interviewee, refer to them as 'The user'. Start each bullet point with '-':\n\n```{text}```\n\nEnsure that the bullet points are relevant to {topic}, IF A BULLET POINT IS IRRELEVANT TO THE {topic} THEN OUTPUT '- not relevant'. DO NOT OUTPUT MORE THAN 10 BULLET POINTS, AIM TO GENERATE LESS BULLET POINTS."
+            prompt = f"Please provide a concise summary for the given content, if it is relevant to {topic}. If the content is irrelevant, just output a single bullet point: '- not relevant'.  If referring to the interviewee, refer to them as 'The user'. Start each bullet point with '-':\n\n```{text}```\n\nEnsure that the bullet points are relevant to {topic}, IF A BULLET POINT IS IRRELEVANT TO THE {topic} THEN DO NOT INCLUDE IT AT ALL. DO NOT OUTPUT MORE THAN 10 BULLET POINTS, AIM TO GENERATE LESS BULLET POINTS."
             bullet_summary = get_completion(prompt, MODEL_NAME)
 
             bullets = bullet_summary.split("- ")
 
             comments = {"comments": [{"id": i, "comment": bullet} for i, bullet in enumerate(bullets) if bullet != "" and bullet != "-" and bullet != " " and find_closest_comment(getEmbeddings(bullet), comment_embeddings) < 1-eps],
                         "topicKey": topic, "topicName": topic}
+            filtered_comments = '. '.join([comment["comment"] for comment in comments["comments"]])
+            if not filtered_comments:
+                comments = {"comments": [{"id": i, "comment": "not relevant"}],
+                        "topicKey": topic, "topicName": topic}
             current_insights["data"].append(comments)
             if len(block_content[0]["content"]) < 3000:
                 for comment in bullets:
                     comment_embeddings.append(getEmbeddings(comment))
-
-            prompt = f"Please output a summary of a MAXIMUM OF 30 WORDS for these bulletted chunks:  ```{bullet_summary}'''."
+            print(f"FILTERED COMMENTS for {name}", filtered_comments)
+            prompt = f"Please output a summary of LESS THAN 30 WORDS of this content:  ```{filtered_comments}'''. IF {filtered_comments} just says 'not relevant' or is blank then output 'not relevant'."
             summary = get_completion(prompt, MODEL_NAME)
-
             comment_summary.append({"content": summary, "topicKey": topic})
-            new_percentage = float(1/(num_cells))
             data, error = supabaseClient.rpc("update_plugin_progress", {"id": whiteboard_id, "new_progress": new_percentage}).execute() 
 
         json_object["insights"].append(current_insights)
@@ -139,11 +133,24 @@ def clean_insight_area(value):
     cleaned_value = re.sub(r'[^\w\s]', '', cleaned_value)
     return cleaned_value
 
-def generate_topics(lens_id):
-    block_ids  = get_block_ids(lens_id)
+
+def splitTopics(input_string):
+    # Splitting the string using "\n" and "."
+    result = re.split(r'[\n.]', input_string)
+
+    # Removing empty strings from the result
+    result = [part.strip() for part in result if (len(part.strip())>3)]
+
+    splits=[]
+    for i, part in enumerate(result, 1):
+        splits.append(part)
+    return splits
+
+def generate_topics(lens_id, block_ids, new_percentage, whiteboard_id):
+    # block_ids  = get_block_ids(lens_id)
     topics_text = ""
     for block_info in block_ids:
-        block_id = block_info["block_id"]
+        block_id = block_info
         # call rpc function get_most_relevant_chunk to get top 5 chunks of each user that is most relevant to the user's avg_embedding
         rpc_params = {
         "interview_block_id": block_id,
@@ -156,28 +163,43 @@ def generate_topics(lens_id):
         for d in relevant_chunks:        
             text += d['content'] + "\n\n"  
         if topics_text:
-            prompt = f"Please update these 3 interview topics (MAKE THEM GENERALIZABLE AND SHORT PHRASES): {topics_text} according to this content: ```{text}''' and output the three topics again and start each bullet with '-'. DO NOT OUTPUT MORE THAN 3 TOPICS."
+            prompt = f"Please update these 3 interview topics: {topics_text} according to this content: ```{text}''' and output the three topics again and START EACH BULLET WITH A '-' AND  MAKE THEM GENERALIZABLE AND 3-4 WORDS ONLY:."
             topics_text = get_completion(prompt, MODEL_NAME)
         else:
-            prompt = f"Please output 3 main topics (MAKE THEM GENERALIZABLE AND SHORT PHRASES) that can be extracted from this interview content, and start each bullet with '-':  ```{text}'''. DO NOT OUTPUT MORE THAN 3 TOPICS."
+            prompt = f"Please output 3 main topics that can be extracted from this interview content, and START EACH BULLET WITH A '-' AND MAKE THEM GENERALIZABLE AND 3-4 WORDS ONLY :  ```{text}'''."
             topics_text = get_completion(prompt, MODEL_NAME)
         print("topics", topics_text)
-    return topics_text.split("-")
+    data, error = supabaseClient.rpc("update_plugin_progress", {"id": whiteboard_id, "new_progress": new_percentage}).execute() 
+    result = splitTopics(topics_text)
+    return result
 
-def generate_user_analysis(topics, lens_id, whiteboard_id):
+    # generate 3 topics from the chunks
+    # iteratively update the 3 topics with each user
+
+
+
+
+def generate_user_analysis(topics, lens_id, whiteboard_id, block_ids=[]):
     try:
         start_time = time.time()
-        update_whiteboard_status("processing", whiteboard_id)
         print("topics", topics)
+        update_whiteboard_status("processing", whiteboard_id)
         topics = [clean_insight_area(topic) for topic in topics]
         topics = [topic for topic in topics if topic != ""]
+        if not block_ids:
+            block_ids = get_block_ids(lens_id)
+            block_ids = [block_info['block_id'] for block_info in block_ids]
         if not topics:
-            topics = generate_topics(lens_id)
+            num_cells = 3*len(block_ids)
+            new_percentage = float(1/(num_cells + 1))
+            topics = generate_topics(lens_id, block_ids, new_percentage, whiteboard_id)
             topics = [clean_insight_area(topic) for topic in topics]
             topics = [topic for topic in topics if topic != ""]
-            topics = topics[:3]
+        else:
+            num_cells = len(topics) * len(block_ids)
+            new_percentage = float(1/(num_cells))
         
-        json_object = generate_from_existing_topics(topics, lens_id, whiteboard_id)
+        json_object = generate_from_existing_topics(topics, lens_id, whiteboard_id, block_ids, new_percentage)
 
         print(f"Time taken: {time.time() - start_time:.2f} seconds")
         return json_object

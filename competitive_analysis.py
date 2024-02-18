@@ -14,10 +14,12 @@ import time
 from concurrent.futures import ThreadPoolExecutor
 import asyncio
 import concurrent.futures
-
+from sklearn.cluster import KMeans
+from painpoint_analysis import find_closest_5_chunks
 ######################## CONSTANTS + UTILS ############################
-
+KMEANS = 'KMEANS'
 COMPANY_SUMMARY = "summary"
+MODEL_NAME = "gpt-4"
 def embed_areas(areas_of_analysis):
     result = {}
     total_areas = [COMPANY_SUMMARY] + areas_of_analysis
@@ -554,12 +556,9 @@ def generate_company_overview(parent_url, areas_of_analysis_embedding):
     add_to_block_and_chunk(parent_url, parent_url)
     return generate_cell(COMPANY_SUMMARY, parent_url, areas_of_analysis_embedding)
 
-def crawl_and_generate_data(parent_url, urls, areas_of_analysis_embedding, num_urls, whiteboard_id, skip_web_crawl=False):
-    areas = areas_of_analysis_embedding.keys()
-    num_cells = num_urls * (len(areas))
+def crawl_for_data(parent_url, urls, num_urls, whiteboard_id, new_percentage, skip_web_crawl=False):
     if not skip_web_crawl:
         predefined_links = gather_depth_1_links(parent_url)
-        new_percentage = float(1/(num_cells))
         data, error = supabaseClient.rpc("update_plugin_progress", {"id": whiteboard_id, "new_progress": new_percentage}).execute() 
         if error:
             print(error)
@@ -571,16 +570,18 @@ def crawl_and_generate_data(parent_url, urls, areas_of_analysis_embedding, num_u
 
             # Wait for all tasks to complete
             concurrent.futures.wait(futures)
+
+
+def generate_data(parent_url, urls, areas_of_analysis_embedding, num_urls, whiteboard_id, new_percentage, skip_web_crawl=False):
     company_data = {
         "company": urls[parent_url],
         "company_url": parent_url,
         "data": []
     }
-    for area in areas:
+    for area in areas_of_analysis_embedding.keys():
         area_data_list = generate_area_data(area, parent_url, areas_of_analysis_embedding)
         company_data["data"].append(area_data_list)
         # TODO: update progress since cell done
-        new_percentage = float(1/(num_cells))
         data, error = supabaseClient.rpc("update_plugin_progress", {"id": whiteboard_id, "new_progress": new_percentage}).execute() 
         if error:
             print(error)
@@ -635,18 +636,77 @@ def update_competitive_analysis(urls, areas_of_analysis, whiteboard_id, skip_web
     .execute()
     output_data.extend(additional_output_data)
     return output_data
+def get_chunks_from_urls(urls):
+    chunks, count = supabaseClient.table('web_content_chunk').select("*").in_('parent_url', urls).execute()
+    mapping = {}
+    for chunk in chunks[1]:
+        mapping[chunk['embedding']] = chunk
+    return mapping
 
+def generate_areas_of_analysis(urls, whiteboard_id, new_percentage, method=KMEANS):
+    start_time = time.time()
+    if method == KMEANS:
+        kmeans = KMeans(n_clusters=3, random_state=42, n_init=10)
+        chunks_mapping = get_chunks_from_urls(urls)
+        chunks_list_str = list(chunks_mapping.keys())
+        chunks_list = [json.loads(chunk_emb) for chunk_emb in chunks_list_str]
+        kmeans.fit(chunks_list)
+        # Get cluster assignments for each chunk
+        cluster_assignments = kmeans.labels_
+        # Get centroid:
+        cluster_centroids = kmeans.cluster_centers_
+        # Collect chunks belonging to each cluster
+        cluster_chunks = {}
+        for i, assignment in enumerate(cluster_assignments):
+            if assignment not in cluster_chunks:
+                cluster_chunks[assignment] = []
+            emb = chunks_list_str[i]
+            cluster_chunks[assignment].append(chunks_mapping[emb])
+
+        # Get closest 5 chunks to the cluster centroid and then extract topics from that
+        topics = []
+        for i, (cluster, chunks) in enumerate(cluster_chunks.items()):
+            closest_chunks = find_closest_5_chunks(cluster_centroids[i], chunks)
+            text = ""
+            for d in closest_chunks:        
+                text += d[0]['content'] + "\n\n"
+            prompt = f"Please output one main topic that will be used as a field in a competitive analysis between companies: {text}. OUTPUT THE TOPIC IN 4-5 WORDS ONLY."
+            topic = get_completion(prompt, MODEL_NAME)
+            topics.append(topic)
+        data, error = supabaseClient.rpc("update_plugin_progress_spreadsheet", {"id": whiteboard_id, "new_progress": new_percentage}).execute() 
+        print(f"Time taken: {time.time() - start_time:.2f} seconds")
+        return topics
 
 def create_competitive_analysis(urls, areas_of_analysis, whiteboard_id, skip_web_crawl=False):
     output_data = []
     start_time = time.time()
-    areas_of_analysis_embedding = embed_areas(areas_of_analysis)
     update_whiteboard_status("processing", whiteboard_id)
     # competitive analysis progress calculation
     num_urls = len(urls)
+    areas_of_analysis = [area for area in areas_of_analysis if area != ""]
+    if not areas_of_analysis:
+        new_percentage = 1/(num_urls + num_urls*4 + 1) # web crawl, cell generation (including summary), generate areas
+    else:
+        new_percentage = 1/(num_urls + num_urls*(len(areas_of_analysis) + 1))
     with concurrent.futures.ThreadPoolExecutor(max_workers=2) as executor:
         # Submit tasks and store the Future objects
-        futures = [executor.submit(crawl_and_generate_data, parent_url, urls, areas_of_analysis_embedding, num_urls, whiteboard_id, skip_web_crawl) for parent_url in urls.keys()]
+        futures = [executor.submit(crawl_for_data, parent_url, urls, num_urls, whiteboard_id, new_percentage, skip_web_crawl) for parent_url in urls.keys()]
+
+        # Collect results from completed tasks
+        for future in concurrent.futures.as_completed(futures):
+            try:
+                result = future.result()
+            except Exception as e:
+                print(f"Error in task: {e}")
+                update_whiteboard_status("error", whiteboard_id)
+    
+    if not areas_of_analysis:
+        areas_of_analysis = generate_areas_of_analysis(urls, whiteboard_id, new_percentage)
+
+    areas_of_analysis_embedding = embed_areas(areas_of_analysis)
+    with concurrent.futures.ThreadPoolExecutor(max_workers=2) as executor:
+        # Submit tasks and store the Future objects
+        futures = [executor.submit(generate_data, parent_url, urls, areas_of_analysis_embedding, num_urls, whiteboard_id, new_percentage, skip_web_crawl) for parent_url in urls.keys()]
 
         # Collect results from completed tasks
         for future in concurrent.futures.as_completed(futures):
@@ -662,17 +722,18 @@ def create_competitive_analysis(urls, areas_of_analysis, whiteboard_id, skip_web
 
 ############################## METHOD TO RUN #########################
 if __name__ == '__main__':
-    areas_of_analysis = [
-        "integrations with third party apps/services",
-        "core features",
-        "use of artificial intelligence",
-    ]
+    # areas_of_analysis = [
+    #     "integrations with third party apps/services",
+    #     "core features",
+    #     "use of artificial intelligence",
+    # ]
 
-    urls = {
-        # "https://www.salesforce.com/ap/products/einstein-ai-solutions/" : "Salesforce",
-        # "https://www.kraftful.com/" : "Kraftful",
-        "https://craft.io/": "Craft.io",
-        "https://airfocus.com/": "Airfocus",
+    # urls = {
+    #     # "https://www.salesforce.com/ap/products/einstein-ai-solutions/" : "Salesforce",
+    #     # "https://www.kraftful.com/" : "Kraftful",
+    #     "https://craft.io/": "Craft.io",
+    #     "https://airfocus.com/": "Airfocus",
         
-    }
-    create_competitive_analysis(urls, areas_of_analysis, 160)
+    # }
+    # create_competitive_analysis(urls, areas_of_analysis, 160)
+    pass

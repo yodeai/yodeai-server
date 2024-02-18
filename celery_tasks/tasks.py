@@ -23,9 +23,9 @@ def painpoint_analysis_task(self, topics, lens_id, spreadsheet_id, num_clusters)
     
 
 @shared_task(name='competitiveAnalysis:user_analysis_task', bind=True,autoretry_for=(Exception,), retry_jitter=True, retry_backoff=5, retry_kwargs={"max_retries": 1}, task_ignore_result = True)
-def user_analysis_task(self, topics, lens_id, whiteboard_id):
+def user_analysis_task(self, topics, lens_id, whiteboard_id, block_ids=[]):
     try:
-        output_data = generate_user_analysis(topics, lens_id, whiteboard_id)
+        output_data = generate_user_analysis(topics, lens_id, whiteboard_id, block_ids)
         update_whiteboard_status("success", whiteboard_id)
         update_whiteboard_nodes(output_data, whiteboard_id)
         return {"whiteboard_id": whiteboard_id, "status": "user analysis done"}

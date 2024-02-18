@@ -164,7 +164,8 @@ def cluster_for_topics(lens_id, new_percentage, spreadsheet_id, num_clusters=NUM
             prompt = f"Please output one main pain point summarized from this collection of user reviews on a product: {text}. OUTPUT THE PAIN POINT IN 4-5 WORDS ONLY."
             topic = get_completion(prompt, MODEL_NAME)
             topics.append(topic)
-        data, error = supabaseClient.rpc("update_plugin_progress_spreadsheet", {"id": spreadsheet_id, "new_progress": new_percentage}).execute() 
+            print("new progress", new_percentage)
+            data, error = supabaseClient.rpc("update_plugin_progress_spreadsheet", {"id": spreadsheet_id, "new_progress": new_percentage}).execute() 
         print(f"Time taken: {time.time() - start_time:.2f} seconds")
         return topics
 def update_spreadsheet_nodes(output, spreadsheet_id):
@@ -190,7 +191,7 @@ def cluster_reviews(lens_id, painpoints, spreadsheet_id, num_clusters, method=KM
     if painpoints:
         new_percentage = float(1/(len(painpoints)))
     elif not painpoints:
-        new_percentage = float(1/(len(painpoints) + num_clusters))
+        new_percentage = float(1/(num_clusters*2))
         print("num clusters", num_clusters)
         painpoints = cluster_for_topics(lens_id, new_percentage, spreadsheet_id, num_clusters)
     start_time = time.time()
@@ -241,7 +242,9 @@ def cluster_reviews(lens_id, painpoints, spreadsheet_id, num_clusters, method=KM
                         painpoint_to_block_id[representative_painpoint][month_year].append(chunk['block_id'])
                         print("Block: ", chunk['block_id'])
             print("\n")
-        data, error = supabaseClient.rpc("update_plugin_progress_spreadsheet", {"id": spreadsheet_id, "new_progress": new_percentage}).execute() 
+            print("new progress", new_percentage)
+
+            data, error = supabaseClient.rpc("update_plugin_progress_spreadsheet", {"id": spreadsheet_id, "new_progress": new_percentage}).execute() 
         
         result = convert_data(painpoint_to_block_id, dates)
         print(f"Time taken: {time.time() - start_time:.2f} seconds")

@@ -7,7 +7,7 @@ import json
 from datetime import datetime
 from requests.adapters import HTTPAdapter
 from pprint import pprint
-
+from convert_json_to_block import insertRowIntoBlockTable
 logger = logging.getLogger("Base")
 
 class App_Store_Scraper:
@@ -227,18 +227,24 @@ class App_Store_Scraper:
             json.dump(self.reviews, file, default=str)
         logger.info(f"Saved reviews to {file_name}")
 
+    def add_to_lens(self, lens_id):
+        for block in self.reviews:
+            print("block: ", block)
+            insertRowIntoBlockTable(block, lens_id)
+
+
 
 if __name__ == "__main__":
-    country = "us"
-    app_name = "tayasui sketches"
+    pass
+    # country = "us"
+    # app_name = "tayasui sketches"
 
-    scraper_instance = App_Store_Scraper(country, app_name)
+    # scraper_instance = App_Store_Scraper(country, app_name)
 
-    scraper_instance.review(num_pages=10, max_rating=3, after=None, sleep=1)
+    # scraper_instance.review(num_pages=10, max_rating=3, after=None, sleep=1)
     
-    pprint(scraper_instance.reviews)
-    pprint(scraper_instance.reviews_count)
-    scraper_instance.save_reviews_to_json('dana_reviews.json')
+    # pprint(scraper_instance.reviews)
+    # pprint(scraper_instance.reviews_count)
+    # scraper_instance.save_reviews_to_json('dana_reviews.json')
 
     # notability, tayasui sketches
-    

@@ -16,7 +16,7 @@ LENS_ID = 959
 KMEANS = 'KMEANS'
 DEFAULT="DEFAULT"
 PAINPOINT="PAINPOINT"
-eps = 0.15
+eps = 0.18
 # DBSCAN = 'DBSCAN'
 # MIXTURE_OF_GAUSSIANS = "MOG"
 # AGGLOMERATIVE_CLUSTERING = "AG"
@@ -228,7 +228,7 @@ def cluster_reviews(lens_id, painpoints, spreadsheet_id, num_clusters, method=KM
                 embedding = json.loads(chunk['embedding'])
                 if cosine_similarity_vectors(cluster_centroids[cluster], embedding) >= 1-eps:
                     # Also exclude nodes who do not pass the relation threshold
-                    if relation_score(chunk['content'], painpoints[cluster]) >= 8:
+                    if relation_score(chunk['content'], painpoints[cluster]) >= 5:
                         block_ids.add(chunk['block_id'])
                         # get block date
                         data, error = supabaseClient.table('block').select('original_date').eq('block_id', chunk['block_id']).execute()
@@ -286,9 +286,6 @@ def convert_data(painpoints, months):
         for j, month in enumerate(months):
             block_ids = data.get(month, [])
             result.append([i, j+1, len(block_ids)])
-    with open("dana_reviews_output.csv", 'w', newline='') as csvfile:
-        csvwriter = csv.writer(csvfile)
-        csvwriter.writerows(result)
     return result
 # print("cluster reviews")
 # print(cluster_reviews(LENS_ID, default_painpoints, -1))

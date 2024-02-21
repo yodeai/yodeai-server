@@ -8,11 +8,15 @@ from datetime import datetime
 from competitive_analysis import create_competitive_analysis, update_whiteboard_status, update_whiteboard_nodes
 from user_analysis import generate_user_analysis
 from painpoint_analysis import cluster_reviews, update_spreadsheet_nodes, update_spreadsheet_status
-
+from review_scraper import App_Store_Scraper
 
 @shared_task(name='processAncestors:painpoint_analysis_task', bind=True,autoretry_for=(Exception,), retry_jitter=True, retry_backoff=5, retry_kwargs={"max_retries": 1}, task_ignore_result = True)
-def painpoint_analysis_task(self, topics, lens_id, spreadsheet_id, num_clusters):
+def painpoint_analysis_task(self, topics, lens_id, spreadsheet_id, num_clusters, app_name=""):
     try:
+        if app_name:
+            scraper_instance = App_Store_Scraper("us", app_name)
+            scraper_instance.review(num_pages=10, max_rating=3, after=None, sleep=1)
+            scraper_instance.add_to_lens(lens_id)
         output_data = cluster_reviews(lens_id, topics, spreadsheet_id, num_clusters)
         update_spreadsheet_status("success", spreadsheet_id)
         update_spreadsheet_nodes(output_data, spreadsheet_id)

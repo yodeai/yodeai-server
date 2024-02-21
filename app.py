@@ -294,18 +294,17 @@ async def route_user_analysis(data: dict):
 
 
 @app.post("/painpointAnalysis")
-async def route_user_analysis(data: dict):
+async def route_painpoint_analysis(data: dict):
     topics = data.get("painpoints")
     spreadsheet_id = data.get("spreadsheet_id")
     lens_id = data.get("lens_id")
     num_clusters = data.get("num_clusters")
+    app_name=data.get("app_name") or ""
     # Get the plugin
     update_spreadsheet_status("queued", spreadsheet_id)
-    task = painpoint_analysis_task.apply_async(args=[topics, lens_id, spreadsheet_id, num_clusters])
+    task = painpoint_analysis_task.apply_async(args=[topics, lens_id, spreadsheet_id, num_clusters, app_name])
     update_spreadsheet_task_id(task.id, spreadsheet_id)
     return JSONResponse({"task_id": task.id, "type": "painpoint_analysis"})
-
-
 
 @app.post("/revokeTask")
 async def route_user_analysis(data: dict):

@@ -2,7 +2,6 @@ import json
 from utils import supabaseClient
 import requests
 
-LENS_ID = 972
 PROCESS_BLOCK_ENDPOINT = "http://127.0.0.1:8000/processBlock"
 
 # Define a function to process a block
@@ -14,7 +13,7 @@ def processBlock(block_id):
         print(f"Successfully processed block {block_id}")
 
 # Define a function to insert a row into the block table
-def insertRowIntoBlockTable(block):
+def insertRowIntoBlockTable(block, lens_id):
     requestBody =  {
       "block_type": "note",
       "content": block["content"],
@@ -32,9 +31,10 @@ def insertRowIntoBlockTable(block):
     print('block id', block_id)
     # insert into lens_block
     lens_block_response, lens_block_error = supabaseClient.table('lens_blocks')\
-    .insert({"block_id": block_id, "lens_id": LENS_ID, "direct_child": True, "count": 1})\
+    .insert({"block_id": block_id, "lens_id": lens_id, "direct_child": True, "count": 1})\
     .execute()
     processBlock(block_id)
+
 
 # Read the JSON file
 def process_json_file(file_path):

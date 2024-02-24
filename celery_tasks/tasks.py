@@ -41,6 +41,8 @@ def user_analysis_task(self, topics, lens_id, whiteboard_id, block_ids=[]):
 @shared_task(name='competitiveAnalysis:competitive_analysis_task', bind=True,autoretry_for=(Exception,), retry_jitter=True, retry_backoff=5, retry_kwargs={"max_retries": 1}, task_ignore_result = True)
 def competitive_analysis_task(self, company_mapping, areas, whiteboard_id):
     try:
+        for key, value in company_mapping.items():
+            company_mapping[key] = value.replace("%20", " ")
         output_data = create_competitive_analysis(company_mapping, areas, whiteboard_id)
         update_whiteboard_status("success", whiteboard_id)
         update_whiteboard_nodes(output_data, whiteboard_id)

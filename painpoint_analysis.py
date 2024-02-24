@@ -270,23 +270,27 @@ def convert_date(date_str):
     # Return the formatted month name and year
     return f"{month_name} {year}"
 def convert_data(painpoints, months):
-    result = []
+    result = {}
 
     # Create the header row
-    header_row = [0, 0, "Painpoint"]
-    result.append(header_row)
+    header_row = {}
+    header_row["0"] = {"value": "Painpoint"}
+    for i, month in enumerate(months):
+        header_row[str(i+1)] = {"value": convert_date(month)}
+    result["0"] = header_row
+    
     months = sorted(months, key=custom_sort)
 
-    for i, month in enumerate(months):
-        result.append([0, i+1, convert_date(month)])
-
     for i, (painpoint, data) in enumerate(painpoints.items(), start=1):
-        row_data = [i, 0, painpoint]
-        result.append(row_data)
+        row_data = {}
+        row_data["0"] = {"value": painpoint}
         for j, month in enumerate(months):
             block_ids = data.get(month, [])
-            result.append([i, j+1, len(block_ids)])
+            row_data[str(j+1)] = {"value": len(block_ids)}
+        result[str(i)] = row_data
+
     return result
+
 # print("cluster reviews")
 # print(cluster_reviews(LENS_ID, default_painpoints, -1))
 # print("KMEANS for painpoints")

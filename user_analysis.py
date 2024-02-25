@@ -116,7 +116,6 @@ def generate_from_existing_topics(topics, lens_id, whiteboard_id, block_ids, new
             if len(block_content[0]["content"]) < 3000:
                 for comment in bullets:
                     comment_embeddings.append(getEmbeddings(comment))
-            print(f"FILTERED COMMENTS for {name}", filtered_comments)
             prompt = f"Please output a summary of LESS THAN 30 WORDS of this content:  ```{filtered_comments}'''. IF {filtered_comments} just says 'not relevant' or is blank then output 'not relevant'."
             summary = get_completion(prompt, MODEL_NAME)
             comment_summary.append({"content": summary, "topicKey": topic})
@@ -143,7 +142,7 @@ def splitTopics(input_string):
 
     splits=[]
     for i, part in enumerate(result, 1):
-        splits.append(part)
+        splits.append(part.lower().replace('*', ''))
     return splits
 
 def generate_topics(lens_id, block_ids, new_percentage, whiteboard_id):
@@ -206,6 +205,7 @@ def generate_user_analysis(topics, lens_id, whiteboard_id, block_ids=[]):
     except Exception as e:
         print(f"Error in task: {e}")
         update_whiteboard_status("error", whiteboard_id)
+        raise
 
 
 # topics = ["existing solutions and problems", "yodeai impressions and wants"]

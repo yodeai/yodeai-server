@@ -109,7 +109,7 @@ def cluster_painpoints_for_topics(lens_id, num_topics=NUM_CLUSTERS, method=KMEAN
     painpoint_embeddings_list = [getEmbeddings(painpoint) for painpoint in painpoints]
     painpoint_embeddings = {str(painpoint_embeddings_list[i]): painpoint for i, painpoint in enumerate(painpoints)}
     if method == KMEANS:
-        kmeans = KMeans(n_clusters=num_topics, random_state=42, n_init=10)
+        kmeans = KMeans(n_clusters=min(num_topics, len(painpoint_embeddings_list)), random_state=42, n_init=10)
         kmeans.fit(painpoint_embeddings_list)
         # Get cluster assignments for each chunk
         cluster_assignments = kmeans.labels_
@@ -140,7 +140,7 @@ def cluster_for_topics(lens_id, new_percentage, spreadsheet_id, num_clusters=NUM
     chunks_list_str = list(chunks_mapping.keys())
     chunks_list = [json.loads(chunk_emb) for chunk_emb in chunks_list_str]
     if method == KMEANS:
-        kmeans = KMeans(n_clusters=num_clusters, random_state=42, n_init=10)
+        kmeans = KMeans(n_clusters=min(num_clusters, len(chunks_list)), random_state=42, n_init=10)
         kmeans.fit(chunks_list)
         # Get cluster assignments for each chunk
         cluster_assignments = kmeans.labels_
@@ -163,7 +163,7 @@ def cluster_for_topics(lens_id, new_percentage, spreadsheet_id, num_clusters=NUM
                 text += d[0]['content'] + "\n\n"
             prompt = f"Please output one main pain point summarized from this collection of user reviews on a product: {text}. OUTPUT THE PAIN POINT IN 4-5 WORDS ONLY."
             topic = get_completion(prompt, MODEL_NAME)
-            topics.append(topic)
+            topics.append(topic.lower().replace('*', ''))
             print("new progress", new_percentage)
             data, error = supabaseClient.rpc("update_plugin_progress_spreadsheet", {"id": spreadsheet_id, "new_progress": new_percentage}).execute() 
         print(f"Time taken: {time.time() - start_time:.2f} seconds")
@@ -187,48 +187,49 @@ def relation_score(review, painpoint):
         return 0
 
 def cluster_reviews(lens_id, painpoints, spreadsheet_id, num_clusters, method=KMEANS):
-    update_spreadsheet_status("processing", spreadsheet_id)
-    if painpoints:
-        new_percentage = float(1/(len(painpoints)))
-    elif not painpoints:
-        new_percentage = float(1/(num_clusters*2))
-        print("num clusters", num_clusters)
-        painpoints = cluster_for_topics(lens_id, new_percentage, spreadsheet_id, num_clusters)
-    start_time = time.time()
-    painpoint_embeddings = [getEmbeddings(painpoint) for painpoint in painpoints]
-    block_ids = get_block_ids(lens_id)
-    chunks_mapping = get_chunks_from_block_ids(block_ids)
-    chunks_list_str = list(chunks_mapping.keys())
-    chunks_list = [json.loads(chunk_emb) for chunk_emb in chunks_list_str]
-        
-    if method == 'KMEANS':
-        kmeans = KMeans(n_clusters=len(painpoints), init=painpoint_embeddings, n_init=len(painpoints))
-        # Get cluster assignments for each chunk
-        kmeans.fit_predict(chunks_list)
-        cluster_assignments = kmeans.labels_
-        cluster_centroids = kmeans.cluster_centers_
-        # Collect chunks belonging to each cluster
-        cluster_chunks = {}
-        for i, assignment in enumerate(cluster_assignments):
-            if assignment not in cluster_chunks:
-                cluster_chunks[assignment] = []
-            emb = chunks_list_str[i]
-            cluster_chunks[assignment].append(chunks_mapping[emb])
-        painpoint_to_block_id = {}
-        dates = set()
-        for cluster, chunks in cluster_chunks.items():
-            # Choose the representative pain point for the cluster
-            representative_painpoint = painpoints[cluster]
-            print("Painpoint: ", representative_painpoint)
-            block_ids = set()
-            # Associate the cluster with the representative pain point
-            painpoint_to_block_id[representative_painpoint] = {}
-            for chunk in chunks:
-                # Exclude nodes from clusters if their similarity to center is not large enough
-                embedding = json.loads(chunk['embedding'])
-                if cosine_similarity_vectors(cluster_centroids[cluster], embedding) >= 1-eps:
-                    # Also exclude nodes who do not pass the relation threshold
-                    if relation_score(chunk['content'], painpoints[cluster]) >= 5:
+    try:
+        update_spreadsheet_status("processing", spreadsheet_id)
+        if painpoints:
+            new_percentage = float(1/(len(painpoints)))
+        elif not painpoints:
+            new_percentage = float(1/(num_clusters*2))
+            print("num clusters", num_clusters)
+            painpoints = cluster_for_topics(lens_id, new_percentage, spreadsheet_id, num_clusters)
+        start_time = time.time()
+        painpoint_embeddings = [getEmbeddings(painpoint) for painpoint in painpoints]
+        block_ids = get_block_ids(lens_id)
+        chunks_mapping = get_chunks_from_block_ids(block_ids)
+        chunks_list_str = list(chunks_mapping.keys())
+        chunks_list = [json.loads(chunk_emb) for chunk_emb in chunks_list_str]
+            
+        if method == 'KMEANS':
+            kmeans = KMeans(n_clusters=min(len(painpoints),len(chunks_list)), init=painpoint_embeddings, n_init=len(painpoints))
+            # Get cluster assignments for each chunk
+            kmeans.fit_predict(chunks_list)
+            cluster_assignments = kmeans.labels_
+            cluster_centroids = kmeans.cluster_centers_
+            # Collect chunks belonging to each cluster
+            cluster_chunks = {}
+            for i, assignment in enumerate(cluster_assignments):
+                if assignment not in cluster_chunks:
+                    cluster_chunks[assignment] = []
+                emb = chunks_list_str[i]
+                cluster_chunks[assignment].append(chunks_mapping[emb])
+            painpoint_to_block_id = {}
+            dates = set()
+            for cluster, chunks in cluster_chunks.items():
+                # Choose the representative pain point for the cluster
+                representative_painpoint = painpoints[cluster]
+                print("Painpoint: ", representative_painpoint)
+                block_ids = set()
+                # Associate the cluster with the representative pain point
+                painpoint_to_block_id[representative_painpoint] = {}
+                for chunk in chunks:
+                    # Exclude nodes from clusters if their similarity to center is not large enough
+                    embedding = json.loads(chunk['embedding'])
+                    if cosine_similarity_vectors(cluster_centroids[cluster], embedding) >= 1-eps:
+                        # Also exclude nodes who do not pass the relation threshold
+                        # if relation_score(chunk['content'], painpoints[cluster]) >= 5:
                         block_ids.add(chunk['block_id'])
                         # get block date
                         data, error = supabaseClient.table('block').select('original_date').eq('block_id', chunk['block_id']).execute()
@@ -241,14 +242,18 @@ def cluster_reviews(lens_id, painpoints, spreadsheet_id, num_clusters, method=KM
                             dates.add(month_year)
                         painpoint_to_block_id[representative_painpoint][month_year].append(chunk['block_id'])
                         print("Block: ", chunk['block_id'])
-            print("\n")
-            print("new progress", new_percentage)
+                print("\n")
+                print("new progress", new_percentage)
 
-            data, error = supabaseClient.rpc("update_plugin_progress_spreadsheet", {"id": spreadsheet_id, "new_progress": new_percentage}).execute() 
-        
-        result = convert_data(painpoint_to_block_id, dates)
-        print(f"Time taken: {time.time() - start_time:.2f} seconds")
-        return result
+                data, error = supabaseClient.rpc("update_plugin_progress_spreadsheet", {"id": spreadsheet_id, "new_progress": new_percentage}).execute() 
+            
+            result = convert_data(painpoint_to_block_id, dates)
+            print(f"Time taken: {time.time() - start_time:.2f} seconds")
+            return result
+    except Exception as e:
+        print(f"Error in task: {e}")
+        update_spreadsheet_status("error", spreadsheet_id)
+        raise
 def custom_sort(month):
     # Split month and year
     month_str, year_str = month.split("/")

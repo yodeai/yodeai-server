@@ -23,10 +23,11 @@ def painpoint_analysis_task(self, topics, lens_id, spreadsheet_id, num_clusters,
         return {"whiteboard_id": spreadsheet_id, "status": "painpoint analysis done"}
     except Exception as e:
         print("Exception")
+        update_spreadsheet_status("error", spreadsheet_id)
         raise HTTPException(status_code=400, detail=str(e))
     
 
-@shared_task(name='competitiveAnalysis:user_analysis_task', bind=True,autoretry_for=(Exception,), retry_jitter=True, retry_backoff=5, retry_kwargs={"max_retries": 1}, task_ignore_result = True)
+@shared_task(name='userAnalysis:user_analysis_task', bind=True,autoretry_for=(Exception,), retry_jitter=True, retry_backoff=5, retry_kwargs={"max_retries": 1}, task_ignore_result = True)
 def user_analysis_task(self, topics, lens_id, whiteboard_id, block_ids=[]):
     try:
         output_data = generate_user_analysis(topics, lens_id, whiteboard_id, block_ids)
@@ -35,20 +36,24 @@ def user_analysis_task(self, topics, lens_id, whiteboard_id, block_ids=[]):
         return {"whiteboard_id": whiteboard_id, "status": "user analysis done"}
     except Exception as e:
         print("Exception")
+        update_whiteboard_status("error", whiteboard_id)
         raise HTTPException(status_code=400, detail=str(e))
     
 
 @shared_task(name='competitiveAnalysis:competitive_analysis_task', bind=True,autoretry_for=(Exception,), retry_jitter=True, retry_backoff=5, retry_kwargs={"max_retries": 1}, task_ignore_result = True)
 def competitive_analysis_task(self, company_mapping, areas, whiteboard_id):
     try:
+        print("hi", company_mapping)
         for key, value in company_mapping.items():
-            company_mapping[key] = value.replace("%20", " ")
+            if value:
+                company_mapping[key] = value.replace("%20", " ")
         output_data = create_competitive_analysis(company_mapping, areas, whiteboard_id)
         update_whiteboard_status("success", whiteboard_id)
         update_whiteboard_nodes(output_data, whiteboard_id)
         return {"whiteboard_id": whiteboard_id, "status": "competitive analysis done"}
     except Exception as e:
         print("Exception")
+        update_whiteboard_status("error", whiteboard_id)
         raise HTTPException(status_code=400, detail=str(e))
     
 @shared_task(name='processBlock:process_a_block_task', bind=True,autoretry_for=(Exception,), retry_jitter=True, retry_backoff=5, retry_kwargs={"max_retries": 1}, task_ignore_result = True)

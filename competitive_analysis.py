@@ -36,6 +36,16 @@ def get_page_content(url):
     doc= loader.load()
     document = doc[0] if doc else None
     return document.page_content if document else ""
+def extract_links_from_html(html):
+    # Define a regex pattern to match <a> tags
+    pattern = r'<a\s+(?:[^>]*?\s+)?href="([^"]*)"'
+
+    # Find all matches of the pattern in the HTML
+    matches = re.findall(pattern, html)
+
+    # Return the list of links extracted from <a> tags
+    return matches
+
 
 def extract_links(url, parent_url, current_depth, visited_urls):
     links = set()
@@ -49,23 +59,34 @@ def extract_links(url, parent_url, current_depth, visited_urls):
 
         # Find all anchor tags (links) in the page
         links = soup.find_all('a', href=True)
+        soup_gathered = True
+        if not links:
+            print("could not find links in soup")
+            links = extract_links_from_html(response.text)
+            soup_gathered = False
+
         final_links = set()
         # Extract and print the href attribute from each anchor tag
         for link in links:
             # print("checking link: ", link)
-            if isinstance(link, Tag) and "href" in link.attrs:
-                href = link["href"]
-
-                # Use urljoin to handle missing scheme
-                full_url = urljoin(url, href)
-
-                if '#' in full_url:
+            if soup_gathered:
+                if isinstance(link, Tag) and "href" in link.attrs:
+                    href = link["href"]
+                    # Use urljoin to handle missing scheme
+                    full_url = urljoin(url, href)
+                else:
                     continue
-                if not full_url.isspace() and len(full_url) > 0 and full_url not in visited_urls and full_url.startswith(parent_url):
-                    # Skip if the link is from a different subdomain
-                    if urlparse(full_url).netloc != urlparse(parent_url).netloc:
-                        continue
-                    final_links.add((full_url, current_depth + 1))
+            else:
+                full_url = urljoin(url, link)
+
+            if '#' in full_url:
+                continue
+            if not full_url.isspace() and len(full_url) > 0 and full_url not in visited_urls and full_url.startswith(parent_url):
+                # Skip if the link is from a different subdomain
+                if urlparse(full_url).netloc != urlparse(parent_url).netloc:
+                    continue
+                final_links.add((full_url, current_depth + 1))
+
         return list(final_links)
 
     except requests.exceptions.RequestException as e:
@@ -76,7 +97,7 @@ def give_relevance_score(content, area):
     summarized_content = content[:4000]
     prompt = f"Please give an overall score from 0 to 100 if the ```{summarized_content}''' describes the company's {area}. If the content directly mentions or paraphrases {area} in its text, then output 100. Remember, return only an integer from 0 to 100."    
     response = get_completion(prompt, "gpt-3.5-turbo")
-
+    
     # Extract the last sequence of digits from the response
     try:
         score = re.findall(r'\b\d+\b', response)[-1]
@@ -561,7 +582,7 @@ def crawl_for_data(parent_url, urls, num_urls, whiteboard_id, new_percentage, sk
         predefined_links = gather_depth_1_links(parent_url)
         data, error = supabaseClient.rpc("update_plugin_progress", {"id": whiteboard_id, "new_progress": new_percentage}).execute() 
         if error:
-            print(error)
+            print("error", error)
             supabaseClient.table('web_content_block').delete().eq('parent_url', parent_url).execute()
 
         with concurrent.futures.ThreadPoolExecutor(max_workers=10) as executor:
@@ -646,10 +667,10 @@ def get_chunks_from_urls(urls):
 def generate_areas_of_analysis(urls, whiteboard_id, new_percentage, method=KMEANS):
     start_time = time.time()
     if method == KMEANS:
-        kmeans = KMeans(n_clusters=3, random_state=42, n_init=10)
         chunks_mapping = get_chunks_from_urls(urls)
         chunks_list_str = list(chunks_mapping.keys())
         chunks_list = [json.loads(chunk_emb) for chunk_emb in chunks_list_str]
+        kmeans = KMeans(n_clusters=min(3, len(chunks_list)), random_state=42, n_init=10)
         kmeans.fit(chunks_list)
         # Get cluster assignments for each chunk
         cluster_assignments = kmeans.labels_
@@ -670,55 +691,65 @@ def generate_areas_of_analysis(urls, whiteboard_id, new_percentage, method=KMEAN
             text = ""
             for d in closest_chunks:        
                 text += d[0]['content'] + "\n\n"
-            prompt = f"Please output one main topic that will be used as a field in a competitive analysis between companies: {text}. OUTPUT THE TOPIC IN 4-5 WORDS ONLY."
+            prompt = f"Please output one main topic that will be used as a field in a competitive analysis between companies: {str(text)}. OUTPUT THE TOPIC IN 4-5 WORDS ONLY. OUTPUT 'ERROR WITH GENERATING' IF THE TOPIC HAS ANYTHING TO DO WITH HTTP RESPONSE STATUS CODES AND NOT BEING ABLE TO CONNECT TO THE SITE."
             topic = get_completion(prompt, MODEL_NAME)
-            topics.append(topic)
+            cleaned_topic = topic.lower().replace('*', '')
+            print("CLEAN", cleaned_topic)
+            topics.append(cleaned_topic)
         data, error = supabaseClient.rpc("update_plugin_progress_spreadsheet", {"id": whiteboard_id, "new_progress": new_percentage}).execute() 
         print(f"Time taken: {time.time() - start_time:.2f} seconds")
         return topics
 
 def create_competitive_analysis(urls, areas_of_analysis, whiteboard_id, skip_web_crawl=False):
-    output_data = []
-    start_time = time.time()
-    update_whiteboard_status("processing", whiteboard_id)
-    # competitive analysis progress calculation
-    num_urls = len(urls)
-    areas_of_analysis = [area for area in areas_of_analysis if area != ""]
-    if not areas_of_analysis:
-        new_percentage = 1/(num_urls + num_urls*4 + 1) # web crawl, cell generation (including summary), generate areas
-    else:
-        new_percentage = 1/(num_urls + num_urls*(len(areas_of_analysis) + 1))
-    with concurrent.futures.ThreadPoolExecutor(max_workers=2) as executor:
-        # Submit tasks and store the Future objects
-        futures = [executor.submit(crawl_for_data, parent_url, urls, num_urls, whiteboard_id, new_percentage, skip_web_crawl) for parent_url in urls.keys()]
+    try:
+        output_data = []
+        start_time = time.time()
+        update_whiteboard_status("processing", whiteboard_id)
+        # competitive analysis progress calculation
+        num_urls = len(urls)
+        areas_of_analysis = [area for area in areas_of_analysis if area != ""]
+        if not areas_of_analysis:
+            new_percentage = 1/(num_urls + num_urls*4 + 1) # web crawl, cell generation (including summary), generate areas
+        else:
+            new_percentage = 1/(num_urls + num_urls*(len(areas_of_analysis) + 1))
+        with concurrent.futures.ThreadPoolExecutor(max_workers=2) as executor:
+            # Submit tasks and store the Future objects
+            futures = [executor.submit(crawl_for_data, parent_url, urls, num_urls, whiteboard_id, new_percentage, skip_web_crawl) for parent_url in urls.keys()]
 
-        # Collect results from completed tasks
-        for future in concurrent.futures.as_completed(futures):
-            try:
-                result = future.result()
-            except Exception as e:
-                print(f"Error in task: {e}")
-                update_whiteboard_status("error", whiteboard_id)
-    
-    if not areas_of_analysis:
-        areas_of_analysis = generate_areas_of_analysis(urls, whiteboard_id, new_percentage)
+            # Collect results from completed tasks
+            for future in concurrent.futures.as_completed(futures):
+                try:
+                    result = future.result()
+                except Exception as e:
+                    print(f"Error in task for web crawling: {e}")
+                    update_whiteboard_status("error", whiteboard_id)
+                    raise
+        
+        if not areas_of_analysis:
+            areas_of_analysis = generate_areas_of_analysis(urls, whiteboard_id, new_percentage)
 
-    areas_of_analysis_embedding = embed_areas(areas_of_analysis)
-    with concurrent.futures.ThreadPoolExecutor(max_workers=2) as executor:
-        # Submit tasks and store the Future objects
-        futures = [executor.submit(generate_data, parent_url, urls, areas_of_analysis_embedding, num_urls, whiteboard_id, new_percentage, skip_web_crawl) for parent_url in urls.keys()]
+        areas_of_analysis_embedding = embed_areas(areas_of_analysis)
+        with concurrent.futures.ThreadPoolExecutor(max_workers=2) as executor:
+            # Submit tasks and store the Future objects
+            futures = [executor.submit(generate_data, parent_url, urls, areas_of_analysis_embedding, num_urls, whiteboard_id, new_percentage, skip_web_crawl) for parent_url in urls.keys()]
 
-        # Collect results from completed tasks
-        for future in concurrent.futures.as_completed(futures):
-            try:
-                result = future.result()
-                output_data.append(result)
-            except Exception as e:
-                print(f"Error in task: {e}")
-                update_whiteboard_status("error", whiteboard_id)
+            # Collect results from completed tasks
+            for future in concurrent.futures.as_completed(futures):
+                try:
+                    result = future.result()
+                    output_data.append(result)
+                except Exception as e:
+                    print(f"Error in task for analysis generation: {e}")
+                    update_whiteboard_status("error", whiteboard_id)
+                    raise
 
-    print(f"Time taken: {time.time() - start_time:.2f} seconds")
-    return output_data
+        print(f"Time taken: {time.time() - start_time:.2f} seconds")
+        return output_data
+    except Exception as e:
+        print(f"Exception occurred while generating competitive analysis: {e}")
+        update_whiteboard_status("error", whiteboard_id)
+        raise
+
 
 ############################## METHOD TO RUN #########################
 if __name__ == '__main__':

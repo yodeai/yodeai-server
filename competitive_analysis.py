@@ -19,7 +19,7 @@ from painpoint_analysis import find_closest_5_chunks
 ######################## CONSTANTS + UTILS ############################
 KMEANS = 'KMEANS'
 COMPANY_SUMMARY = "summary"
-MODEL_NAME = "gpt-4"
+MODEL_NAME = "gpt-4" # sometimes won't work, use 3.5
 def embed_areas(areas_of_analysis):
     result = {}
     total_areas = [COMPANY_SUMMARY] + areas_of_analysis

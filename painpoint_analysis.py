@@ -141,6 +141,7 @@ def cluster_for_topics(lens_id, new_percentage, spreadsheet_id, num_clusters=NUM
     chunks_list = [json.loads(chunk_emb) for chunk_emb in chunks_list_str]
     if method == KMEANS:
         kmeans = KMeans(n_clusters=min(num_clusters, len(chunks_list)), random_state=42, n_init=10)
+        print("chunks list", len(chunks_list), "and", min(num_clusters, len(chunks_list)))
         kmeans.fit(chunks_list)
         # Get cluster assignments for each chunk
         cluster_assignments = kmeans.labels_
@@ -161,12 +162,12 @@ def cluster_for_topics(lens_id, new_percentage, spreadsheet_id, num_clusters=NUM
             text = ""
             for d in closest_chunks:        
                 text += d[0]['content'] + "\n\n"
-            prompt = f"Please output one main pain point summarized from this collection of user reviews on a product: {text}. OUTPUT THE PAIN POINT IN 4-5 WORDS ONLY."
+            prompt = f"Please output one main pain point summarized from this collection of user reviews on a product: {text}. OUTPUT THE PAIN POINT IN 4-5 WORDS ONLY. DO NOT OUTPUT AN EMPTY STRING"
             topic = get_completion(prompt, MODEL_NAME)
             topics.append(topic.lower().replace('*', ''))
-            print("new progress", new_percentage)
             data, error = supabaseClient.rpc("update_plugin_progress_spreadsheet", {"id": spreadsheet_id, "new_progress": new_percentage}).execute() 
         print(f"Time taken: {time.time() - start_time:.2f} seconds")
+        topics = [topic for topic in topics if topic != ""]
         return topics
 def update_spreadsheet_nodes(output, spreadsheet_id):
     update_response, update_error = supabaseClient.table('spreadsheet')\

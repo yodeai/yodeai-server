@@ -1,6 +1,8 @@
 from user_analysis import get_block_content
 from utils import get_completion
 import re
+import json
+import time
 
 MODEL_NAME = "gpt-3.5-turbo"
 
@@ -38,69 +40,69 @@ def generateATicket(title, chosen_fields, project_id, prd):
     for field in chosen_fields:
         if field == "Acceptance criteria/scope":
             description += "- **Acceptance criteria/scope:** \n\n"
-            description += generate_acceptance_criteria(prd)
+            description += generate_acceptance_criteria(prd, title)
         elif field == "Background":
             description += "- **Background:** \n\n"
-            description += generate_background(prd)
+            description += generate_background(prd, title)
         elif field == "Priority level":
             description += "- **Priority level:** \n\n"
-            description += generate_priority_level(prd)
+            description += generate_priority_level(prd, title)
         elif field == "In and out of scope":
             description += "- **In and out of scope:** \n\n"
-            description += generate_in_out_scope(prd)
+            description += generate_in_out_scope(prd, title)
         elif field == "User story":
             description += "- **User story:** \n\n"
-            description += generate_user_story(prd)
+            description += generate_user_story(prd, title)
         elif field == "Technical considerations":
             description += "- **Technical considerations:** \n\n"
-            description += generate_technical_considerations(prd)
+            description += generate_technical_considerations(prd, title)
         elif field == "Design field":
             description += "- **Design field:** \n\n"
-            description += generate_design_field(prd)
+            description += generate_design_field(prd, title)
         elif field == "Questions":
             description += "- **Questions:** \n\n"
-            description += generate_questions(prd)
+            description += generate_questions(prd, title)
     print(description)
 
     return {"title": title, "project_id": project_id, "summary": summary, "description": description}
 
-def generate_acceptance_criteria(prd):
-    prompt = f"Generate acceptance criteria/scope for this ticket based on the product requirement document: {prd}."
+def generate_acceptance_criteria(prd, title):
+    prompt = f"Generate acceptance criteria/scope that is based on this topic: {title} in this product requirement document: {prd}."
     response = get_completion(prompt, MODEL_NAME)
     return response
 
-def generate_background(prd):
-    prompt = f"Generate background information for this ticket based on the product requirement document: {prd}."
+def generate_background(prd, title):
+    prompt = f"Generate background information is relevant for this ticket based on this topic: {title} in this product requirement document: {prd}."
     response = get_completion(prompt, MODEL_NAME)
     return response
 
-def generate_priority_level(prd):
-    prompt = f"Define the priority level for this ticket based on the product requirement document: {prd}."
+def generate_priority_level(prd, title):
+    prompt = f"Define the priority level is relevant for this ticket based on this topic: {title} in this product requirement document: {prd}."
     response = get_completion(prompt, MODEL_NAME)
     return response
 
-def generate_in_out_scope(prd):
-    prompt = f"Describe what's in scope and what's out of scope for this ticket based on the product requirement document: {prd}."
+def generate_in_out_scope(prd, title):
+    prompt = f"Describe what's in scope and what's out of scope that is relevant for this ticket based on this topic: {title} in this product requirement document: {prd}."
     response = get_completion(prompt, MODEL_NAME)
     return response
 
-def generate_user_story(prd):
-    prompt = f"Write a user story for this ticket based on the product requirement document: {prd}."
+def generate_user_story(prd, title):
+    prompt = f"Write a user story is relevant for this ticket based on this topic: {title} in this product requirement document: {prd}."
     response = get_completion(prompt, MODEL_NAME)
     return response
 
-def generate_technical_considerations(prd):
-    prompt = f"Discuss technical considerations for this ticket based on the product requirement document: {prd}."
+def generate_technical_considerations(prd, title):
+    prompt = f"Discuss technical considerations is relevant for this ticket based on this topic: {title} in this product requirement document: {prd}."
     response = get_completion(prompt, MODEL_NAME)
     return response
 
-def generate_design_field(prd):
-    prompt = f"Provide UX details and reference mockups for this ticket based on the product requirement document: {prd}."
+def generate_design_field(prd, title):
+    prompt = f"Provide UX details and reference mockups is relevant for this ticket based on this topic: {title} in this product requirement document: {prd}."
     response = get_completion(prompt, MODEL_NAME)
     return response
 
-def generate_questions(prd):
-    prompt = f"List any questions or concerns for this ticket based on the product requirement document: {prd}."
+def generate_questions(prd, title):
+    prompt = f"List any questions or concerns is relevant for this ticket based on this topic: {title} in this product requirement document: {prd}."
     response = get_completion(prompt, MODEL_NAME)
     return response
 
@@ -111,13 +113,21 @@ def generate_summary(prd, title):
     return response
 
 def create_jira_tickets(prd_block_id, project_id, chosen_fields):
+    start_time = time.time()
     content = get_block_content(prd_block_id)
     topics = generatePossibleTicketTopics(content)
+    topics = topics[:4]
     result = []
     for topic in topics:
         ticket = generateATicket(topic, chosen_fields, project_id, content)
         result.append(ticket)
-    
+    file_path = 'jira_tickets.json'
+
+    # Serialize the list of dictionaries to JSON and write it to the file
+    with open(file_path, 'w') as json_file:
+        json.dump(result, json_file, indent=4)
+    print(f"Total time taken: {time.time() - start_time:.2f} seconds")
+
     return result
 
 

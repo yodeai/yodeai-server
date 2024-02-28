@@ -1,24 +1,14 @@
 import json
 from utils import supabaseClient
-import requests
-
-PROCESS_BLOCK_ENDPOINT = "http://127.0.0.1:8000/processBlock"
-
-# Define a function to process a block
-def processBlock(block_id):
-    response = requests.post(PROCESS_BLOCK_ENDPOINT, json={"block_id": block_id, "delay": 0})
-    if response.status_code != 200:
-        print(f"Failed to process block {block_id}. Status code: {response.status_code}")
-    else:
-        print(f"Successfully processed block {block_id}")
+from processBlock import processBlock
 
 # Define a function to insert a row into the block table
-def insertRowIntoBlockTable(block, lens_id):
+def insertRowIntoBlockTable(owner_id, block, lens_id):
     requestBody =  {
       "block_type": "note",
       "content": block["content"],
       "title":  block["author_name"],
-      "owner_id": "0e1fbeef-df41-46a4-b7be-d27766d395b2",
+      "owner_id": owner_id,
       "google_user_id": 'global',
       "original_date": block["updated"]
     }
@@ -37,12 +27,12 @@ def insertRowIntoBlockTable(block, lens_id):
 
 
 # Read the JSON file
-def process_json_file(file_path):
+def process_json_file(owner_id, file_path):
     with open(file_path, 'r') as f:
         data = json.load(f)
         for block in data:
             print("block: ", block)
-            insertRowIntoBlockTable(block)
+            insertRowIntoBlockTable(owner_id, block)
 
 # Example usage
 if __name__ == "__main__":

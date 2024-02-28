@@ -139,6 +139,6 @@ airpods = 2979
 product_hunt = 2980
 
 
-project_id = -1
-chosen_fields = ["Acceptance criteria/scope", "Background", "Priority level", "In and out of scope","User story", "Technical considerations", "Design field", "Questions"]
-create_jira_tickets(product_hunt, project_id, chosen_fields)
+# project_id = -1
+# chosen_fields = ["Acceptance criteria/scope", "Background", "Priority level", "In and out of scope","User story", "Technical considerations", "Design field", "Questions"]
+# create_jira_tickets(product_hunt, project_id, chosen_fields)

@@ -15,7 +15,7 @@ def painpoint_analysis_task(self, owner_id, topics, lens_id, spreadsheet_id, num
     try:
         if app_name:
             scraper_instance = App_Store_Scraper("us", app_name)
-            scraper_instance.review(num_pages=10, max_rating=3, after=None, sleep=1)
+            scraper_instance.review(num_pages=7, max_rating=1, after=None, sleep=1)
             scraper_instance.add_to_lens(owner_id, lens_id)
         output_data = cluster_reviews(lens_id, topics, spreadsheet_id, num_clusters)
         update_spreadsheet_status("success", spreadsheet_id)

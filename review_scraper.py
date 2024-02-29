@@ -149,10 +149,10 @@ class App_Store_Scraper:
                         'author_uri': entry['author']['uri']['label'],
                         'content': entry['content']['label'],
                         'id': entry['id']['label'],
-                        'rating': entry['im:rating']['label'],
-                        'version': entry['im:version']['label'],
-                        'vote_count': entry['im:voteCount']['label'],
-                        'vote_sum': entry['im:voteSum']['label'],
+                        # 'rating': entry['im:rating']['label'],
+                        # 'version': entry['im:version']['label'],
+                        # 'vote_count': entry['im:voteCount']['label'],
+                        # 'vote_sum': entry['im:voteSum']['label'],
                         'title': entry['title']['label'],
                         'updated': entry['updated']['label']
                     }
@@ -231,7 +231,7 @@ class App_Store_Scraper:
         for block in self.reviews:
             print("block: ", block)
             insertRowIntoBlockTable(owner_id, block, lens_id)
-        self.save_reviews_to_json("painpoint_reviews")
+        # self.save_reviews_to_json("tayasui_painpoint_mock_data.json")
 
 if __name__ == "__main__":
     pass
@@ -240,7 +240,7 @@ if __name__ == "__main__":
 
     scraper_instance = App_Store_Scraper(country, app_name)
 
-    scraper_instance.review(num_pages=10, max_rating=3, after=None, sleep=1)
+    scraper_instance.review(num_pages=10, max_rating=1, after=None, sleep=1)
     
     pprint(scraper_instance.reviews)
     pprint(scraper_instance.reviews_count)

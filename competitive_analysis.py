@@ -691,7 +691,8 @@ def generate_areas_of_analysis(urls, whiteboard_id, new_percentage, method=KMEAN
             text = ""
             for d in closest_chunks:        
                 text += d[0]['content'] + "\n\n"
-            prompt = f"Please output one main topic that will be used as a field in a competitive analysis between companies: {str(text)}. OUTPUT THE TOPIC IN 4-5 WORDS ONLY. OUTPUT 'ERROR WITH GENERATING' IF THE TOPIC HAS ANYTHING TO DO WITH HTTP RESPONSE STATUS CODES AND NOT BEING ABLE TO CONNECT TO THE SITE."
+                # give it a role: you are a business analyst pick areas of analysis that will allow you to compare 
+            prompt = f"You are a product manager that is trying to create a new product. Please output one main feature that will be used as a field in a competitive analysis between these companies: {str(text)} that is useful for product development. OUTPUT THE TOPIC IN 4-5 WORDS ONLY. OUTPUT 'ERROR WITH GENERATING' IF THE TOPIC HAS ANYTHING TO DO WITH HTTP RESPONSE STATUS CODES AND NOT BEING ABLE TO CONNECT TO THE SITE."
             topic = get_completion(prompt, MODEL_NAME)
             cleaned_topic = topic.lower().replace('*', '')
             print("CLEAN", cleaned_topic)

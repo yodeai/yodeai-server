@@ -162,7 +162,7 @@ def cluster_for_topics(lens_id, new_percentage, spreadsheet_id, num_clusters=NUM
             text = ""
             for d in closest_chunks:        
                 text += d[0]['content'] + "\n\n"
-            prompt = f"Please output one main pain point summarized from this collection of user reviews on a product: {text}. OUTPUT THE PAIN POINT IN 4-5 WORDS ONLY. DO NOT OUTPUT AN EMPTY STRING"
+            prompt = f"You are a product manager trying to see what to focus on in the next sprint. Please output one actionable main pain point summarized from this collection of user reviews on a product: {text} to focus on for the next sprint. OUTPUT THE PAIN POINT IN 4-5 WORDS ONLY. DO NOT OUTPUT AN EMPTY STRING"
             topic = get_completion(prompt, MODEL_NAME)
             topics.append(topic.lower().replace('*', ''))
             data, error = supabaseClient.rpc("update_plugin_progress_spreadsheet", {"id": spreadsheet_id, "new_progress": new_percentage}).execute() 
@@ -191,9 +191,9 @@ def cluster_reviews(lens_id, painpoints, spreadsheet_id, num_clusters, method=KM
     try:
         update_spreadsheet_status("processing", spreadsheet_id)
         if painpoints:
-            new_percentage = float(1/(len(painpoints)))
+            new_percentage = float(1/(len(painpoints) + 1))
         elif not painpoints:
-            new_percentage = float(1/(num_clusters*2))
+            new_percentage = float(1/(num_clusters*2 + 1))
             print("num clusters", num_clusters)
             painpoints = cluster_for_topics(lens_id, new_percentage, spreadsheet_id, num_clusters)
         start_time = time.time()
@@ -250,6 +250,7 @@ def cluster_reviews(lens_id, painpoints, spreadsheet_id, num_clusters, method=KM
             
             result = convert_data(painpoint_to_block_id, dates)
             print(f"Time taken: {time.time() - start_time:.2f} seconds")
+            data, error = supabaseClient.rpc("update_plugin_progress_spreadsheet", {"id": spreadsheet_id, "new_progress": new_percentage}).execute() 
             return result
     except Exception as e:
         print(f"Error in task: {e}")

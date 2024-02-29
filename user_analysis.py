@@ -110,7 +110,7 @@ def generate_from_existing_topics(topics, lens_id, whiteboard_id, block_ids, new
                         "topicKey": topic, "topicName": topic}
             filtered_comments = '. '.join([comment["comment"] for comment in comments["comments"]])
             if not filtered_comments:
-                comments = {"comments": [{"id": i, "comment": "not relevant"}],
+                comments = {"comments": [{"id": 0, "comment": "not relevant"}],
                         "topicKey": topic, "topicName": topic}
             current_insights["data"].append(comments)
             if len(block_content[0]["content"]) < 3000:

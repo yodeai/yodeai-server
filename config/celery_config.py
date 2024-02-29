@@ -27,7 +27,8 @@ class BaseConfig:
         Queue("processBlock"),
         Queue("processAncestors"),
         Queue("competitiveAnalysis"),
-        Queue("userAnalysis")
+        Queue("userAnalysis"),
+        Queue("jiraGeneration")
     ]
 
     CELERY_TASK_ROUTES = (route_task,)

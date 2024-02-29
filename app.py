@@ -10,7 +10,7 @@ from fastapi.templating import Jinja2Templates
 from sklearn.metrics.pairwise import cosine_similarity
 from fastapi.middleware.cors import CORSMiddleware
 from answerQuestionLens import answer_question_lens, get_searchable_feed, update_question_popularity
-from celery_tasks.tasks import process_block_task, process_ancestors_task, competitive_analysis_task, user_analysis_task, painpoint_analysis_task
+from celery_tasks.tasks import process_block_task, process_ancestors_task, competitive_analysis_task, user_analysis_task, painpoint_analysis_task, jira_generation_task
 from pydantic import BaseModel
 from config.celery_utils import create_celery
 from config.celery_utils import get_task_info
@@ -25,6 +25,7 @@ import asyncio
 import httpx
 from competitive_analysis import update_whiteboard_status
 from painpoint_analysis import update_spreadsheet_status
+from create_jira_tickets import update_widget_status
 class LensInvite(BaseModel):
     sender: str
     lensId: str
@@ -266,6 +267,26 @@ def update_spreadsheet_task_id(task_id, spreadsheet_id):
         .update({'task_id': task_id})\
         .eq('spreadsheet_id', spreadsheet_id)\
         .execute()
+    
+def update_widget_task_id(task_id, widget_id):
+    # Update the status of the block
+    update_response, update_error = supabaseClient.table('widget')\
+        .update({'task_id': task_id})\
+        .eq('widget_id', widget_id)\
+        .execute()
+    
+@app.post("/jiraGeneration")
+async def route_jira_generation(data: dict):
+    widget_id = data.get("widget_id")
+    prd_block_id = data.get("prd_block_id")
+    fields = data.get("fields")
+    # Get the plugin
+    if not widget_id or not prd_block_id or not fields:
+        raise HTTPException(status_code=400, detail="widget id, prd, and fields must be provided")
+    update_widget_status("queued", widget_id)
+    task = jira_generation_task.apply_async(args=[widget_id, prd_block_id, fields])
+    update_widget_task_id(task.id, widget_id)
+    return JSONResponse({"task_id": task.id, "type": "jira_generation"})
 
 @app.post("/competitiveAnalysis")
 async def route_competitive_analysis(data: dict):

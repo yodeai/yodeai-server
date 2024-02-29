@@ -1,5 +1,5 @@
 from user_analysis import get_block_content
-from utils import get_completion
+from utils import get_completion, supabaseClient
 import re
 import json
 import time
@@ -112,20 +112,68 @@ def generate_summary(prd, title):
     # Process the response as needed
     return response
 
-def create_jira_tickets(prd_block_id, project_id, chosen_fields):
+def update_widget_status(status, widget_id):
+    # Get the plugin
+    data, _ = supabaseClient.table('widget')\
+        .select('state')\
+        .eq('widget_id', widget_id)\
+        .execute()
+    json_object = data[1][0]["state"]
+    json_object["status"] = status
+    if status == "processing":
+        json_object["progress"] = 0
+
+    # Update the status of the block
+    update_response, update_error = supabaseClient.table('widget')\
+        .update({'state': json_object})\
+        .eq('widget_id', widget_id)\
+        .execute()
+
+def update_widget_progress(progress, widget_id):
+    # Get the plugin
+    data, _ = supabaseClient.table('widget')\
+        .select('state')\
+        .eq('widget_id', widget_id)\
+        .execute()
+    json_object = data[1][0]["state"]
+    print("json_object", json_object)
+    json_object["progress"] = json_object["progress"] + progress
+
+    # Update the status of the block
+    update_response, update_error = supabaseClient.table('widget')\
+        .update({'state': json_object})\
+        .eq('widget_id', widget_id)\
+        .execute()
+    
+def update_widget_nodes(data, widget_id):
+    data = {"tickets": data}
+    update_response, update_error = supabaseClient.table('widget')\
+    .update({'output': data})\
+    .eq('widget_id', widget_id)\
+    .execute()
+
+def create_jira_tickets(widget_id, prd_block_id, project_id, chosen_fields):
     start_time = time.time()
+    update_widget_status("processing", widget_id)
     content = get_block_content(prd_block_id)
+    new_percentage = 1/5
     topics = generatePossibleTicketTopics(content)
+    # update_widget_progress(new_percentage, widget_id)
+    data, error = supabaseClient.rpc("update_plugin_progress_widget", {"id": widget_id, "new_progress": new_percentage}).execute() 
+
     topics = topics[:4]
     result = []
     for topic in topics:
         ticket = generateATicket(topic, chosen_fields, project_id, content)
         result.append(ticket)
-    file_path = 'jira_tickets.json'
+        # update_widget_progress(new_percentage, widget_id)
+        data, error = supabaseClient.rpc("update_plugin_progress_widget", {"id": widget_id, "new_progress": new_percentage}).execute() 
+
+    # file_path = 'jira_tickets.json'
 
     # Serialize the list of dictionaries to JSON and write it to the file
-    with open(file_path, 'w') as json_file:
-        json.dump(result, json_file, indent=4)
+    # with open(file_path, 'w') as json_file:
+    #     json.dump(result, json_file, indent=4)
     print(f"Total time taken: {time.time() - start_time:.2f} seconds")
 
     return result

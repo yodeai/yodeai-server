@@ -81,7 +81,7 @@ def exponential_backoff(retries=5, backoff_in_seconds=1, out=sys.stdout, timeout
 @exponential_backoff(retries=6, backoff_in_seconds=1, out=sys.stdout)
 def get_completion(prompt, model='models/text-bison-001'):    
     try:
-        if (model == "gpt-3.5-turbo"):
+        if model == "gpt-3.5-turbo":
             messages = [{"role": "user", "content": prompt}]
             response = ChatCompletion.create(
                 model=model,
@@ -89,12 +89,13 @@ def get_completion(prompt, model='models/text-bison-001'):
                 temperature=0,
             )
             return response.choices[0].message["content"]   
-        completion = palm.generate_text(model='models/text-bison-001', prompt=prompt, temperature=0.2)
-        # print("prompt",prompt)
-        # print("completion", completion)
-        # print("completion result", completion.result)
-        cleaned_result = remove_leadingntrailing_special_chars(completion.result if completion.result != None else "")
-        return cleaned_result
+        else:
+            completion = palm.generate_text(model='models/text-bison-001', prompt=prompt, temperature=0.2)
+            print("prompt",prompt)
+            print("completion", completion)
+            print("completion result", completion.result)
+            cleaned_result = remove_leadingntrailing_special_chars(completion.result if completion.result != None else "")
+            return cleaned_result
     except Exception as e:
         print(f"Exception from LLM: {str(e)}")
         raise

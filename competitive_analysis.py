@@ -19,7 +19,7 @@ from painpoint_analysis import find_closest_5_chunks
 ######################## CONSTANTS + UTILS ############################
 KMEANS = 'KMEANS'
 COMPANY_SUMMARY = "summary"
-MODEL_NAME = "gpt-4" # sometimes won't work, use 3.5
+MODEL_NAME = "gpt-3.5-turbo" # sometimes won't work, use 3.5
 def embed_areas(areas_of_analysis):
     result = {}
     total_areas = [COMPANY_SUMMARY] + areas_of_analysis
@@ -706,7 +706,7 @@ def generate_areas_of_analysis(urls, whiteboard_id, new_percentage, method=KMEAN
                 text += d[0]['content'] + "\n\n"
                 # give it a role: you are a business analyst pick areas of analysis that will allow you to compare 
             text = clean_text(text)
-            prompt = f"You are a product manager that is trying to create a new product. Please output one main feature from this content: {str(text)} that is useful for competitive analysis between companies. OUTPUT THE TOPIC IN 4-5 WORDS ONLY. OUTPUT 'ERROR WITH GENERATING' IF THE TOPIC HAS ANYTHING TO DO WITH HTTP RESPONSE STATUS CODES AND NOT BEING ABLE TO CONNECT TO THE SITE."
+            prompt = f"You are a product manager that is trying to create a new product. Please output one main feature from this content: {str(text)} that is useful to compare between companies. OUTPUT THE FEATURE IN 4-5 WORDS ONLY. MAKE SURE IT IS A GENERALIZABLE PRODUCT FEATURE THAT IS COMPARABLE ACROSS THESE COMPANIES: {','.join(urls.values())}."
             topic = get_completion(prompt, MODEL_NAME)
             cleaned_topic = topic.lower().replace('*', '')
             print("CLEAN", cleaned_topic)

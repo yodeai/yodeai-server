@@ -9,7 +9,7 @@ from datetime import datetime
 import csv
 import time
 
-MODEL_NAME = "gpt-3.5" # sometimes won't work, use 3.5
+MODEL_NAME = "gpt-3.5-turbo" # sometimes won't work, use 3.5
 NUM_CLUSTERS = 5
 # LENS_ID = 972
 LENS_ID = 959
@@ -129,6 +129,7 @@ def cluster_painpoints_for_topics(lens_id, num_topics=NUM_CLUSTERS, method=KMEAN
                 text += painpoint_embeddings[str(emb[0])] + "\n\n"  
             prompt = f"Please summarize these similar pain points: {text} into one main painpoint. OUTPUT THE PAIN POINT IN 4-5 WORDS ONLY, AND MAKE SURE TO RETURN A PAINPOINT AND NOT AN EMPTY STRING"
             topic = get_completion(prompt, MODEL_NAME)
+            print("TOPIC", topic)
             topics.append(topic)
         print(f"Time taken: {time.time() - start_time:.2f} seconds")
         return topics

@@ -168,8 +168,8 @@ def generate_topics(lens_id, block_ids, new_percentage, whiteboard_id):
             prompt = f"Please output 3 main topics that can be extracted from this interview content, and START EACH BULLET WITH A '-' AND MAKE THEM GENERALIZABLE AND 3-4 WORDS ONLY :  ```{text}'''."
             topics_text = get_completion(prompt, MODEL_NAME)
         print("topics", topics_text)
-    data, error = supabaseClient.rpc("update_plugin_progress", {"id": whiteboard_id, "new_progress": new_percentage}).execute() 
     result = splitTopics(topics_text)
+    data, error = supabaseClient.rpc("update_plugin_progress", {"id": whiteboard_id, "new_progress": new_percentage}).execute() 
     return result
 
     # generate 3 topics from the chunks

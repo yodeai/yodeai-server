@@ -124,7 +124,7 @@ def get_context(area, parent_url, areas_of_analysis_embedding):
 
 def generate_cell(area, parent_url, areas_of_analysis_embedding): 
     context, relevant_urls = get_context(area, parent_url, areas_of_analysis_embedding)
-    prompt = f"Please summarize information about {area} for this company {parent_url} using this context: {context}, and limit the summary to only 1 paragraph."    
+    prompt = f"Please summarize information about {area} for this company {parent_url} using this context: {context}, and limit the summary to only 1 paragraph. IF THE CONTEXT IS NOT RELEVANT to {area}, THEN OUTPUT 'NO INFORMATION FOUND'"    
     
     response = get_completion(prompt, "gpt-3.5-turbo")
 
@@ -527,6 +527,19 @@ def gather_depth_1_links(parent_url):
     extended_urls.extend(new_links)
     visited_urls.update(link[0] for link in new_links)
     
+    urls = list(visited_urls)[:50]
+    return urls
+
+def gather_depth_2_links(depth_1_links):    
+    visited_urls = set()
+    extended_urls = []
+    for parent_url in depth_1_links:
+        visited_urls.add(parent_url)
+        
+        new_links = extract_links(parent_url, parent_url, 0, visited_urls)
+        extended_urls.extend(new_links)
+        visited_urls.update(link[0] for link in new_links)
+    
     urls = list(visited_urls)[:100]
     return urls
 
@@ -581,16 +594,16 @@ def crawl_for_data(parent_url, urls, num_urls, whiteboard_id, new_percentage, sk
     if not skip_web_crawl:
         predefined_links = gather_depth_1_links(parent_url)
         data, error = supabaseClient.rpc("update_plugin_progress", {"id": whiteboard_id, "new_progress": new_percentage}).execute() 
-        if error:
-            print("error", error)
-            supabaseClient.table('web_content_block').delete().eq('parent_url', parent_url).execute()
-
+        predefined_links += gather_depth_2_links(predefined_links)
+        data, error = supabaseClient.rpc("update_plugin_progress", {"id": whiteboard_id, "new_progress": new_percentage}).execute() 
         with concurrent.futures.ThreadPoolExecutor(max_workers=10) as executor:
             # Submit tasks for each area concurrently
             futures = [executor.submit(add_to_block_and_chunk, link, parent_url) for link in predefined_links]
 
             # Wait for all tasks to complete
             concurrent.futures.wait(futures)
+        data, error = supabaseClient.rpc("update_plugin_progress", {"id": whiteboard_id, "new_progress": new_percentage}).execute() 
+
 
 
 def generate_data(parent_url, urls, areas_of_analysis_embedding, num_urls, whiteboard_id, new_percentage, skip_web_crawl=False):
@@ -604,9 +617,6 @@ def generate_data(parent_url, urls, areas_of_analysis_embedding, num_urls, white
         company_data["data"].append(area_data_list)
         # TODO: update progress since cell done
         data, error = supabaseClient.rpc("update_plugin_progress", {"id": whiteboard_id, "new_progress": new_percentage}).execute() 
-        if error:
-            print(error)
-            supabaseClient.table('web_content_block').delete().eq('parent_url', parent_url).execute()
 
 
     
@@ -663,7 +673,10 @@ def get_chunks_from_urls(urls):
     for chunk in chunks[1]:
         mapping[chunk['embedding']] = chunk
     return mapping
-
+def clean_text(text):
+    # Remove non-ASCII characters
+    cleaned_text = re.sub(r'[^\x00-\x7F]+', '', text)
+    return cleaned_text
 def generate_areas_of_analysis(urls, whiteboard_id, new_percentage, method=KMEANS):
     start_time = time.time()
     if method == KMEANS:
@@ -692,7 +705,8 @@ def generate_areas_of_analysis(urls, whiteboard_id, new_percentage, method=KMEAN
             for d in closest_chunks:        
                 text += d[0]['content'] + "\n\n"
                 # give it a role: you are a business analyst pick areas of analysis that will allow you to compare 
-            prompt = f"You are a product manager that is trying to create a new product. Please output one main feature that will be used as a field in a competitive analysis between these companies: {str(text)} that is useful for product development. OUTPUT THE TOPIC IN 4-5 WORDS ONLY. OUTPUT 'ERROR WITH GENERATING' IF THE TOPIC HAS ANYTHING TO DO WITH HTTP RESPONSE STATUS CODES AND NOT BEING ABLE TO CONNECT TO THE SITE."
+            text = clean_text(text)
+            prompt = f"You are a product manager that is trying to create a new product. Please output one main feature from this content: {str(text)} that is useful for competitive analysis between companies. OUTPUT THE TOPIC IN 4-5 WORDS ONLY. OUTPUT 'ERROR WITH GENERATING' IF THE TOPIC HAS ANYTHING TO DO WITH HTTP RESPONSE STATUS CODES AND NOT BEING ABLE TO CONNECT TO THE SITE."
             topic = get_completion(prompt, MODEL_NAME)
             cleaned_topic = topic.lower().replace('*', '')
             print("CLEAN", cleaned_topic)
@@ -710,9 +724,9 @@ def create_competitive_analysis(urls, areas_of_analysis, whiteboard_id, skip_web
         num_urls = len(urls)
         areas_of_analysis = [area for area in areas_of_analysis if area != ""]
         if not areas_of_analysis:
-            new_percentage = 1/(num_urls + num_urls*4 + 1) # web crawl, cell generation (including summary), generate areas
+            new_percentage = 1/(num_urls*3 + num_urls*4 + 1) # web crawl, add to block table, cell generation (including summary), generate areas
         else:
-            new_percentage = 1/(num_urls + num_urls*(len(areas_of_analysis) + 1))
+            new_percentage = 1/(num_urls*3 + num_urls*(len(areas_of_analysis) + 1))
         with concurrent.futures.ThreadPoolExecutor(max_workers=2) as executor:
             # Submit tasks and store the Future objects
             futures = [executor.submit(crawl_for_data, parent_url, urls, num_urls, whiteboard_id, new_percentage, skip_web_crawl) for parent_url in urls.keys()]

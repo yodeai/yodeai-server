@@ -124,6 +124,8 @@ def get_context(area, parent_url, areas_of_analysis_embedding):
 
 def generate_cell(area, parent_url, areas_of_analysis_embedding): 
     context, relevant_urls = get_context(area, parent_url, areas_of_analysis_embedding)
+    if len(context.strip()) < 5:
+        return "NO INFORMATION FOUND", []
     prompt = f"Please summarize information about {area} for this company {parent_url} using this context: {context}, and limit the summary to only 1 paragraph. IF THE CONTEXT IS NOT RELEVANT to {area}, THEN OUTPUT 'NO INFORMATION FOUND'"    
     
     response = get_completion(prompt, "gpt-3.5-turbo")

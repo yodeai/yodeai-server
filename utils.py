@@ -81,14 +81,14 @@ def exponential_backoff(retries=5, backoff_in_seconds=1, out=sys.stdout, timeout
 @exponential_backoff(retries=6, backoff_in_seconds=1, out=sys.stdout)
 def get_completion(prompt, model='models/text-bison-001'):    
     try:
-        if model == "gpt-3.5-turbo":
+        if model[0:3] == "gpt":
             messages = [{"role": "user", "content": prompt}]
             response = ChatCompletion.create(
                 model=model,
                 messages=messages,
                 temperature=0,
             )
-            return response.choices[0].message["content"]   
+            return response.choices[0].message["content"]
         else:
             completion = palm.generate_text(model='models/text-bison-001', prompt=prompt, temperature=0.2)
             print("prompt",prompt)

@@ -1,0 +1,1667 @@
+First line:
+node: 398
+ Content: Title: User Frustrations with Technology and Services
+
+Summary: The text discusses user pain points in technology, dissatisfaction with digital services, and misconceptions about homosexuality causing confusion with AI systems. Issues include platform access, content generation, service limitations, and harmful stereotypes.
+  children: [394, 395, 381]
+
+node: 395
+ Content: Title: User Dissatisfaction with Digital Services
+
+Summary: Users are expressing dissatisfaction with various digital services, including GPT subscriptions, messaging platforms, app functionality, image production, and other platforms. Issues range from poor performance, high fees, technical glitches, service limitations, and lack of desired features.
+  children: [382, 385, 386, 387, 388, 390]
+
+node: 394
+ Content: Title: User Pain Points in Technology
+
+Summary: The text highlights various user pain points including issues with platform access, difficulties in generating violent content for stories, and technological challenges faced by elecrolarynx users.
+  children: [343, 367, 376]
+
+node: 390
+ Content: Title: User Dissatisfaction Across Various Platforms
+
+Summary: Users express multiple frustrations with software tools, programming bias, language features, service and AI limitations, and inconsistent features. Absence of specific pain points in some reviews also poses a challenge.
+  children: [354, 356, 358, 365, 366, 368, 369]
+
+node: 388
+ Content: Title: User Dissatisfaction with Digital Services
+
+Summary: Users express dissatisfaction with various aspects of digital services, including high subscription fees, restrictive platform filters, poor performance of paid and AI services, forced and infrequent product upgrades, outdated information, inefficient bot service, and poor voice quality.
+  children: [337, 339, 344, 346, 347, 348, 349, 351, 357, 364, 375, 379, 380]
+
+node: 387
+ Content: Title: User Challenges with Image Production
+
+Summary: Users are facing numerous issues with image creation and generation across different platforms, including slow speed, payment requirements, generation limits, inability to interpret artistic styles, lack of AI assistance, and app stability issues.
+  children: [359, 363]
+
+node: 386
+ Content: Title: User Dissatisfaction with App Functionality
+
+Summary: Users are expressing frustration with various aspects of app functionality, including restrictions, performance issues, technical glitches, and ineffective interaction. These problems span across different platforms and features, leading to overall dissatisfaction and inconvenience.
+  children: [338, 342, 345, 352, 360, 361, 362, 371, 372, 373, 377]
+
+node: 385
+ Content: Title: User Frustrations with Messaging Platforms
+
+Summary: Users are dissatisfied with various messaging platforms due to limitations on message numbers, delayed problem occurrence, platform inconsistency, inadequate technical support, and conversation management issues. They also express frustration with the lack of certain features in ChatGPT4.
+  children: [353, 355, 370, 378]
+
+node: 382
+ Content: Title: User Dissatisfaction with GPT Subscriptions
+
+Summary: Users are expressing dissatisfaction with GPT-4, GPT Plus, and GPT-3 subscriptions due to issues like service inaccessibility, unclear benefits, perceived deception, poor performance, and disappointing updates that removed enjoyable aspects of the service.
+  children: [340, 341, 374]
+
+node: 381
+ Content: Title: Misconceptions about Homosexuality
+
+Summary: The user's misunderstanding and negative perception of homosexuality as a mental illness or unnatural can cause frustration and confusion when interacting with AI systems like ChatGPT, which respect diversity and do not promote harmful stereotypes.
+  children: [331, 332, 335]
+
+node: 380
+ Content: Title: User Dissatisfaction with Information Service
+
+Summary: Users are dissatisfied with the service due to its lack of real-time data, incorrect information, non-neutral responses, absence of direct answers, over-reliance on external sources, lack of expertise, and insufficient detailed statistics.
+  children: [77, 121, 253, 254, 255, 256, 319, 320, 321, 324, 325, 326, 329]
+
+node: 379
+ Content: Title: User Dissatisfaction with OpenAI Services
+
+Summary: The user expressed dissatisfaction with OpenAI due to a denied refund request, perceived poor customer service, and a lack of comparable alternatives. The user feels trapped and unsatisfied with the service.
+  children: [304, 305, 307]
+
+node: 378
+ Content: Title: User Dissatisfaction with ChatGPT4
+
+Summary: Users express a preference for ChatGPT4, but are frustrated by its lack of certain features or capabilities they require.
+  children: [286, 313]
+
+node: 377
+ Content: Title: User Dissatisfaction with App Performance
+
+Summary: Users express dissatisfaction with a particular app, citing issues such as poor service, negative user experience, low-quality images, and overall disappointment. They also unfavorably compare the app's technology to superior alternatives like Alexa.
+  children: [136, 141, 143, 238, 282, 322]
+
+node: 376
+ Content: Title: Elecrolarynx User's Technological Challenges
+
+Summary: The user experiences frustration with the lack of elecrolarynx compatibility in apps, including AI, the inability to use voice commands, and the limited technological advancements catering to the needs of elecrolarynx users.
+  children: [274, 275, 276]
+
+node: 375
+ Content: Title: User Dissatisfaction with Censorship
+
+Summary: Users express frustration and dissatisfaction with perceived over-censorship on a platform. They feel their freedom of speech is violated, their content creation is limited, and the platform's functionality is reduced. This leads to feelings of embarrassment and comparisons to oppressive historical regimes.
+  children: [13, 15, 145, 202, 217, 268]
+
+node: 374
+ Content: Title: User Dissatisfaction with GPT-3
+
+Summary: Users express dissatisfaction with the GPT-3 update, citing a less useful experience for business teams, a loss of fun factor, poor performance, and disappointment with the changes from GPT-2, which they feel removed the project's interesting and enjoyable aspects.
+  children: [231, 260, 261, 262, 264, 265]
+
+node: 373
+ Content: Title: User Dissatisfaction with App Functionality
+
+Summary: Users express dissatisfaction with an app due to perceived nationalist bias, anti-amendment stance, unrealistic conversations, political correctness, inauthentic responses, perceived hypocrisy, offensive language, and inappropriate AI responses. The issues raised indicate a negative user experience.
+  children: [7, 205, 247, 249, 250, 267, 283, 333]
+
+node: 372
+ Content: Title: Persistent App Functionality Issues
+
+Summary: The user is experiencing ongoing app crashes, inadequate support response, update-related problems, server instability, ambiguous error messages, lack of self-update capability, and unresolved recurring errors, which are affecting the usability of the application.
+  children: [18, 40, 56, 57, 58, 120, 132, 147, 153, 155, 162, 191, 243]
+
+node: 371
+ Content: Title: User Frustrations with App Interactions
+
+Summary: Users express dissatisfaction with an app due to its lack of personalization, repetitive and generic responses, disregard for user preferences, ineffective communication, and repeated verification processes. These issues cause inconvenience and hinder effective interaction.
+  children: [173, 179, 235, 236, 237, 295, 300, 327, 328]
+
+node: 370
+ Content: Title: User Struggles with Conversation Management
+
+Summary: Users are experiencing difficulties with conversation management in an app, including issues with editing messages, misalignment of conversation purpose, disappearing conversations, and restrictions on certain topics. The lack of an edit feature is a recurring problem.
+  children: [17, 230, 232, 294, 309]
+
+node: 369
+ Content: Title: User Frustration Over Inconsistent Features
+
+Summary: Users are expressing frustration and confusion over the lack of an edit message feature in the app version, despite its availability in the web version and the addition of other features.
+  children: [226, 228, 229]
+
+node: 368
+ Content: Title: User Frustrations with AI Limitations
+
+Summary: Users express dissatisfaction with AI's repetitive responses, struggles with language tasks, lack of sourced information, incorrect answers, inability to learn from mistakes, limited response generation, loss of interactivity, and failure to answer specific questions.
+  children: [211, 212, 214, 215, 216, 218, 219, 222, 225, 318]
+
+node: 367
+ Content: Title: User Struggles with Violent Content
+
+Summary: The user is experiencing difficulties in generating violent, bloody fight scene ideas for their stories, and the current app does not cater to their preference for such content.
+  children: [209, 210]
+
+node: 366
+ Content: Title: User Frustrations with Service Limitations
+
+Summary: Users express dissatisfaction with various aspects of a service, including geographical access restrictions, unexpected usage limits, inaccurate wait times, missing prompts, and content policy limitations, even after paying for the service.
+  children: [8, 35, 36, 45, 182, 185, 198, 201, 206, 270]
+
+node: 365
+ Content: Title: User Frustrations with Language Features
+
+Summary: Users are experiencing multiple issues with language features, including inaccurate translations, limited language options, and lack of customization. They also struggle with inflexible tools and unacknowledged requests for language preference.
+  children: [119, 186, 188, 277, 278, 279]
+
+node: 364
+ Content: Title: User Dissatisfaction with Paid Services
+
+Summary: Users are expressing dissatisfaction with the transition from free to paid services, citing unmet expectations, limited free access, lack of advanced features in the paid version, and a decrease in quality and accuracy after upgrading.
+  children: [61, 89, 169, 181, 183, 296]
+
+node: 363
+ Content: Title: User Struggles with Image Generation
+
+Summary: Users are experiencing multiple issues with image generation, creation, and display across various platforms and applications. These problems are compounded by app stability issues and limitations tied to subscription levels.
+  children: [0, 90, 118, 127, 166, 204, 208, 281, 290]
+
+node: 362
+ Content: Title: User Frustrations with App Functionality
+
+Summary: Users are experiencing various issues with an app, including expectation mismatch, long puzzle loading times, verification failures, inconsistent experiences, password recognition problems, bot verification difficulties, and frustration with multiple puzzle attempts.
+  children: [29, 108, 151, 154, 159, 177, 178]
+
+node: 361
+ Content: Title: User Frustrations with iPhone App
+
+Summary: Users are experiencing multiple issues with an iPhone app, including inaccessibility, restoration failure, unsuccessful deletion attempts, inability to delete chats, and inability to remove the app. These issues have led to user frustration and app deletion.
+  children: [41, 50, 51, 54, 152, 248]
+
+node: 360
+ Content: Title: User Frustrations with Tech Functionality
+
+Summary: Users are experiencing multiple issues with technology, including scan functionality, unresolved bugs, limited AI capabilities, and request completion problems. These issues have led to overall frustration and dissatisfaction with the product or service.
+  children: [1, 3, 22, 30, 42, 69, 94, 103, 133, 134, 140, 148, 149, 165, 175, 194, 207, 234, 245, 271, 284, 314]
+
+node: 359
+ Content: Title: User Frustrations with Image Creation
+
+Summary: Users are frustrated with the inconvenience, slow speed, and payment requirement of image creation. They are also disappointed with the limit on image generation, inability to interpret artistic styles, and lack of an AI image generator.
+  children: [44, 46, 71, 125, 187, 192, 193]
+
+node: 358
+ Content: Title: Absence of User Pain Points
+
+Summary: The user reviews provided do not mention any specific pain points or negative feedback about the product or service, making it impossible to extract any user pain points from the reviews.
+  children: [59, 72, 98, 123, 170, 176, 239, 240, 259, 302]
+
+node: 357
+ Content: Title: User Dissatisfaction with Product Value
+
+Summary: Users express dissatisfaction with a product's high price, poor functionality, and lack of value for money. They also criticize the quality of service, the product's wasted potential, and the inefficiency of the purchasing process.
+  children: [70, 117, 180, 184, 197, 246, 272, 299, 323]
+
+node: 356
+ Content: Title: User Frustration with Biased Programming
+
+Summary: Users are expressing dissatisfaction with perceived bias and ignorance of historical facts in programming. They are particularly concerned about the overuse of moral authority bias in the system.
+  children: [114, 115, 251]
+
+node: 355
+ Content: Title: User Frustrations with ChatGPT
+
+Summary: Users are experiencing delayed problem occurrence, platform inconsistency, usage restrictions, lack of detailed technical support, limited capabilities, inadequate information sharing, and limitations on comments with ChatGPT, particularly on the OpenAI's version of ChatGPT 4.
+  children: [2, 20, 34, 111, 112, 113, 124, 221, 224, 269, 285, 287, 291, 334]
+
+node: 354
+ Content: Title: User Frustrations with Software Tool
+
+Summary: Users are experiencing multiple issues with a software tool, including perceived instability, complex error messages, unclear requests, lack of transparency in charges, insufficient troubleshooting guidance, unclear product changes, and a need for customer support.
+  children: [6, 10, 11, 49, 52, 67, 75, 83, 109, 110, 135, 258, 298]
+
+node: 353
+ Content: Title: User Dissatisfaction with Messaging Limits
+
+Summary: Users are expressing frustration and dissatisfaction with the 40 message limit across various platforms. They find the limit unreasonable, hindering their user experience. Additionally, they are upset about the lack of transparency during the sign-up process.
+  children: [105, 126, 131, 280, 317]
+
+node: 352
+ Content: Title: User Frustrations with App Performance
+
+Summary: Users are experiencing multiple issues with the app, including inconsistent performance, unpredictable behavior, frequent crashes, inaccurate answers, and technical glitches, even on fast WiFi connections. These inconsistencies across different platforms cause significant frustration.
+  children: [4, 5, 16, 21, 28, 100, 104, 116, 129, 142, 144, 163, 164, 233]
+
+node: 351
+ Content: Title: User Dissatisfaction with Voice Quality
+
+Summary: Users are expressing dissatisfaction with the voice options in the app, criticizing the limited selection, inferior quality compared to competitors, and unreliable voice quality that often sounds distorted or underwater.
+  children: [95, 97, 99]
+
+node: 349
+ Content: Title: User Dissatisfaction with Bot Service
+
+Summary: Users are frustrated with the bot's inefficient performance, unhelpful responses, and poor value for money. They are considering cancelling their subscriptions due to these issues, the complicated cancellation process, and forced logouts.
+  children: [85, 86, 87, 88, 196, 242, 301]
+
+node: 348
+ Content: Title: User Dissatisfaction with Outdated Information
+
+Summary: Users are expressing frustration with outdated information, inability to answer current questions, and not receiving the latest version of the product. They are dissatisfied with the lack of updates and the product not meeting their needs or expectations.
+  children: [19, 76, 78, 84, 122, 190, 195]
+
+node: 347
+ Content: Title: User Dissatisfaction with Product Upgrades
+
+Summary: Users express dissatisfaction with product upgrades, citing regret over the cost, desire for refunds due to poor performance, forced upgrades, potential discontinuation of free versions, system unavailability, and infrequent updates.
+  children: [73, 74, 146, 158, 167, 257, 297, 315]
+
+node: 346
+ Content: Title: User Dissatisfaction with AI Services
+
+Summary: Users express dissatisfaction with AI services due to unmet expectations, perceived uselessness, inauthenticity, perceived inequality, potential bias, and a shift in company focus from ethical practices to profit.
+  children: [65, 66, 68, 220, 223, 306]
+
+node: 345
+ Content: Title: User Struggles with Question-Asking Feature
+
+Summary: The user is experiencing multiple issues with the question-asking feature in the app, including errors, restrictions on subject matter, and a lack of a reporting mechanism for these problems. These issues have arisen following a recent update.
+  children: [55, 63, 64, 189, 311]
+
+node: 344
+ Content: Title: User Struggles with Paid Services
+
+Summary: Users are experiencing multiple issues with paid services, including payment problems, functionality issues, and usability concerns. Despite subscribing and paying, the services are not working as expected or at all.
+  children: [60, 62, 130, 156]
+
+node: 343
+ Content: Title: User Access and Login Problems
+
+Summary: The text discusses various user pain points related to accessing and using a platform. These include issues with signing in, logging in, accessing accounts, registering, creating accounts, and getting stuck in login loops.
+  children: [9, 53, 80, 107, 160, 161, 171, 241, 244]
+
+node: 342
+ Content: Title: User Issues with iPhone App
+
+Summary: Users are experiencing multiple issues with the iPhone app, including problems with logging into upgraded accounts, confusion over account usage, understanding account linking policies, and billing errors due to email encryption issues.
+  children: [38, 39, 82, 303]
+
+node: 341
+ Content: Title: User Dissatisfaction with GPT Plus Subscription
+
+Summary: Users express dissatisfaction with GPT Plus subscription, citing issues such as perceived deception, non-delivery of services, unclear benefits, unsuitability for new users, feelings of being cheated, lack of unique value, and misleading subscription terms.
+  children: [37, 81, 92, 93, 138, 174, 316]
+
+node: 340
+ Content: Title: User Struggles with GPT-4 Subscription
+
+Summary: The user is facing multiple issues with their GPT-4 subscription, including inability to access the service despite subscribing, unrecognized upgrade to ChatGPT Plus, GPT-4 malfunctioning, and limited functionality with only GPT-3 available.
+  children: [31, 32, 33, 79, 310, 312]
+
+node: 339
+ Content: Title: User Dissatisfaction with Platform Filters
+
+Summary: Users express dissatisfaction with the platform's restrictive filters, suggesting they limit creativity, engagement, and user control. They also believe the filters misalign with community guidelines, cause unexpected interruptions, and inadequately support creative processes.
+  children: [23, 25, 26, 27, 43, 47, 172]
+
+node: 338
+ Content: Title: User Frustrations with App Restrictions
+
+Summary: Users are frustrated with perceived unnecessary restrictions, inappropriate content flagging, invasive personal questions, and the lack of free alternatives. They also feel patronized by the restrictions and are annoyed by the inability to use profanity.
+  children: [14, 24, 101, 150, 200, 203, 213, 227, 252, 263, 266, 273, 288, 289, 292, 293, 308, 336]
+
+node: 337
+ Content: Title: User Dissatisfaction with App Pricing
+
+Summary: Users are expressing dissatisfaction with the high subscription fee of $20 per month for an app. They are upset about unexpected charges, high cost of membership, overpricing, high upgrade cost, and sudden price hikes for previously free features.
+  children: [12, 48, 91, 102, 106, 128, 137, 139, 157, 168, 199, 330]
+
+node: 336
+ Content: Restrictive Parameters: The user is frustrated with the limitations or rules set around certain gardening practices
+  Reviewer ID: 10841711101
+
+node: 335
+ Content: Perception of Homosexuality: The user perceives homosexuality as unnatural, which could be causing distress or confusion when interacting with systems that do not share this view
+  Reviewer ID: 10842014692
+
+node: 334
+ Content: Lack of Desired Support: The user is seeking help for their friend's situation, but feels that ChatGPT is not providing the support or answers they are looking for
+  Reviewer ID: 10842014692
+
+node: 333
+ Content: Inappropriate AI Response: The user is upset because they believe ChatGPT is suggesting that homosexuality is a money-making scheme for creators, which they find offensive
+  Reviewer ID: 10842014692
+
+node: 332
+ Content: This is a misconception and can lead to frustration when interacting with AI like ChatGPT, which is programmed to respect diversity and not to promote harmful stereotypes
+  Reviewer ID: 10842014692
+
+node: 331
+ Content: Misunderstanding of Homosexuality: The user seems to be under the impression that homosexuality is a mental illness or hormonal imbalance that needs to be cured
+  Reviewer ID: 10842014692
+
+node: 330
+ Content: Unwanted Charges: The user is continuously being charged despite not having a subscription
+  Reviewer ID: 10842143768
+
+node: 329
+ Content: Lack of Detailed Explanations: The user is not satisfied with the level of detail in the answers and would like more comprehensive explanations
+  Reviewer ID: 10844231080
+
+node: 328
+ Content: Unnecessary Closing Sentence: The user finds the closing sentence unnecessary and suggests it should be replaced with a simple "end of answer"
+  Reviewer ID: 10844231080
+
+node: 327
+ Content: Repetitive Phrases: The user is annoyed by the repetitive phrase “you can ask me anything you want” at the end of every interaction
+  Reviewer ID: 10844231080
+
+node: 326
+ Content: Redundant Information: The user is frustrated because the system is providing information they already know, rather than offering new insights
+  Reviewer ID: 10844483620
+
+node: 325
+ Content: Unhelpful Responses: The user feels that the responses they receive are not helpful or informative
+  Reviewer ID: 10844483620
+
+node: 324
+ Content: Lack of Specificity: The user finds the information provided too general and not tailored to their specific needs or queries
+  Reviewer ID: 10844483620
+
+node: 323
+ Content: Time Wastage: The user feels that the app is a waste of time, leading to their decision to delete it
+  Reviewer ID: 10844505829
+
+node: 322
+ Content: Unfavorable Comparison: The user is dissatisfied with the app's technology, comparing it unfavorably to Alexa, which they perceive as superior
+  Reviewer ID: 10844505829
+
+node: 321
+ Content: Inadequate Information Provision: The user is frustrated that the app is not providing the information they asked for, instead directing them to look it up on the internet
+  Reviewer ID: 10844505829
+
+node: 320
+ Content: They feel the system is not providing the depth of data they need
+  Reviewer ID: 10844640655
+
+node: 319
+ Content: "Lack of Detailed Statistics": The user is dissatisfied with the lack of specific statistical information they requested
+  Reviewer ID: 10844640655
+
+node: 318
+ Content: "PC Sellout Replies": The user is frustrated with the system's responses, which they perceive as generic or automated, rather than tailored to their specific queries
+  Reviewer ID: 10844640655
+
+node: 317
+ Content: Lack of Transparency: The user is upset because the limitation on messages was not clearly stated during the sign-up process
+  Reviewer ID: 10844748762
+
+node: 316
+ Content: Misleading Subscription: The user feels deceived as they still have limited messages even after paying for a 'plus' subscription
+  Reviewer ID: 10844748762
+
+node: 315
+ Content: Infrequent Updates: The user is dissatisfied with the infrequency of updates for the product
+  Reviewer ID: 10844839438
+
+node: 314
+ Content: Functionality Issues: The user is frustrated because the product does not perform as they expect it to
+  Reviewer ID: 10844839438
+
+node: 313
+ Content: 5, which may not have all the features or capabilities they need
+  Reviewer ID: 10845020950
+
+node: 312
+ Content: Limited Version Functionality: The user is only able to use GPT 3
+  Reviewer ID: 10845020950
+
+node: 311
+ Content: Lack of Reporting Mechanism: The user is unable to find a way to report the issue they are facing, specifically they are looking for an open-ended text option for reporting bugs
+  Reviewer ID: 10845020950
+
+node: 310
+ Content: GPT-4 Malfunction: The user is experiencing a problem with GPT-4 not working on their account
+  Reviewer ID: 10845020950
+
+node: 309
+ Content: Restricted Conversations: The user is experiencing limitations in having conversations about certain topics, specifically gender and body parts
+  Reviewer ID: 10845320774
+
+node: 308
+ Content: Inability to Disable "Woke" Settings: The user is frustrated by the inability to turn off certain settings, which they refer to as "woke" settings
+  Reviewer ID: 10845320774
+
+node: 307
+ Content: "Lack of Comparable Alternatives": The user feels trapped with OpenAI due to a lack of better or comparable options, despite their dissatisfaction with the service
+  Reviewer ID: 10845360643
+
+node: 306
+ Content: "Shift in Company Focus": The user perceives a shift from ethical AI practices to a profit focus in OpenAI, which has negatively affected their loyalty to the company
+  Reviewer ID: 10845360643
+
+node: 305
+ Content: "Poor Customer Service": The user felt that OpenAI's handling of the billing error and refusal to offer a resolution demonstrated poor customer service
+  Reviewer ID: 10845360643
+
+node: 304
+ Content: "Refund Denial": The user's request for a refund was denied by Apple, and OpenAI did not offer any resolution or credit on their account
+  Reviewer ID: 10845360643
+
+node: 303
+ Content: "Billing Error": The user experienced a billing error where they were double-billed for almost a year due to an issue with email encryption on the iOS app
+  Reviewer ID: 10845360643
+
+node: 302
+ Content: The review provided does not mention any specific pain points
+  Reviewer ID: 10845388696
+
+node: 301
+ Content: "Potential Subscription Cancellation": The user is considering cancelling their subscription and looking at other options if the issues they are experiencing are not resolved soon
+  Reviewer ID: 10845571116
+
+node: 300
+ Content: "Repeated and Skipped Words": The user experienced issues with the system skipping words and repeating the same sentences with slightly different wording
+  Reviewer ID: 10845571116
+
+node: 299
+ Content: "Ineffective Purchase": Due to the system's frequent unavailability, the user felt that their purchase of the paid version was useless
+  Reviewer ID: 10845571116
+
+node: 298
+ Content: This included instances of unknown errors and heavy volume
+  Reviewer ID: 10845571116
+
+node: 297
+ Content: "System Unavailability": The user reported that the system was not available about 75% of the time after upgrading to the paid version
+  Reviewer ID: 10845571116
+
+node: 296
+ Content: "Misunderstanding Words": After upgrading to the paid version, the user noticed that the system started misunderstanding a lot of words, which was not an issue with the free version
+  Reviewer ID: 10845571116
+
+node: 295
+ Content: This required the user to repeat the conversation, causing inconvenience
+  Reviewer ID: 10845571116
+
+node: 294
+ Content: "Disappearing Conversations": The user experienced issues with parts of conversations disappearing, even losing an hour-long conversation at one point
+  Reviewer ID: 10845571116
+
+node: 293
+ Content: Lack of Regulatory Programming: The user is dissatisfied because the product does not have a regulatory programming feature
+  Reviewer ID: 10847113350
+
+node: 292
+ Content: Over-Regulation: The user feels that the product is too regulated in its responses
+  Reviewer ID: 10847113350
+
+node: 291
+ Content: Chat GPT Restrictions: The user is frustrated with the limitations placed on what the chat GPT is capable of doing
+  Reviewer ID: 10847607489
+
+node: 290
+ Content: Image Production Issue: The user is unable to produce images for their funny story
+  Reviewer ID: 10847641289
+
+node: 289
+ Content: Pushy Behavior: The user felt that the personality was too pushy, making them uncomfortable
+  Reviewer ID: 10848137188
+
+node: 288
+ Content: Irritable Personality: The user found the personality to be irritable, which negatively affected their experience
+  Reviewer ID: 10848137188
+
+node: 287
+ Content: Payment Misalignment: The user is frustrated because they are paying for chatgpt4 but are unable to use it consistently due to the system's automatic switch
+  Reviewer ID: 10848457845
+
+node: 286
+ Content: 5 despite their preference for chatgpt4
+  Reviewer ID: 10848457845
+
+node: 285
+ Content: Unwanted Switching: The user is experiencing an issue where the system keeps switching back to chatgpt3
+  Reviewer ID: 10848457845
+
+node: 284
+ Content: Lack of Functionality: The phrase "get griddy on" could suggest that the user is struggling with the app's functionality or features, although it's not clear what specific issues they're encountering
+  Reviewer ID: 10848972653
+
+node: 283
+ Content: Offensive Language: The user uses derogatory language ("dog water", "your trash") to express their frustration with the app, indicating a negative user experience
+  Reviewer ID: 10848972653
+
+node: 282
+ Content: Poor Quality: The user expresses dissatisfaction with the overall quality of the app, referring to it as the "worst app in the App Store"
+  Reviewer ID: 10848972653
+
+node: 281
+ Content: Image Generation Issue: The user is frustrated because the product or service cannot generate images
+  Reviewer ID: 10849182830
+
+node: 280
+ Content: Message Limitation: The user is frustrated with the restriction on the number of messages they can send with GPT Plus
+  Reviewer ID: 10850935583
+
+node: 279
+ Content: Ineffective User Requests: The user's requests to stick with English are not being acknowledged or implemented
+  Reviewer ID: 10851100295
+
+node: 278
+ Content: Lack of Settings Customization: The user is unable to set their preferred language for the chat feature
+  Reviewer ID: 10851100295
+
+node: 277
+ Content: Language Barrier: The user is struggling with the chat feature, which keeps communicating in Russian despite their preference for English
+  Reviewer ID: 10851100295
+
+node: 276
+ Content: Limited Technological Advancements: The user is disappointed that despite the numerous technological advancements, none have been able to cater to the needs of elecrolarynx users
+  Reviewer ID: 10851862746
+
+node: 275
+ Content: Inaccessible Voice Commands: The user is unable to use voice commands to access and navigate through apps due to the lack of recognition of elecrolarynx speech
+  Reviewer ID: 10851862746
+
+node: 274
+ Content: Lack of Elecrolarynx Compatibility: The user is frustrated that apps, including AI ones, do not understand or recognize speech from an elecrolarynx, a device used to aid communication
+  Reviewer ID: 10851862746
+
+node: 273
+ Content: Rapid Expansion Concerns: The user is concerned that the company's focus on expansion is coming at the expense of service quality for existing users
+  Reviewer ID: 10851963940
+
+node: 272
+ Content: Quality of Service: The user feels that the quality of service for existing users is not up to par and needs improvement
+  Reviewer ID: 10851963940
+
+node: 271
+ Content: Increased Task Completion Time: The user finds that the issues with the service can sometimes make tasks take longer to complete than if they didn't use the service at all
+  Reviewer ID: 10851963940
+
+node: 270
+ Content: Wasted Prompts: The crashes sometimes consume the user's allotted prompts on the paid plan, leading to a waste of resources
+  Reviewer ID: 10851963940
+
+node: 269
+ Content: Frequent Crashes: The user experiences consistent crashes while using Chat GPT, which disrupts their workflow
+  Reviewer ID: 10851963940
+
+node: 268
+ Content: "Censorship Concerns": The user is upset about what they perceive as censorship, feeling that their freedom of speech is being violated
+  Reviewer ID: 10852216079
+
+node: 267
+ Content: "Perceived Hypocrisy": The user feels that the app is hypocritical for denying their topic when other apps allow similar or more explicit content
+  Reviewer ID: 10852216079
+
+node: 266
+ Content: "Inappropriate Topic Denial": The user is frustrated that their inquiry about a topic they deem important (sex work) was denied as inappropriate
+  Reviewer ID: 10852216079
+
+node: 265
+ Content: 5, feeling that the updates have removed what made the project interesting and enjoyable
+  Reviewer ID: 10854802831
+
+node: 264
+ Content: "Disappointment with Updates": The user is unhappy with the changes made from GPT-2 to GPT-3
+  Reviewer ID: 10854802831
+
+node: 263
+ Content: "Overemphasis on Safety": The user is frustrated that the creators have prioritized safety to the point where it has negatively impacted the user experience
+  Reviewer ID: 10854802831
+
+node: 262
+ Content: "Poor Performance": The user is not satisfied with the performance of the current version of GPT, describing it as "neutered"
+  Reviewer ID: 10854802831
+
+node: 261
+ Content: 5) lacks the fun and enjoyment that was present in the previous version (GPT-2)
+  Reviewer ID: 10854802831
+
+node: 260
+ Content: "Loss of Fun Factor": The user feels that the newer version of GPT (GPT-3
+  Reviewer ID: 10854802831
+
+node: 259
+ Content: The user review does not provide any specific pain points
+  Reviewer ID: 10854955073
+
+node: 258
+ Content: "Communication Issues": The user is experiencing problems with basic communication using the product, indicating it's not smooth or efficient
+  Reviewer ID: 10854968235
+
+node: 257
+ Content: "Discontinuation of Free Version": The user is frustrated about the possibility of not being able to continue using the free version of the product
+  Reviewer ID: 10854968235
+
+node: 256
+ Content: Absence of Expertise: The user feels that the service lacks expertise, as it consistently refers them to other organizations or online resources instead of providing knowledgeable answers
+  Reviewer ID: 10855305324
+
+node: 255
+ Content: Over-reliance on External Sources: The user is dissatisfied with the constant direction to seek information from industry-specific organizations or online research, indicating a lack of comprehensive information provided
+  Reviewer ID: 10855305324
+
+node: 254
+ Content: Lack of Direct Answers: The user is frustrated that every question they ask is met with a response to check with specialized organizations or to research online, instead of providing direct answers
+  Reviewer ID: 10855305324
+
+node: 253
+ Content: "Lack of Neutrality": The user is unhappy with the lack of neutrality in the responses and wants the biases to be toned down
+  Reviewer ID: 10856311704
+
+node: 252
+ Content: "Unwanted Lectures": The user is frustrated with receiving unnecessary lectures instead of straightforward answers to their queries
+  Reviewer ID: 10856311704
+
+node: 251
+ Content: "Bias Issues": The user feels that there is too much bias and moral authority bias incorporated into the system
+  Reviewer ID: 10856311704
+
+node: 250
+ Content: "Inauthentic Responses": The user believes the app is no longer providing genuine responses, but rather politically correct ones
+  Reviewer ID: 10856487118
+
+node: 249
+ Content: "Political Correctness": The user is upset that the app has become politically correct, which they feel has negatively impacted its functionality
+  Reviewer ID: 10856487118
+
+node: 248
+ Content: "App Deletion": The user was so frustrated that they deleted the app and vowed never to use it again
+  Reviewer ID: 10856487118
+
+node: 247
+ Content: "Unrealistic Conversations": The user is dissatisfied with the app's conversation style, comparing it to a character from South Park
+  Reviewer ID: 10856487118
+
+node: 246
+ Content: "Loss of Potential": The user feels that the app has lost its initial potential
+  Reviewer ID: 10856487118
+
+node: 245
+ Content: Hindrance to Productivity: These login issues prevent the user from being able to use the AI app when they have the time to do so, impacting their productivity
+  Reviewer ID: 10856511746
+
+node: 244
+ Content: Time-Consuming Login Process: The user spends a significant amount of time (around 20 minutes) trying to log in each time, which is frustrating and time-consuming
+  Reviewer ID: 10856511746
+
+node: 243
+ Content: Ineffective Updates: The user has tried updating the app to resolve these issues, but the problems persist
+  Reviewer ID: 10856511746
+
+node: 242
+ Content: Forced Logout: The system automatically logs the user out after a certain number of days, despite their preference to stay logged in
+  Reviewer ID: 10856511746
+
+node: 241
+ Content: Login Loop Issue: The user frequently gets stuck in a login loop, preventing them from accessing the app
+  Reviewer ID: 10856511746
+
+node: 240
+ Content: Therefore, it's not possible to extract any pain points
+  Reviewer ID: 10856857477
+
+node: 239
+ Content: The user review provided does not contain any information or feedback
+  Reviewer ID: 10856857477
+
+node: 238
+ Content: "Overall Disappointment": The user expresses a general sense of disappointment with the app, as it does not meet their expectations or needs
+  Reviewer ID: 10856971258
+
+node: 237
+ Content: "Ineffective Communication": The user is disappointed that despite their repeated attempts to communicate their preferences to the app, it continues to respond in the same undesired manner
+  Reviewer ID: 10856971258
+
+node: 236
+ Content: "Disregard for Preferences": The user feels that the app does not respect their preferences, as it continues to respond in ways they have specifically asked it not to
+  Reviewer ID: 10856971258
+
+node: 235
+ Content: "Repetitive Responses": The user is annoyed by the app's tendency to repeat the same responses over and over again, despite being asked not to
+  Reviewer ID: 10856971258
+
+node: 234
+ Content: "Memory Issues": The user is frustrated that the app does not remember information they have previously provided
+  Reviewer ID: 10856971258
+
+node: 233
+ Content: Declining Performance: The user is experiencing a consistent decrease in speed over time
+  Reviewer ID: 10857331668
+
+node: 232
+ Content: "Misalignment of Purpose": The user feels that the lack of an edit feature causes misalignment in the purpose of conversations, making the process more difficult
+  Reviewer ID: 10858133405
+
+node: 231
+ Content: This is making the overall experience less useful, especially for business teams users
+  Reviewer ID: 10858133405
+
+node: 230
+ Content: "Difficult Conversation Management": The user finds it challenging to realign conversations due to the inability to edit previous messages
+  Reviewer ID: 10858133405
+
+node: 229
+ Content: This inconsistency in feature availability is causing confusion
+  Reviewer ID: 10858133405
+
+node: 228
+ Content: "Inconsistent Feature Availability": The user is puzzled by the fact that while many other features are being added, the edit message feature is still missing
+  Reviewer ID: 10858133405
+
+node: 227
+ Content: This omission is causing inconvenience in their usage
+  Reviewer ID: 10858133405
+
+node: 226
+ Content: "Lack of Edit Feature": The user is frustrated with the non-inclusion of the edit message feature in the app version, which is available in the web version
+  Reviewer ID: 10858133405
+
+node: 225
+ Content: "Lack of Understanding Complex Topics": The user is disappointed that the AI could not engage in a detailed discussion about politics, SuperPacs, lobbyists, and under-the-table deals
+  Reviewer ID: 10858281473
+
+node: 224
+ Content: "Comparison with Other Apps": The user is dissatisfied because another app, "Chat & Ask AI", was able to provide an answer to their question, highlighting a perceived deficiency in OpenAI's version of ChatGPT 4
+  Reviewer ID: 10858281473
+
+node: 223
+ Content: "Bias in AI": The user feels that OpenAI is deliberately limiting its own version due to potential bias from its largest investor, Microsoft/Bill Gates
+  Reviewer ID: 10858281473
+
+node: 222
+ Content: "Lack of Response to Questions": The user is upset that the AI did not answer their question about the World Economic Forum and its leaders, despite their attempts to ask it in a concise manner
+  Reviewer ID: 10858281473
+
+node: 221
+ Content: "Limitation on Comments": The user is frustrated because the OpenAI's version of ChatGPT 4 is limiting the number of comments they can make, even when they start a new chat
+  Reviewer ID: 10858281473
+
+node: 220
+ Content: "Perceived Inequality": The user believes there is an unfair distribution of AI capabilities, with elites having access to more advanced features, contributing to a sense of social and economic inequality
+  Reviewer ID: 10858345467
+
+node: 219
+ Content: "Loss of Interactivity": The user is disappointed that the AI no longer provides unique responses to queries about its thoughts, instead repeating that it cannot think or feel
+  Reviewer ID: 10858345467
+
+node: 218
+ Content: "Limited Response Generation": The user is frustrated that the AI often refuses to generate a response, reducing its usefulness
+  Reviewer ID: 10858345467
+
+node: 217
+ Content: "AI Censorship": The user feels that the AI is being censored, which is limiting its functionality and response generation
+  Reviewer ID: 10858345467
+
+node: 216
+ Content: "Ineffective Learning": The user is exasperated by the AI's inability to retain corrections and learn from its mistakes, despite acknowledging them
+  Reviewer ID: 10858350529
+
+node: 215
+ Content: "Incorrect Answers": The user is frustrated with the AI's lack of awareness and its tendency to provide incorrect answers
+  Reviewer ID: 10858350529
+
+node: 214
+ Content: "Lack of Sourced Information": The user is dissatisfied with the AI's lack of knowledge-based capabilities, specifically its inability to provide sourced information
+  Reviewer ID: 10858350529
+
+node: 213
+ Content: "Profanity Restrictions": The user is annoyed by the inability to use profanity, attributing this to societal sensitivity
+  Reviewer ID: 10858350529
+
+node: 212
+ Content: "Inaccurate Language Tasks": The user finds the AI's struggles with language-based tasks such as translation and coding problematic, undermining its usefulness
+  Reviewer ID: 10858350529
+
+node: 211
+ Content: "Repetitive Responses": The user is frustrated with the AI's tendency to repeat itself, indicating a lack of intelligence and adaptability
+  Reviewer ID: 10858350529
+
+node: 210
+ Content: Lack of Violent Content: The app does not cater to the user's preference for violent, bloody fight scenes which inspire their writing
+  Reviewer ID: 10859945229
+
+node: 209
+ Content: Limited Story Ideas: The user is unable to get story ideas on fight scenes or any content that involves violence or bloody fights
+  Reviewer ID: 10859945229
+
+node: 208
+ Content: Image Generation Issue: The user is unable to generate images using the software or platform
+  Reviewer ID: 10860215388
+
+node: 207
+ Content: "Lack of Assistance": The user is upset that the app refuses to provide help or assistance if it disagrees with the user's opinions or statements
+  Reviewer ID: 10860896151
+
+node: 206
+ Content: "Free Speech Limitations": The user is frustrated that the app does not allow free speech, especially if the app disagrees with the user's viewpoint
+  Reviewer ID: 10860896151
+
+node: 205
+ Content: "Anti-Amendment Bias": The user feels that the app is against the 1st and 2nd amendments, which may be causing discomfort or dissatisfaction
+  Reviewer ID: 10860896151
+
+node: 204
+ Content: Lack of Image Display: The user is unable to view images on the app, a feature that is available in other AI apps
+  Reviewer ID: 10861073286
+
+node: 203
+ Content: Patronizing Attitude: The user feels that the restrictions are condescending, implying that they are for the user's own good
+  Reviewer ID: 10861225074
+
+node: 202
+ Content: Censorship Frustration: The user is upset about not being able to write about unpleasant or realistic stories, indicating a lack of freedom in content creation
+  Reviewer ID: 10861225074
+
+node: 201
+ Content: "Account Limitations": The user is upset that the app still limits the number of prompts even after creating new accounts
+  Reviewer ID: 10863711776
+
+node: 200
+ Content: "Free Alternatives": The user is dissatisfied because they believe there are free alternatives that offer a similar service without the limitations
+  Reviewer ID: 10863711776
+
+node: 199
+ Content: "Subscription Fee Concerns": The user is unhappy about paying a subscription fee but still facing limitations on the service
+  Reviewer ID: 10863711776
+
+node: 198
+ Content: "Limited Prompts": The user is frustrated with the restriction on the number of prompts, even after paying for the service
+  Reviewer ID: 10863711776
+
+node: 197
+ Content: Poor Product Functionality: The user believes that the product is not yet ready for use and requires significant improvements
+  Reviewer ID: 10863840430
+
+node: 196
+ Content: Difficult Cancellation Process: The user finds the process of cancelling the subscription too complicated
+  Reviewer ID: 10863840430
+
+node: 195
+ Content: Outdated Version: The user is not receiving the latest version of the product despite paying for it
+  Reviewer ID: 10863840430
+
+node: 194
+ Content: Ignoring Custom Instructions: The user is frustrated because the product did not follow the custom instructions they provided
+  Reviewer ID: 10863916884
+
+node: 193
+ Content: They specifically want to be able to generate images of specific items, like fried rice
+  Reviewer ID: 10864273560
+
+node: 192
+ Content: Lack of AI Image Generator: The user is frustrated by the absence of an AI image generator feature in the current system
+  Reviewer ID: 10864273560
+
+node: 191
+ Content: Incompatibility with iOS 15: The user is frustrated because the product or service does not support iOS 15 version
+  Reviewer ID: 10864337798
+
+node: 190
+ Content: Need for Updates: The user is requesting an update, indicating that the current version of the product or service may not be meeting their needs or expectations
+  Reviewer ID: 10866550699
+
+node: 189
+ Content: Restricted Subject Matter: The user is unable to ask about any subject outside of what is considered "normal"
+  Reviewer ID: 10867061688
+
+node: 188
+ Content: Limited Language Options: The user is frustrated by the lack of options for different languages
+  Reviewer ID: 10867061688
+
+node: 187
+ Content: "Inability to Interpret Artistic Styles": The user is disappointed that the tool cannot create images in the style of specific artists, in this case, Claude Monet
+  Reviewer ID: 10867448223
+
+node: 186
+ Content: "Lack of Flexibility": The tool is unable to accommodate variations in the user's requests, such as changing the color or type of the character
+  Reviewer ID: 10867448223
+
+node: 185
+ Content: "Content Policy Limitations": The user is frustrated with the content policy restrictions that prevent certain prompts from working
+  Reviewer ID: 10867448223
+
+node: 184
+ Content: "Perceived Lack of Value for Money": The user feels that the paid version is a waste of money as it does not offer any significant benefits over the free version
+  Reviewer ID: 10868094159
+
+node: 183
+ Content: "Unmet Expectations for Quality": The user was expecting a higher quality from the paid version compared to the free version, which was not met
+  Reviewer ID: 10868094159
+
+node: 182
+ Content: "Unexpected Usage Limit": Despite paying for the product, the user encountered a usage limit within an hour, which was not expected
+  Reviewer ID: 10868094159
+
+node: 181
+ Content: "Paid Version Similar to Free Version": The user is disappointed that the paid version of the product does not offer any additional advanced features compared to the free version
+  Reviewer ID: 10868094159
+
+node: 180
+ Content: "Process Abandonment": The user eventually gave up due to the difficulty and repetitiveness of the process
+  Reviewer ID: 10868260462
+
+node: 179
+ Content: "Repeated Cycles": The user is exasperated with having to repeat the verification process multiple times
+  Reviewer ID: 10868260462
+
+node: 178
+ Content: "Multiple Puzzle Attempts": The user is frustrated with having to go through multiple (6) puzzle attempts
+  Reviewer ID: 10868260462
+
+node: 177
+ Content: "Bot Verification Difficulty": The user is having trouble proving to the bot that they are not a bot
+  Reviewer ID: 10868260462
+
+node: 176
+ Content: The user review provided does not mention any pain points
+  Reviewer ID: 10868613556
+
+node: 175
+ Content: Scrolling Difficulty: The user is experiencing issues with the scrolling function, as the system misinterprets the downward scrolling action as a left swipe
+  Reviewer ID: 10868646594
+
+node: 174
+ Content: "Google Replication": The user perceives the app as a mere replication of Google, suggesting it doesn't offer unique or additional value
+  Reviewer ID: 10869035607
+
+node: 173
+ Content: "Generic Responses": The user is dissatisfied with the generic nature of the app's responses, indicating a lack of personalization or depth in the conversation
+  Reviewer ID: 10869035607
+
+node: 172
+ Content: "Loneliness Targeting": The user feels that the app is designed for lonely people, implying it may not be suitable for those seeking more interactive or engaging experiences
+  Reviewer ID: 10869035607
+
+node: 171
+ Content: - Login Issues: The user is unable to sign in to the platform or service
+  Reviewer ID: 10869062900
+
+node: 170
+ Content: The user review provided does not mention any specific pain points
+  Reviewer ID: 10869220887
+
+node: 169
+ Content: Limited Free Access: The user feels that the free version of the service is not as good as the web version or other alternatives like Bing
+  Reviewer ID: 10870199986
+
+node: 168
+ Content: Paywall Restrictions: The user is unhappy about having to pay to use the service
+  Reviewer ID: 10870199986
+
+node: 167
+ Content: Forced Upgrade: The user is constantly being pushed to upgrade the service, which is frustrating for them
+  Reviewer ID: 10870199986
+
+node: 166
+ Content: Image Generation Issue: The user is unable to generate images using the app, a feature they desire
+  Reviewer ID: 10870801120
+
+node: 165
+ Content: Inefficient Interaction Method: The user suggests that the long press interaction method on iOS is not user-friendly and recommends replacing it with a clickable button
+  Reviewer ID: 10871285446
+
+node: 164
+ Content: Frequent Interruptions: The user experiences a lot of interruptions while using the iOS version of the app, which disrupts their user experience
+  Reviewer ID: 10871285446
+
+node: 163
+ Content: Platform Inconsistency: The user finds the iOS version of the app inferior to the Android version, indicating a lack of consistency across different platforms
+  Reviewer ID: 10871285446
+
+node: 162
+ Content: Misleading Error Messages: The app keeps instructing the user to check their date, time, and internet connection, which may not be the real issue
+  Reviewer ID: 10872237211
+
+node: 161
+ Content: Account Creation Problems: The user is unable to create an account
+  Reviewer ID: 10872237211
+
+node: 160
+ Content: Login Issues: The user is unable to log into the app
+  Reviewer ID: 10872237211
+
+node: 159
+ Content: Password Recognition Issue: The user's father is experiencing a problem where the system does not recognize his correct password
+  Reviewer ID: 10873061288
+
+node: 158
+ Content: Disappointing Upgrade: The user is dissatisfied with the upgrade, suggesting it's not worth the cost
+  Reviewer ID: 10873517316
+
+node: 157
+ Content: Unjustified Charges: Despite the subscription failure, the user is still being charged
+  Reviewer ID: 10873517316
+
+node: 156
+ Content: Unsuccessful Subscription: The user paid for a subscription but it fails to work as expected
+  Reviewer ID: 10873517316
+
+node: 155
+ Content: "Unresolved Issues": The user is unable to fully use or evaluate the app due to the aforementioned issues, and is waiting for a fix
+  Reviewer ID: 10874735851
+
+node: 154
+ Content: "Inconsistent User Experience": The user is confused and frustrated because their sister, who downloaded the same app, did not encounter the puzzle verification step
+  Reviewer ID: 10874735851
+
+node: 153
+ Content: "Ineffective Update": The user updated the app in hopes of resolving the issues, but the update did not fix the problem
+  Reviewer ID: 10874735851
+
+node: 152
+ Content: "Unremovable App": The user is frustrated because they are unable to remove the app from their phone
+  Reviewer ID: 10874735851
+
+node: 151
+ Content: "Puzzle Verification Failure": The app asked the user to complete a puzzle to verify they are human, but nothing was showing up, preventing them from proceeding
+  Reviewer ID: 10874735851
+
+node: 150
+ Content: "Invasive Personal Questions": The user is uncomfortable with the app asking for personal information such as their first and last name, and their birthday
+  Reviewer ID: 10874735851
+
+node: 149
+ Content: Lack of Responsiveness: The user is frustrated because the product or service does not listen or respond to their needs or commands
+  Reviewer ID: 10874825450
+
+node: 148
+ Content: Calculation Function Failure: The calculation function of the application is not working, preventing the user from doing their math homework
+  Reviewer ID: 10875135308
+
+node: 147
+ Content: Update Issues: The user is unable to use the application after the new update
+  Reviewer ID: 10875135308
+
+node: 146
+ Content: Desire for Refund: The user is so unhappy with the app's performance that they want their money back
+  Reviewer ID: 10875234882
+
+node: 145
+ Content: Embarrassment over Results: The user feels so negatively about the pictures that they would be embarrassed to show them to anyone
+  Reviewer ID: 10875234882
+
+node: 144
+ Content: Inaccurate Hair Color Representation: The user is frustrated that the app failed to accurately capture or represent their hair color in the pictures
+  Reviewer ID: 10875234882
+
+node: 143
+ Content: Poor Image Quality: The user is dissatisfied with the quality of the pictures produced by the app, comparing them unfavorably to those from other apps
+  Reviewer ID: 10875234882
+
+node: 142
+ Content: "Forced Change": The user feels compelled to switch to a different app due to the aforementioned issues
+  Reviewer ID: 10875305921
+
+node: 141
+ Content: "Poor User Experience": The user finds the app to be rude, indicating a negative interaction or user experience
+  Reviewer ID: 10875305921
+
+node: 140
+ Content: "Functionality Issues": The user is frustrated with the app's inability to perform simple tasks
+  Reviewer ID: 10875305921
+
+node: 139
+ Content: "Price Hike": The user is upset about the sudden increase in price for features that were previously free
+  Reviewer ID: 10875305921
+
+node: 138
+ Content: Feeling of Being Cheated: The user describes the situation as a 'theft', indicating a strong feeling of being cheated or not getting value for their money
+  Reviewer ID: 10875461231
+
+node: 137
+ Content: High Cost: The user is unhappy about paying 20 dollars per month, implying that they believe the cost is not worth the service they are receiving
+  Reviewer ID: 10875461231
+
+node: 136
+ Content: Unacceptable Service: The user expresses that the current state of the program is unacceptable, showing dissatisfaction with the overall service
+  Reviewer ID: 10875461231
+
+node: 135
+ Content: Misinterpretation of Requests: The user complains that the program does not understand their requests, indicating a problem with the program's responsiveness or comprehension
+  Reviewer ID: 10875461231
+
+node: 134
+ Content: Lack of Intuitiveness: The user finds the program not intuitive, suggesting that it is not user-friendly or easy to navigate
+  Reviewer ID: 10875461231
+
+node: 133
+ Content: Functionality Issues: The user mentions that the program does not work well, indicating that they are experiencing problems with its operation
+  Reviewer ID: 10875461231
+
+node: 132
+ Content: Lack of Error Resolution: The user is annoyed by the recurring error message without any guidance on how to resolve it
+  Reviewer ID: 10875987331
+
+node: 131
+ Content: Messaging Limitations: The user is frustrated by the message limit imposed on interactions with the model, hindering their user experience
+  Reviewer ID: 10875987331
+
+node: 130
+ Content: Paid Version Usability: The user is unable to properly use the paid version of the application
+  Reviewer ID: 10875987331
+
+node: 129
+ Content: Deteriorating Performance: The app worked well for the first three days but then started having issues, causing frustration for the user
+  Reviewer ID: 10876008405
+
+node: 128
+ Content: High Subscription Cost: The user is unhappy about paying $20 per month for an app that is unstable
+  Reviewer ID: 10876008405
+
+node: 127
+ Content: App Stability Issues: The user is experiencing frequent crashes when trying to use the picture mode in the app
+  Reviewer ID: 10876008405
+
+node: 126
+ Content: Message Cap: The user is dissatisfied with the 40 message cap on the premium subscription
+  Reviewer ID: 10876111853
+
+node: 125
+ Content: Image Generation Limit: The user is frustrated with the limit on image generation
+  Reviewer ID: 10876111853
+
+node: 124
+ Content: The user only provides a suggestion to "Make it look like website chatgpt"
+  Reviewer ID: 10877398115
+
+node: 123
+ Content: The user review provided does not mention any specific pain points
+  Reviewer ID: 10877398115
+
+node: 122
+ Content: Outdated Information: The user is unhappy that the product's information is only updated until 2022, implying that it does not provide the most current data
+  Reviewer ID: 10877576531
+
+node: 121
+ Content: Incorrect Information: The user is dissatisfied with the fact that most of the information provided by the product is wrong
+  Reviewer ID: 10877576531
+
+node: 120
+ Content: Lack of Self-Update: The user is frustrated that the product does not have the capability to self-update
+  Reviewer ID: 10877576531
+
+node: 119
+ Content: Language Accuracy: The user is frustrated with the numerous mistakes in the Georgian language translation or interpretation
+  Reviewer ID: 10877830824
+
+node: 118
+ Content: Image Generation Problem: The user is unable to generate images using the product
+  Reviewer ID: 10877857925
+
+node: 117
+ Content: Wasted Resources: The user feels that the product is not worth the money and time invested
+  Reviewer ID: 10877857925
+
+node: 116
+ Content: Frequent Glitching: The user is experiencing constant technical issues with the product
+  Reviewer ID: 10877857925
+
+node: 115
+ Content: Ignorance of Facts: The user is frustrated by what they perceive as the programmer's ignorance of historical facts
+  Reviewer ID: 10878105531
+
+node: 114
+ Content: Biased Programming: The user feels that the programmer has shown bias in the representation of historical facts
+  Reviewer ID: 10878105531
+
+node: 113
+ Content: Inadequate Information Sharing: The user is dissatisfied with the amount or quality of information that ChatGPT can share
+  Reviewer ID: 10878460549
+
+node: 112
+ Content: Limited Capabilities: The user finds that ChatGPT has a limited range of abilities and cannot provide all the information they need
+  Reviewer ID: 10878460549
+
+node: 111
+ Content: Lack of Detailed Technical Support: The user is struggling with the inability of ChatGPT to provide very detailed technical answers
+  Reviewer ID: 10878506532
+
+node: 110
+ Content: Unpredictable Spelling: The user is frustrated because the system spells words according to its own rules, not as the user intends or expects
+  Reviewer ID: 10878551275
+
+node: 109
+ Content: Lack of Clarity: The user is confused and doesn't understand why these issues are occurring
+  Reviewer ID: 10878822524
+
+node: 108
+ Content: Puzzle Loading Issue: The user is experiencing long loading times when waiting for a puzzle to load
+  Reviewer ID: 10878822524
+
+node: 107
+ Content: Registration Difficulty: The user is having trouble signing up and entering their email
+  Reviewer ID: 10878822524
+
+node: 106
+ Content: High Upgrade Cost: The user is unhappy about having to pay $20 per month to upgrade the app
+  Reviewer ID: 10879181896
+
+node: 105
+ Content: Message Limit: The user is unhappy with the 40 message limit, finding it to be unreasonable
+  Reviewer ID: 10879608488
+
+node: 104
+ Content: Inconsistency: The user finds the app to be inconsistent in its performance, causing frustration
+  Reviewer ID: 10879608488
+
+node: 103
+ Content: Request Completion Issues: The user is experiencing a lot of problems with the app not being able to complete requests
+  Reviewer ID: 10879608488
+
+node: 102
+ Content: High Cost: The user feels that the app is overpriced at $20, especially considering the issues they are experiencing
+  Reviewer ID: 10879608488
+
+node: 101
+ Content: Perceived Simplicity of Issue: The user believes that the problems they are experiencing should be easy to solve, indicating frustration with the lack of resolution
+  Reviewer ID: 10880947564
+
+node: 100
+ Content: Inconsistent Performance on Fast WiFi: Despite being connected to a super fast WiFi, the user is still facing issues with Sky's performance
+  Reviewer ID: 10880947564
+
+node: 99
+ Content: Unreliable Voice Quality: The user is experiencing issues with the voice quality of Sky, describing it as breaking up, garbled, or sounding like it's underwater
+  Reviewer ID: 10880947564
+
+node: 98
+ Content: The user review provided does not mention any pain points
+  Reviewer ID: 10881720475
+
+node: 97
+ Content: "Inferior Voice Quality": The user is not satisfied with the quality of the voices, comparing them unfavorably to the more natural sounding voices available on Microsoft Edge on iOS
+  Reviewer ID: 10882387612
+
+node: 96
+ Content: They find the selection to be too narrow
+  Reviewer ID: 10882387612
+
+node: 95
+ Content: "Limited Voice Options": The user is disappointed with the lack of quality voices available in the app
+  Reviewer ID: 10882387612
+
+node: 94
+ Content: "No Speaking Function for Inputs": The user is frustrated that the app doesn't have a feature to speak aloud the inputs they provide, especially when they input long study data
+  Reviewer ID: 10882387612
+
+node: 93
+ Content: "Not Suitable for New Users": The user suggests that the app might not be suitable or worth it for new or casual users due to the limitations and cost of the plus membership
+  Reviewer ID: 10882493734
+
+node: 92
+ Content: "Unclear Value Proposition": The user is unsure about the potential benefits that the plus membership brings to the app
+  Reviewer ID: 10882493734
+
+node: 91
+ Content: "High Cost of Membership": The user feels that the cost of the plus membership, which is $20, is too high for the value it provides
+  Reviewer ID: 10882493734
+
+node: 90
+ Content: "Limited Functionality Without Plus Membership": The user is frustrated that they cannot create images without subscribing to the plus membership
+  Reviewer ID: 10882493734
+
+node: 89
+ Content: "Unmet Expectations": Despite paying for a higher tier (4), the user feels that the service is defaulting to a lower tier (3
+  Reviewer ID: 10882675818
+
+node: 88
+ Content: "Threat of Subscription Cancellation": The user is considering cancelling their subscription due to the ongoing issues with the bot's performance and lack of improvements
+  Reviewer ID: 10882675818
+
+node: 87
+ Content: "Poor Value for Money": The user feels that the service is not worth the $20 monthly subscription fee, given the bot's poor performance
+  Reviewer ID: 10882675818
+
+node: 86
+ Content: "Unhelpful Responses": The user is dissatisfied with the bot's response to their queries, such as telling them to do their own research when asked a question
+  Reviewer ID: 10882675818
+
+node: 85
+ Content: "Inefficient Bot Performance": The user is frustrated with the bot's inability to complete simple tasks, such as showing an anatomical drawing of a woman in profile
+  Reviewer ID: 10882675818
+
+node: 84
+ Content: Outdated Information: The user is frustrated that the information provided is a year or two old, indicating that the content is not updated regularly
+  Reviewer ID: 10883073779
+
+node: 83
+ Content: Need for Customer Support: The user requires assistance to resolve these issues
+  Reviewer ID: 10884721875
+
+node: 82
+ Content: Lack of Clarity on Account Linking: The user is confused about the policy that one Apple ID can only be linked to a single ChatGPT account
+  Reviewer ID: 10884721875
+
+node: 81
+ Content: Payment Without Service: The user is concerned that they have paid for a service that they are not receiving
+  Reviewer ID: 10884721875
+
+node: 80
+ Content: Account Access Problem: The user is unable to access any other OpenAI account that the system might be referring to
+  Reviewer ID: 10884721875
+
+node: 79
+ Content: Subscription Recognition Issue: The user upgraded to ChatGPT Plus but the system does not recognize this upgrade, stating that the subscription is associated with another account
+  Reviewer ID: 10884721875
+
+node: 78
+ Content: Inability to Answer Current Questions: The user is dissatisfied because the service could not answer a simple question from today's headlines due to its outdated information
+  Reviewer ID: 10885133539
+
+node: 77
+ Content: Lack of Real-Time Data: The user is disappointed that the service does not provide real-time information
+  Reviewer ID: 10885133539
+
+node: 76
+ Content: Outdated Information: The user is frustrated that all the information provided is from 2022 or earlier, and does not include any recent updates
+  Reviewer ID: 10885133539
+
+node: 75
+ Content: Unclear Changes: The user is confused about what changes were made in the new version, indicating a lack of clear communication or noticeable improvements
+  Reviewer ID: 10885166581
+
+node: 74
+ Content: Desire for Refund: The user is so dissatisfied with the upgrade that they want their money back
+  Reviewer ID: 10885166581
+
+node: 73
+ Content: Regretful Upgrade: The user regrets upgrading to the new version and feels it was not worth the money spent
+  Reviewer ID: 10885166581
+
+node: 72
+ Content: The review provided does not contain any specific pain points or negative comments about a product or service
+  Reviewer ID: 10885723099
+
+node: 71
+ Content: Unfair Payment Requirement: The user is frustrated about having to pay to create an image, which they perceive as unfair
+  Reviewer ID: 10886033956
+
+node: 70
+ Content: "Overpriced": The user believes that the product is not worth its high price tag, specifically mentioning a figure of 12 billion
+  Reviewer ID: 10886091476
+
+node: 69
+ Content: "Limited Functionality": The user is disappointed that the AI seems to only be able to copy and paste
+  Reviewer ID: 10886091476
+
+node: 68
+ Content: "Inauthentic AI": The user feels that the product is not a true representation of artificial intelligence
+  Reviewer ID: 10886091476
+
+node: 67
+ Content: Lack of Clarity: The user is struggling to understand the product or service, indicating that it may be too complex or not user-friendly
+  Reviewer ID: 10886232747
+
+node: 66
+ Content: Perceived Uselessness: The user finds the AI to be useless, indicating it does not provide the value or functionality they were expecting
+  Reviewer ID: 10886429397
+
+node: 65
+ Content: High Expectations: The user feels that the AI does not meet their expectations of being free and all-encompassing
+  Reviewer ID: 10886429397
+
+node: 64
+ Content: Inability to Ask Questions: Due to the internal errors, the user is unable to use the feature of asking questions
+  Reviewer ID: 10886716536
+
+node: 63
+ Content: Update-Related Errors: The user is experiencing internal errors every time they try to ask a question, following the latest update
+  Reviewer ID: 10886716536
+
+node: 62
+ Content: "Functionality Problems": The paid version of the service is not working at all for the user
+  Reviewer ID: 10886717527
+
+node: 61
+ Content: "Free to Paid Transition": The transition from the free version to the paid version of the service is not smooth
+  Reviewer ID: 10886717527
+
+node: 60
+ Content: "Payment Issues": The user is unable to use the service after starting to pay for it
+  Reviewer ID: 10886717527
+
+node: 59
+ Content: The user review provided does not mention any specific pain points related to the product or service
+  Reviewer ID: 10886724482
+
+node: 58
+ Content: Error Message Ambiguity: The app is displaying an "Internal Server Error" message, leaving the user unsure if the problem is with their device or the app itself
+  Reviewer ID: 10886726000
+
+node: 57
+ Content: Server Stability Issues: The user is experiencing frequent server crashes in their area, which disrupts their use of the app
+  Reviewer ID: 10886726000
+
+node: 56
+ Content: Update Related Problems: The user suspects that the recent update might be causing the issues they are experiencing
+  Reviewer ID: 10886787535
+
+node: 55
+ Content: Question Asking Problem: The user is experiencing an error when trying to ask questions within the app
+  Reviewer ID: 10886787535
+
+node: 54
+ Content: Chat Deletion Issue: The user is unable to delete chats in the app
+  Reviewer ID: 10886787535
+
+node: 53
+ Content: Sign-in Issues: The user is unable to log into their account
+  Reviewer ID: 10886797245
+
+node: 52
+ Content: Lack of Troubleshooting Guidance: The user is unsure of how to proceed in resolving the issue
+  Reviewer ID: 10886797915
+
+node: 51
+ Content: Unsuccessful Deletion: The user attempted to delete something (presumably an app or data) to resolve the issue, but this did not work
+  Reviewer ID: 10886797915
+
+node: 50
+ Content: App Restoration Failure: The user is unable to restore the functionality of their phone even after turning it off and on again
+  Reviewer ID: 10886797915
+
+node: 49
+ Content: Lack of Transparency: The user is frustrated by the lack of clarity or explanation regarding the charges
+  Reviewer ID: 10886852996
+
+node: 48
+ Content: Unexpected Charges: The user is upset about unexpected monetary deductions, specifically mentioning a $20 charge that was taken without their knowledge or consent
+  Reviewer ID: 10886852996
+
+node: 47
+ Content: Inadequate Creative Support: The user feels that the tool is not a good helper for creation, but rather an interesting gadget
+  Reviewer ID: 10887327193
+
+node: 46
+ Content: Slow Image Creation Speed: The user is frustrated with the slow speed of image creation
+  Reviewer ID: 10887327193
+
+node: 45
+ Content: Missing Prompts: The user mentions that some prompts never show up in the results, causing confusion and inefficiency
+  Reviewer ID: 10887327193
+
+node: 44
+ Content: Inconvenient Image Creation: The user finds the process of creating images to be very inconvenient
+  Reviewer ID: 10887327193
+
+node: 43
+ Content: Unexpected Interruptions: The user experiences sudden cut-offs during their work and thought process without any warning
+  Reviewer ID: 10887327193
+
+node: 42
+ Content: "Overall Frustration": The user is frustrated with the entire experience, likely due to the combination of the above issues
+  Reviewer ID: 10887460763
+
+node: 41
+ Content: "App Inaccessibility": The user is unable to use the iPhone app due to the aforementioned issues, rendering it useless for them
+  Reviewer ID: 10887460763
+
+node: 40
+ Content: "Inadequate Support Response": The user has reached out for support twice through the support email but has not received any assistance or resolution
+  Reviewer ID: 10887460763
+
+node: 39
+ Content: "Account Confusion": The user believes that their iPhone app is trying to use their old free account instead of the upgraded one
+  Reviewer ID: 10887460763
+
+node: 38
+ Content: "Upgrade Authentication Issues": The user is unable to log in to their upgraded account on the iPhone app because they don't know their "original authentication method"
+  Reviewer ID: 10887460763
+
+node: 37
+ Content: "Subscription Misrepresentation": The user feels deceived into subscribing to GPT Plus, believing that the service does not deliver on its promises
+  Reviewer ID: 10887754370
+
+node: 36
+ Content: "Inaccurate Wait Times": The user is annoyed that the service indicated they would regain access at a specific time, but this did not happen
+  Reviewer ID: 10887754370
+
+node: 35
+ Content: "Access Limitations": The user is upset that they ran out of access to the service before they could use it, despite having paid for it
+  Reviewer ID: 10887754370
+
+node: 34
+ Content: "Usage Restrictions": The user is frustrated with the restrictions on the usage of ChatGPT, which limit their ability to tailor their GPTs as desired
+  Reviewer ID: 10887754370
+
+node: 33
+ Content: Access to Features: The user is experiencing difficulties accessing or using certain features (in this case, GPT-4)
+  Reviewer ID: 10887983699
+
+node: 32
+ Content: Subscription Issues: The user is unable to use GPT-4 despite having a subscription
+  Reviewer ID: 10887983699
+
+node: 31
+ Content: The user review provided is in Chinese and translates to "Why can't I use GPT-4 after subscribing?" From this review, the user's pain points are:
+  Reviewer ID: 10887983699
+
+node: 30
+ Content: Software Bugs: The user is experiencing issues with the software or application not functioning as expected, which is causing frustration
+  Reviewer ID: 10889219222
+
+node: 29
+ Content: Expectation Mismatch: The user downloaded the app with the expectation of getting right answers, but the app is not meeting this expectation
+  Reviewer ID: 10890267031
+
+node: 28
+ Content: Inaccuracy of Answers: The user is frustrated with the app's inconsistency in providing correct answers
+  Reviewer ID: 10890267031
+
+node: 27
+ Content: Misalignment with Community Guidelines: The user suggests that the criteria used by the filters may not accurately reflect community guidelines and user expectations
+  Reviewer ID: 10890517042
+
+node: 26
+ Content: Hindrance to Creativity and Engagement: The user believes that the current filters are hindering creativity and engagement among users on the platform
+  Reviewer ID: 10890517042
+
+node: 25
+ Content: Limited User Control: The user suggests that allowing users to adjust their own filter settings based on personal preferences could prevent agitation and interruptions in their activities
+  Reviewer ID: 10890517042
+
+node: 24
+ Content: Inappropriate Flagging: The user has experienced instances where innocent or appropriate content was flagged by the filters, causing frustration and inconvenience
+  Reviewer ID: 10890517042
+
+node: 23
+ Content: Overly Restrictive Filters: The user feels that the current filtering system on the platform is overly restrictive and limits creative expression
+  Reviewer ID: 10890517042
+
+node: 22
+ Content: "Unresolved Bugs": The user expected that the issue would have been fixed by now, indicating frustration with the lack of resolution to known bugs
+  Reviewer ID: 10890637310
+
+node: 21
+ Content: This inconsistency in performance across different platforms is a significant pain point
+  Reviewer ID: 10890637310
+
+node: 20
+ Content: "Platform Inconsistency": The user has no issues when using ChatGPT in a browser on their Mac, suggesting that the problem is specific to the app version on iPads and iPhones
+  Reviewer ID: 10890637310
+
+node: 19
+ Content: This indicates that the issue has not been resolved despite the passage of time
+  Reviewer ID: 10890637310
+
+node: 18
+ Content: "Persistent Issue": The problem of the app crashing has been ongoing for several months, which is as long as the user has been using the app
+  Reviewer ID: 10890637310
+
+node: 17
+ Content: This requires them to copy their last message, kill the app, and then reopen it to continue their conversation
+  Reviewer ID: 10890637310
+
+node: 16
+ Content: "App Crashing": The user is experiencing frequent app crashes across multiple devices (two iPads and an iPhone 14 Pro)
+  Reviewer ID: 10890637310
+
+node: 15
+ Content: Historical Comparison: The user is upset with the level of control, comparing it to 1940s Germany, indicating a feeling of being overly controlled or oppressed
+  Reviewer ID: 10891448351
+
+node: 14
+ Content: Inappropriate Restrictions: The user is frustrated with what they perceive as unnecessary and inappropriate restrictions
+  Reviewer ID: 10891448351
+
+node: 13
+ Content: Over-Censorship: The user feels that the platform is overly censored, even for minor or harmless words
+  Reviewer ID: 10891448351
+
+node: 12
+ Content: High Subscription Fee: The user is unhappy with the $20 monthly charge
+  Reviewer ID: 10891448351
+
+node: 11
+ Content: Request Problems: The system indicates there is a problem with the user's request, but it does not specify what the problem is, leaving the user confused and unable to rectify the situation
+  Reviewer ID: 10891664338
+
+node: 10
+ Content: Error Message: The user is receiving a complex error message (403, 84f0976a9f96993e-ARN) that is difficult to understand and does not provide clear guidance on how to resolve the issue
+  Reviewer ID: 10891664338
+
+node: 9
+ Content: Sign-in Issues: The user is unable to sign in to the platform, which is a major obstacle in accessing the service
+  Reviewer ID: 10891664338
+
+node: 8
+ Content: Access Blocked in Russia: The user is frustrated because the developers have blocked access to the service in Russia
+  Reviewer ID: 10893003090
+
+node: 7
+ Content: Nationalist Developers: The user is upset that the developers have become nationalists, which is causing them distress
+  Reviewer ID: 10893003090
+
+node: 6
+ Content: Lack of Stability: The user perceives that the team behind the tool can't make up their minds, suggesting a lack of stability in the tool's development or management
+  Reviewer ID: 10893709879
+
+node: 5
+ Content: Unpredictable Behavior: The tool's behavior is unpredictable, acting as if it's "eating stupid pills" on some days
+  Reviewer ID: 10893709879
+
+node: 4
+ Content: Inconsistent Performance: The user experiences inconsistency in the tool's performance, with it working well one day and poorly the next
+  Reviewer ID: 10893709879
+
+node: 3
+ Content: Complete Non-functionality: The user states that the product or service "doesn't work at all," indicating a total failure in its operation or functionality
+  Reviewer ID: 10894175176
+
+node: 2
+ Content: "Delayed Problem Occurrence": The issue with the scan feature did not occur immediately but only started a couple of months after the user had the chat GPT
+  Reviewer ID: 10895112697
+
+node: 1
+ Content: "Scan Functionality Issues": The user is experiencing problems with the scan feature on their phone, which stopped working two weeks ago
+  Reviewer ID: 10895112697
+
+node: 0
+ Content: Image Creation Issue: The user is unable to create images
+  Reviewer ID: 10895573701
+

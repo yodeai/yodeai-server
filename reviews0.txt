@@ -1,0 +1,89 @@
+First line:
+node: 22
+ Content: User dissatisfaction with accessibility, functionality, and reliability of the system, requiring improvements and addressing various pain points.
+  children: [18, 20, 21]
+
+node: 21
+ Content: User dissatisfaction with the system's unavailability, errors, heavy volume, and need for improvement.
+  children: [6, 13, 14, 16, 17]
+
+node: 20
+ Content: User pain points with ChatGPT include inaccurate responses, difficulty finding information, interface preferences, disappearing conversations, and issues with understanding and repetition.
+  children: [2, 7, 9, 10, 11, 12, 15]
+
+node: 18
+ Content: User pain points include difficulty with screen reader navigation, lack of improvements in response to feedback, and coordination issues with the alert system.
+  children: [0, 1, 3, 4, 8]
+
+node: 17
+ Content: Need for System Improvement: The user recognizes the technology's potential but hopes that the system's glitches and issues can be resolved soon, or they will explore other options
+  Reviewer ID: 17
+
+node: 16
+ Content: Unreliable Availability: If the system is not consistently available, the user does not find it worth subscribing to and may consider canceling their subscription
+  Reviewer ID: 16
+
+node: 15
+ Content: Skipping Words and Repetition: When the user was able to use the system, it skipped words and repeated the same sentences with slightly different wording, causing confusion and frustration
+  Reviewer ID: 15
+
+node: 14
+ Content: Heavy Volume: The system experiences heavy volume, making it difficult for the user to access and use it effectively
+  Reviewer ID: 14
+
+node: 13
+ Content: Unavailability and Errors: The system has been unavailable or experiences unknown errors about 75% of the time since upgrading to the paid version, rendering the purchase useless
+  Reviewer ID: 13
+
+node: 12
+ Content: Misunderstanding Words: The new version of Chat GPT seemed to misunderstand lots of words, which was not a problem in the free version
+  Reviewer ID: 12
+
+node: 11
+ Content: Disappearing Conversations: The user experienced a glitch where pieces of conversations disappeared, causing them to lose important information and have to repeat conversations
+  Reviewer ID: 11
+
+node: 10
+ Content: Preference for conversation tabs on the left in the web app instead of the history tab on the mobile app
+  Reviewer ID: 10
+
+node: 9
+ Content: Difficulty in finding obscure information before using the app
+  Reviewer ID: 9
+
+node: 8
+ Content: Excitement for the future improvements of the program
+  Reviewer ID: 8
+
+node: 7
+ Content: Inaccurate responses from the chatbot
+  Reviewer ID: 7
+
+node: 6
+ Content: Time-consuming process of sourcing information from various platforms
+  Reviewer ID: 6
+
+node: 5
+ Content: Lack of a mobile application for a long time
+  Reviewer ID: 5
+
+node: 4
+ Content: Absence of an easily accessible Feedback button within the main screen of the app
+  Reviewer ID: 4
+
+node: 3
+ Content: Lack of coordination in the alert system for generating responses
+  Reviewer ID: 3
+
+node: 2
+ Content: Voiceover reading aloud ChatGPT's response before it is finished
+  Reviewer ID: 2
+
+node: 1
+ Content: Lack of improvements in response to submitted feedbacks about accessibility on the desktop site
+  Reviewer ID: 1
+
+node: 0
+ Content: Difficulty with screen reader navigation on the desktop site
+  Reviewer ID: 0
+

@@ -1,60 +1,60 @@
 First line:
-node: 375
- Title: User Dissatisfaction with Digital Services
+node: 379
+ Title: User Dissatisfaction with Tech Products
 
-Summary: Users express dissatisfaction with various aspects of digital services, including app and software functionality, information provision, service accessibility, paid services, account management, and content inadequacy, leading to potential loss of users.
-  children: [364, 366, 367, 368, 349, 232, 371, 373]
+Summary: The text discusses user dissatisfaction with tech products due to lack of features, narrow selection, and unmet quality expectations. Issues with functionality, performance, accessibility, and compatibility are also highlighted.
+  children: [94, 376, 299]
 
-node: 374
- Title: Limited Features and Choices
+node: 376
+ Title: Widespread User Dissatisfaction with Tech Products
 
-Summary: Users are experiencing dissatisfaction due to the lack of necessary features and capabilities in the product, as well as a perceived narrow selection.
-  children: [94, 299]
-
-node: 373
- Title: User Dissatisfaction Across Various Aspects
-
-Summary: Users express dissatisfaction with information provision, service accessibility, product value, platform filters, outdated information, perceived censorship, AI products, and the app's political correctness. The issues range from lack of detailed information to perceived bias and censorship.
-  children: [321, 323, 328, 330, 334, 340, 356, 358, 363]
+Summary: Users express dissatisfaction with various tech products, including apps, AI, and GPT versions, due to issues with functionality, performance, accessibility, and compatibility. They also express concerns about perceived bias, profit focus, and unmet quality expectations.
+  children: [364, 366, 367, 368, 369, 371, 359]
 
 node: 371
- Title: Persistent App Functionality and Deletion Issues
+ Title: User Dissatisfaction with App and AI
 
-Summary: Users are persistently facing issues with an app's functionality, deletion, misleading error messages, server instability, and unsuccessful problem resolution attempts, causing frustration and hindering usability.
-  children: [343, 355]
+Summary: Users express dissatisfaction with various aspects of an app and AI products, including functionality, performance, platform filters, censorship, limitations, biased programming, and lack of violent content. They suggest improvements and express concerns about perceived bias and profit focus.
+  children: [320, 321, 328, 334, 339, 348, 349, 356, 358, 360]
+
+node: 369
+ Title: User Dissatisfaction Across Services
+
+Summary: Users express dissatisfaction with various aspects of services, products, and subscriptions. Complaints include unmet quality expectations, poor functionality, limited accessibility, misleading terms, outdated information, and lack of value for money.
+  children: [319, 323, 326, 329, 330, 331, 332, 340, 346, 361, 363]
 
 node: 368
- Title: User Dissatisfaction with App Functionality
+ Title: User Dissatisfaction with Image Generation and AI
 
-Summary: Users express frustration with various aspects of app functionality, including limitations, restrictions, inconsistencies, performance issues, and verification processes. These issues negatively impact user experience, leading to dissatisfaction and potential loss of users.
-  children: [320, 335, 336, 338, 344, 348, 350, 351, 360]
+Summary: Users are frustrated with the current image generation system due to its slow speed, inconvenient process, and lack of AI capabilities. They also struggle with AI's repetitive responses, incorrect answers, and inability to understand complex topics.
+  children: [341, 345, 350]
 
 node: 367
- Title: User Dissatisfaction with Paid Services
+ Title: User Dissatisfaction with GPT Versions
 
-Summary: Users express dissatisfaction with various paid services due to high costs, unmet expectations, poor performance, misleading information, and functionality issues. This dissatisfaction is leading to demands for refunds and consideration of subscription cancellations.
-  children: [319, 326, 329, 331, 332, 346, 357]
+Summary: Users express dissatisfaction with various versions of GPT, including ChatGPT, GPT-3, and GPT-4, due to technical issues, poor performance, usage restrictions, and subscription problems. They also express frustration with the message limit on GPT Plus.
+  children: [322, 336, 338, 357]
 
 node: 366
- Title: User Dissatisfaction with Software Functionality
+ Title: Persistent User Frustrations with Apps
 
-Summary: Users are expressing frustration with various aspects of software functionality, including bugs, responsiveness, language settings, product usability, image creation, question-asking features, perceived programming bias, and conversation management.
-  children: [322, 327, 337, 339, 341, 342, 345, 347, 352, 353, 359, 361]
+Summary: Users are consistently frustrated with various apps due to issues such as inconsistent performance, technical glitches, repetitive responses, software bugs, ineffective updates, problematic verification processes, and lack of clarity in product usability. These issues are negatively impacting the overall user experience.
+  children: [324, 335, 337, 342, 343, 344, 351, 353, 355]
 
 node: 364
- Title: User Difficulties with Account Management
+ Title: User Struggles with Platform Features
 
-Summary: Users are facing multiple issues with iPhone app accounts and account access, including problems with usage, upgrade authentication, billing errors, account linking policies, sign-in difficulties, and time-consuming login processes.
-  children: [324, 325]
+Summary: Users are experiencing difficulties with various platform features including question-asking, language settings, conversation management, and login procedures. These issues range from internal errors, limited customization, message editing restrictions, to time-consuming login processes.
+  children: [325, 327, 347, 352]
 
 node: 363
- Title: User Dissatisfaction with Information Provision
+ Title: User Dissatisfaction with Information Services
 
 Summary: Users are dissatisfied with the lack of detailed, specific, and direct information provided by the service. They are frustrated with unhelpful responses, redundant information, and the absence of expertise, leading to a desire for more comprehensive explanations.
   children: [75, 118, 243, 244, 245, 246, 305, 306, 307, 310, 311, 312, 314]
 
 node: 361
- Title: User Dissatisfaction with OpenAI's Service
+ Title: User Dissatisfaction with OpenAI Service
 
 Summary: The user expressed dissatisfaction with OpenAI's customer service, particularly their handling of a billing error and refusal to offer a refund. The user also feels trapped due to a lack of comparable alternatives to OpenAI.
   children: [290, 291, 293]
@@ -62,49 +62,49 @@ Summary: The user expressed dissatisfaction with OpenAI's customer service, part
 node: 360
  Title: User Dissatisfaction with App Performance
 
-Summary: Users express dissatisfaction with an app due to its poor quality, disappointing performance, negative user experience, subpar image quality, unacceptable service, and inferior technology compared to competitors.
+Summary: Users express dissatisfaction with an app due to its poor quality, disappointing performance, negative user experience, subpar image quality, unacceptable service, and inferior technology compared to competitors like Alexa.
   children: [131, 136, 138, 230, 271, 308]
 
 node: 359
- Title: Elecrolarynx User Struggles with Technology
+ Title: Elecrolarynx User's Technological Challenges
 
-Summary: The user experiences frustration with technology, including AI apps, due to their lack of compatibility with elecrolarynx speech. This includes issues with voice command recognition and a general lack of technological advancements catering to elecrolarynx users.
+Summary: The user experiences frustration with the lack of elecrolarynx compatibility in apps, including AI, and the inability to use voice commands. Despite technological advancements, the needs of elecrolarynx users remain unmet.
   children: [263, 264, 265]
 
 node: 358
- Title: User Dissatisfaction with Perceived Censorship
+ Title: User Dissatisfaction with Censorship
 
-Summary: Users express frustration over perceived censorship, feeling their freedom of speech and content creation is violated. They believe the platform is overly censored, even for minor words, and compare the control level to oppressive historical periods.
+Summary: Users express frustration over perceived censorship, feeling their freedom of speech and content creation is violated. They also feel embarrassed by the results, compare the control level to historical oppression, and believe AI functionality is limited due to censorship.
   children: [13, 15, 140, 194, 209, 257]
 
 node: 357
- Title: User Dissatisfaction with GPT-3 Updates
+ Title: User Dissatisfaction with GPT-3
 
-Summary: Users express dissatisfaction with the GPT-3 update, citing a loss of the fun factor, disappointment with changes from GPT-2, and poor performance. They believe the updates have made the project less interesting and less useful, particularly for business teams.
+Summary: Users express dissatisfaction with the latest version of GPT (GPT-3), citing a loss of fun factor, disappointment with updates, and poor performance. They believe the changes have made the project less interesting and less useful, particularly for business teams.
   children: [223, 249, 250, 251, 253, 254]
 
 node: 356
- Title: User Dissatisfaction with App's Political Correctness
+ Title: User Dissatisfaction with App Functionality
 
-Summary: Users are expressing dissatisfaction with the app's perceived political correctness, inauthentic responses, and perceived hypocrisy. They are also upset with the app's conversation style, inappropriate AI responses, nationalist developers, and perceived anti-amendment bias.
+Summary: Users express dissatisfaction with an app due to perceived political correctness, inauthentic responses, perceived hypocrisy, offensive language, unrealistic conversations, inappropriate AI responses, nationalist developers, and perceived anti-amendment bias.
   children: [7, 197, 237, 239, 240, 256, 272, 316]
 
 node: 355
  Title: Persistent App Functionality Issues
 
-Summary: Users are experiencing persistent issues with the app, including ineffective updates, unresolved errors, misleading error messages, and server instability. These problems persist despite attempts to resolve them, causing frustration and hindering the app's usability.
+Summary: Users are experiencing persistent issues with the app, including ineffective updates, unresolved problems, misleading error messages, and server stability issues. These problems persist despite attempts to update the app and are causing significant user frustration.
   children: [18, 40, 56, 57, 58, 117, 127, 142, 148, 150, 157, 184, 233]
 
 node: 353
  Title: User Frustrations with App Interactions
 
-Summary: Users express dissatisfaction with an app due to its repetitive responses, ineffective communication, disregard for preferences, and lack of personalization. They also report issues with repeated phrases, skipped words, and having to repeat verification processes.
+Summary: Users are frustrated with the app's repetitive, generic responses and disregard for their preferences. They are also annoyed by the system's tendency to skip and repeat words, and the need to repeat the verification process.
   children: [167, 168, 172, 227, 228, 229, 282, 287, 313]
 
 node: 352
  Title: User Struggles with Conversation Management
 
-Summary: Users are experiencing difficulties in managing conversations due to the inability to edit messages, disappearing conversations, misalignment of conversation purpose, and restrictions on certain topics. These issues often require restarting the app to continue the conversation.
+Summary: Users are experiencing difficulties with conversation management due to issues such as inability to edit messages, disappearing conversations, misalignment of purpose, and restrictions on certain topics. These issues often require them to restart the app to continue their conversation.
   children: [17, 222, 224, 281, 295]
 
 node: 351
@@ -114,51 +114,51 @@ Summary: Users are expressing frustration and confusion over the inconsistent av
   children: [218, 220, 221]
 
 node: 350
- Title: User Frustrations with AI Limitations
+ Title: User Frustrations with AI Capabilities
 
 Summary: Users express frustration with AI's repetitive responses, incorrect answers, limited response generation, lack of sourced information, loss of interactivity, inability to understand complex topics, ineffective learning, and struggles with language tasks.
   children: [203, 204, 206, 207, 208, 210, 211, 214, 217, 304]
 
 node: 349
- Title: Inadequate Violent Content in App
+ Title: User Dissatisfaction with Non-Violent App
 
-Summary: The app fails to satisfy the user's need for violent, bloody fight scenes that inspire their writing. It also lacks story ideas involving violence or bloody fights.
+Summary: The user is dissatisfied with the app due to its lack of violent content. They struggle to find inspiration for their writing, specifically for violent or bloody fight scenes.
   children: [201, 202]
 
 node: 348
  Title: User Frustrations with App Limitations
 
-Summary: Users express dissatisfaction with the app's restrictions on the number of prompts, content policy, account limitations, and free speech. They also report issues with wasted prompts due to crashes and missing prompts in results.
+Summary: Users express dissatisfaction with the app's restrictions on the number of prompts, content policy, account limitations, and free speech. They also report issues with missing prompts and wasted prompts due to crashes.
   children: [45, 178, 190, 193, 198, 259]
 
 node: 347
- Title: User Frustration with Language Features
+ Title: User Frustrations with Language Features
 
-Summary: Users are experiencing difficulties with language settings in a tool, including limited options, ineffective requests, lack of customization, language barriers, inaccurate translations, and inflexibility in accommodating variations.
+Summary: Users are experiencing difficulties with language settings, including limited options, ineffective requests, lack of customization, language barriers, translation inaccuracies, and inflexible tool responses. These issues primarily revolve around the chat feature and language translation.
   children: [116, 179, 181, 266, 267, 268]
 
 node: 346
- Title: User Dissatisfaction with Paid Service Upgrade
+ Title: User Dissatisfaction with Paid Services
 
-Summary: Users are expressing dissatisfaction with the transition from free to paid versions of a service, citing unmet quality expectations, lack of advanced features, system misunderstandings, and a perceived downgrade in service tier.
+Summary: Users are expressing dissatisfaction with paid versions of a service, citing unmet quality expectations, lack of advanced features, poor transition from free versions, system misunderstandings, and limited access compared to alternatives.
   children: [60, 87, 164, 174, 176, 283]
 
 node: 345
  Title: User Struggles with Image Generation
 
-Summary: Users are experiencing difficulties in generating, creating, producing, and viewing images across various platforms, products, and services. Additionally, frustration arises from the inability to create images without a plus membership subscription.
+Summary: Users are experiencing difficulties and frustrations with generating, creating, producing, and viewing images across various platforms, products, and services. Additionally, some features are limited to plus membership subscriptions.
   children: [0, 88, 115, 122, 161, 196, 200, 270, 277]
 
 node: 344
- Title: User Frustrations with App Verification Process
+ Title: User Frustrations with App Verification
 
-Summary: Users are experiencing multiple issues with an app's verification process, including inconsistent experiences, failed puzzle verifications, multiple puzzle attempts, bot verification difficulties, unmet expectations, long puzzle loading times, and password recognition problems.
+Summary: Users are experiencing various issues with an app's verification process, including inconsistent experiences, failed or multiple puzzle attempts, bot verification difficulties, unmet expectations, long puzzle loading times, and password recognition problems.
   children: [29, 105, 146, 149, 154, 170, 171]
 
 node: 343
- Title: Persistent Issues with App Deletion and Functionality
+ Title: Persistent App Issues Frustrate Users
 
-Summary: Users are experiencing multiple issues with a particular app, including inability to delete the app, unsuccessful attempts to resolve issues, app inaccessibility, failure to restore phone functionality, and problems deleting chats within the app.
+Summary: Users are experiencing multiple issues with a particular app, including inability to remove or delete it, failure to restore functionality, and problems with deleting chats. These issues have led to frustration and rendered the app useless for some.
   children: [41, 50, 51, 54, 147, 238]
 
 node: 342
@@ -168,15 +168,15 @@ Summary: Users are expressing frustration with software and applications due to 
   children: [1, 3, 22, 30, 42, 68, 92, 100, 128, 129, 135, 143, 144, 160, 169, 186, 199, 226, 235, 260, 300]
 
 node: 341
- Title: User Frustrations with Image Creation Process
+ Title: User Frustrations with Image Generation
 
-Summary: Users are frustrated with the image creation process due to limitations on image generation, slow creation speed, inconvenient process, unfair payment requirements, lack of AI image generator, and inability to interpret specific artistic styles.
+Summary: Users are frustrated with the current image generation system due to its slow speed, inconvenient process, unfair payment requirement, and lack of AI image generator. They are also disappointed with its inability to interpret specific artistic styles.
   children: [44, 46, 70, 120, 180, 185]
 
 node: 340
- Title: User Dissatisfaction with Product Value
+ Title: User Dissatisfaction with Product
 
-Summary: Users express dissatisfaction with the product due to perceived wasted resources, poor functionality, lack of value for money, lost potential, time wastage, ineffective purchases, subpar service quality, and repetitive, difficult processes.
+Summary: Users express dissatisfaction with a product due to perceived wasted resources, poor functionality, lack of value for money, loss of potential, time wastage, ineffective purchases, subpar service quality, and a difficult, repetitive process.
   children: [69, 114, 133, 173, 177, 189, 236, 261, 286, 309]
 
 node: 339
@@ -186,15 +186,15 @@ Summary: Users are expressing dissatisfaction with perceived bias and ignorance 
   children: [111, 112, 241]
 
 node: 338
- Title: User Dissatisfaction with ChatGPT Limitations
+ Title: User Dissatisfaction with ChatGPT
 
-Summary: Users express frustration with ChatGPT due to its limited technical support, usage restrictions, inadequate information sharing, lack of desired support, frequent crashes, and payment misalignment. They struggle with the system's inability to meet their specific needs and expectations.
+Summary: Users express frustration with ChatGPT due to its limited technical support, usage restrictions, inadequate information sharing, and frequent crashes. They also feel dissatisfied with the lack of desired support and payment misalignment.
   children: [2, 20, 34, 108, 109, 110, 213, 216, 258, 273, 274, 278, 317]
 
 node: 337
  Title: User Frustrations with Product Usability
 
-Summary: Users are experiencing difficulties with product comprehension, troubleshooting, request processing, communication, and transparency of charges. These issues highlight the need for improved user-friendliness, clearer guidance, and more effective customer support.
+Summary: Users are experiencing difficulties with product clarity, troubleshooting, request processing, communication, and transparency. They are also struggling with the product's responsiveness and comprehension of their requests, leading to a need for customer support.
   children: [6, 10, 11, 49, 52, 66, 73, 81, 106, 107, 130, 248, 285]
 
 node: 336
@@ -206,25 +206,25 @@ Summary: Users are expressing frustration and dissatisfaction with the 40 messag
 node: 335
  Title: User Frustration with App Inconsistencies
 
-Summary: Users are experiencing frustration due to inconsistent and deteriorating performance of an app. Issues include frequent glitches, inaccurate answers, interruptions, and platform inconsistency, particularly with the iOS version, leading some users to consider switching apps.
+Summary: Users are experiencing frustration due to inconsistent and deteriorating performance of an app, frequent technical glitches, inaccurate answers, and interruptions. These issues are forcing users to consider switching to a different app.
   children: [4, 5, 16, 21, 28, 97, 101, 113, 124, 137, 139, 158, 159, 225]
 
 node: 334
  Title: User Dissatisfaction with Voice Quality
 
-Summary: Users are expressing dissatisfaction with the voice quality in the app, comparing it unfavorably to other platforms. They are also disappointed with the limited voice options available and have reported reliability issues with the voice quality.
+Summary: Users are expressing dissatisfaction with the voice quality in an app, comparing it unfavorably to Microsoft Edge on iOS. They are also disappointed with the limited voice options and the unreliable voice quality.
   children: [93, 95, 96]
 
 node: 332
  Title: User Dissatisfaction with Plus Membership
 
-Summary: Users express dissatisfaction with the app's plus membership, citing unclear value proposition, misleading subscription details, and misrepresentation of services. They also suggest it may not be suitable for new or casual users due to cost and limitations.
+Summary: Users express dissatisfaction with a plus membership subscription, citing unclear value proposition, misleading subscription terms, and misrepresentation of services. They also suggest that the app may not be suitable for new or casual users due to cost and limitations.
   children: [37, 90, 91, 302]
 
 node: 331
- Title: User Dissatisfaction with Bot Subscription Service
+ Title: User Dissatisfaction with Bot Service
 
-Summary: Users are considering cancelling their subscription due to the bot's poor performance, perceived lack of value for the subscription fee, unhelpful responses to queries, and a complicated cancellation process.
+Summary: Users are considering cancelling their subscription due to the bot's poor performance, perceived lack of value for money, unhelpful responses, and a complicated cancellation process. They are frustrated and looking at other options if issues are not resolved soon.
   children: [83, 84, 85, 86, 188, 288]
 
 node: 330
@@ -236,19 +236,19 @@ Summary: Users are expressing frustration with outdated information, indicating 
 node: 329
  Title: User Dissatisfaction with Product Upgrades
 
-Summary: Users are expressing dissatisfaction with product upgrades, citing poor performance, regret over upgrading, and a lack of frequent updates. This dissatisfaction is leading to demands for refunds and frustration over forced upgrades.
+Summary: Users are expressing dissatisfaction with product upgrades, citing poor performance, regret over upgrading, and a lack of frequent updates. This dissatisfaction is leading to demands for refunds and frustration over being pushed to upgrade.
   children: [71, 72, 141, 153, 162, 301]
 
 node: 328
  Title: User Dissatisfaction with AI Products
 
-Summary: Users express dissatisfaction with AI products due to unmet expectations, perceived inauthenticity, uselessness, inequality, and bias. They also criticize OpenAI's shift from ethical practices to profit focus, negatively impacting their loyalty.
+Summary: Users express dissatisfaction with AI products due to unmet expectations, perceived inauthenticity, uselessness, inequality, and bias. They also criticize a perceived shift from ethical practices to profit focus in OpenAI, affecting their loyalty to the company.
   children: [64, 65, 67, 212, 215, 292]
 
 node: 327
  Title: User Struggles with Question-Asking Feature
 
-Summary: Users are experiencing issues with the question-asking feature in the app, including internal errors, update-related problems, and restricted subject matter. Additionally, they are unable to report these issues due to a lack of reporting mechanism.
+Summary: Users are experiencing issues with the question-asking feature due to internal errors, particularly after updates. They also struggle with a lack of reporting mechanism for these issues and restrictions on the subject matter of their questions.
   children: [55, 62, 63, 182, 297]
 
 node: 326
@@ -258,27 +258,27 @@ Summary: Users are experiencing multiple issues with paid services, including fu
   children: [59, 61, 125, 151]
 
 node: 325
- Title: User Struggles with Account Access
+ Title: User Login and Registration Issues
 
-Summary: Users are experiencing various issues related to account access, including problems with signing in, creating an account, getting stuck in a login loop, and time-consuming login processes. These issues prevent them from effectively using the platform or service.
+Summary: The text discusses various user issues related to logging in, signing into platforms, creating accounts, getting stuck in login loops, and time-consuming login processes. These issues prevent users from accessing services and cause frustration.
   children: [9, 53, 78, 104, 155, 156, 165, 231, 234]
 
 node: 324
- Title: User Issues with iPhone App Accounts
+ Title: User Issues with iPhone App
 
-Summary: Users are experiencing several issues with their iPhone app accounts, including confusion over account usage, problems with upgrade authentication, billing errors due to email encryption issues, and lack of clarity on account linking policies.
+Summary: Users are experiencing several issues with an iPhone app, including confusion over account usage, problems with upgrade authentication, billing errors due to email encryption issues, and lack of clarity on account linking policies.
   children: [38, 39, 80, 289]
 
 node: 323
  Title: User Dissatisfaction with Service Accessibility
 
-Summary: Users express frustration with various aspects of service accessibility, including unexpected access limitations, discontinuation of free versions, unexpected usage limits, inaccurate wait times, system unavailability, payment without service, and regional access restrictions.
+Summary: Users express frustration over various issues related to service accessibility, including unexpected access limitations, discontinuation of free versions, unexpected usage limits, inaccurate wait times, system unavailability, payment without service, and regional access restrictions.
   children: [8, 35, 36, 79, 175, 247, 284]
 
 node: 322
- Title: GPT-4 User Access and Functionality Issues
+ Title: User Struggles with GPT-4 Access
 
-Summary: Users are experiencing multiple issues with GPT-4, including subscription recognition problems, malfunctioning software, difficulties accessing features, and limited version functionality. The system fails to recognize upgrades, causing further user dissatisfaction.
+Summary: Users are experiencing multiple issues with GPT-4, including subscription recognition, malfunctioning, limited access to features, and inability to use the upgraded version despite having a subscription. The system also incorrectly associates the subscription with another account.
   children: [31, 32, 33, 77, 296, 298]
 
 node: 321
@@ -288,15 +288,15 @@ Summary: Users express dissatisfaction with the platform's current filtering sys
   children: [23, 25, 26, 27, 43, 47, 166]
 
 node: 320
- Title: User Frustration with Overbearing Restrictions
+ Title: User Frustration with Over-Regulation
 
-Summary: Users express dissatisfaction with perceived unnecessary restrictions, patronizing attitudes, profanity limitations, overemphasis on safety, over-regulation, pushy behavior, unwanted lectures, and inappropriate content flagging, all negatively impacting their user experience.
+Summary: Users are expressing frustration with perceived over-regulation, including unnecessary restrictions, patronizing attitudes, profanity limitations, overemphasis on safety, pushy behavior, unwanted lectures, and inappropriate content flagging, which negatively impact their user experience.
   children: [14, 24, 98, 145, 192, 195, 205, 219, 242, 252, 255, 262, 275, 276, 279, 280, 294, 318]
 
 node: 319
- Title: User Dissatisfaction with High Subscription Fees
+ Title: User Dissatisfaction with Subscription Fees
 
-Summary: Users are expressing dissatisfaction with the high monthly subscription fee of $20 for an app. They believe the cost is not justified due to the app's instability, service limitations, paywall restrictions, and sudden price hikes.
+Summary: Users are expressing dissatisfaction with the high monthly subscription fee of $20 for an app. They believe the cost is not justified due to the app's instability, service limitations, paywall restrictions, and sudden price hikes for previously free features.
   children: [12, 48, 89, 99, 103, 123, 132, 134, 152, 163, 191, 315]
 
 node: 318

@@ -1,3 +1,4 @@
+#cluster only once
 import os
 from debug.tools import clearConsole
 from utils import getEmbeddings
@@ -7,7 +8,13 @@ from langchain.document_loaders import PyPDFLoader
 from docx import Document
 from DB import supabaseClient
 
-gpt_model_name = "gpt-3.5-turbo"
+import json
+
+
+
+llm_name = 'models/text-bison-001'
+llm_name = "gpt-3.5-turbo"
+llm_name = "gpt-4"
 
 # Replace 'your_folder_path' with the path to the folder you want to read files from.
 folder_path = '../reviews'
@@ -35,7 +42,7 @@ rawData = {}
 
 def getPainPoints(review):
     prompt = f"I want to extract the main pain points that the user is facing from the review I provide below. Create a list of these pain points. Each item on the list should focus on a specific pain point that the user mentioned. Start the description of each item on the list with a short expressive name that summarizes the theme of that pain point. Remember, only list pain points, not positive comments from the user.  User Review: ``{review}''"   
-    response = get_completion(prompt, gpt_model_name)
+    response = get_completion(prompt, llm_name)
     return response
 
 def splitReviewPainpoints(input_string):
@@ -51,46 +58,39 @@ def splitReviewPainpoints(input_string):
     return splits
 
 def getRawData():
+    reviews = {}
     if not (os.path.exists(folder_path) and os.path.isdir(folder_path)):
         print("The specified folder does not exist or is not a directory.")
     else:
-        file_path = folder_path+"/"+"reviews.txt"
+        file_path = folder_path+"/"+"reviews.json"
         with open(file_path, 'r') as file:
-            reviews = file.readlines()
+            reviews = json.load(file)
 
     # Combine lines into reviews separated by blank lines
     current_review = ''
-    separated_reviews = []
-    
-    index = 0
-    for line in reviews:
-        if line.strip():  # Check if the line is not blank
-            current_review += line
-        else:
-            
-            if current_review:
-                reviewSplits = splitReviewPainpoints(getPainPoints(current_review.strip()))
-                for split in reviewSplits:
-                    rawData[index] = {"body":split}  
-                    index += 1
-                current_review = ''
 
-    # Append the last review if the file doesn't end with a blank line
-    if current_review:
-        reviewSplits = splitReviewPainpoints(getPainPoints(current_review.strip()))
+    index = 0
+    for review in reviews:
+        print("review:"+review["content"])
+        reviewSplits = splitReviewPainpoints(getPainPoints(review["content"].strip()))
         for split in reviewSplits:
-            rawData[index] = {"body":split}  
+            rawData[index] = {"body":split, "review_id":review["id"], "rating":review["rating"]}  
+            print(split)
             index += 1
+        print("\n")
     return None
 
-
+def clearDB():
+    response, error = supabaseClient.table('painpoint_summarization').select("*").execute()    
+    allRows = response[1]
+    for row in allRows:        
+        supabaseClient.table('painpoint_summarization').delete().eq("block_id", row["block_id"]).execute()
 
 def makeDB():
-    #clearDB()
     getRawData()
 
     for index,key in enumerate(rawData):       
-        clearConsole(f"makeDB for loop iteration: {index}") 
+        print(f"makeDB for loop iteration: {index}") 
         text = rawData[key]['body']
         #print(f"text length: {len(text)}")        
 
@@ -99,7 +99,7 @@ def makeDB():
                 'content': text,
                 'parent_id': 0,  
                 'embedding': getEmbeddings(text),
-                'reviewer_id': key
+                'review_id': rawData[key]['review_id']
         }).execute()
 
 
@@ -111,25 +111,26 @@ def getFloat(vec):
     return [float(value) for value in vec.split(',')]
     
 def loadData():
-    data, error = supabaseClient.table('painpoint_summarization').select('block_id', 'content', 'embedding', 'reviewer_id').order('block_id').execute()
+    data, error = supabaseClient.table('painpoint_summarization').select('block_id', 'content', 'embedding', 'review_id', "substantiveness").order('block_id').execute()
     ans = []
     count = 0
     for row in data[1]: 
         print(f"loading row {count} with block_id {row['block_id']}")
         text = row['content']
-        # score = 10
-        # if (isinstance(row['substantiveness'],int)):
-        #     score = row['substantiveness']
-        #     print(f"score found for {row['block_id']}")
-        # else:
-        #     score = getSubstantiveness(text)???
-        # update_response, update_error = supabaseClient.table('block_for_lisa')\
-        #     .update({'substantiveness': score})\
-        #     .eq('block_id', row['block_id'])\
-        #     .execute()
-        #if (score >= 5):
-        ans.append({'content': row['content'], 'embedding': ast.literal_eval(row['embedding']), 'reviewer_id': row['reviewer_id']})
-        #count += 1
+        score = 10
+        if (isinstance(row['substantiveness'],int)):
+            score = row['substantiveness']
+            print(f"score found for {row['block_id']}")
+        else:
+            print("updating score for:"+str(count))
+            score = getSubstantiveness(text)
+            update_response, update_error = supabaseClient.table('painpoint_summarization')\
+                .update({'substantiveness': score})\
+                .eq('block_id', row['block_id'])\
+                .execute()
+        if (score >= 5):
+            ans.append({'content': row['content'], 'embedding': ast.literal_eval(row['embedding']), 'review_id': row['review_id']})
+        count += 1
     return ans
 
 
@@ -155,9 +156,9 @@ def extractFirstInteger(text):
     
 def getSubstantiveness(text):
     if ((not text) or (len(text)<5)):
-        return 0
-    prompt = f"Does the following text have any concrete substantive information? Assign a score between 0 to 10, with 10 being the most substantive. Answer with a single number, the score alone. Text: ``{text}'' "
-    response = get_completion(prompt, gpt_model_name)
+        return 0     
+    prompt = f"Does the following review contain any concrete substantive user pain points about the user pain points? Assign a score between 0 to 10, with 10 being the most substantive. Answer with a single number, the score alone. Review: ``{text}'' "
+    response = get_completion(prompt, "gpt-4")
     clearConsole( extractFirstInteger(response))
     return extractFirstInteger(response)
 
@@ -171,6 +172,15 @@ def computeCenters(n_clusters, cluster_labels, embeddings):
         cluster_sizes[cluster_labels[b]] += 1
     for c in range(n_clusters):
         cluster_centers[c] = cluster_centers[c] / cluster_sizes[c]
+
+    #computing average radius in each cluster
+    cluster_radius =  np.zeros(n_clusters) 
+    for b in range(len(cluster_labels)):
+        cluster_radius[cluster_labels[b]] +=  np.dot(cluster_centers[cluster_labels[b]],embeddings[b])
+    for c in range(n_clusters):
+        cluster_radius[c] = cluster_radius[c] / cluster_sizes[c]
+    print("radius of clusters: "+str(cluster_radius)+"\n")
+
     return cluster_centers
 
 def getRelevantBlocksInCluster(cluster, blockInfo, topk):
@@ -180,10 +190,10 @@ def getRelevantBlocksInCluster(cluster, blockInfo, topk):
 
 def getClusterSummaryInfo(cluster, blocksInCluster):
     if (len(blocksInCluster)==0): 
-        return {"content": ""}  
+        return {"title":"", "content": ""}  
     elif (len(blocksInCluster)==1):
         blockID = blocksInCluster[0]['blockID']
-        return {"content": data[blockID]['content']}
+        return {"title":data[blockID]['content'], "content": data[blockID]['content']}
     
     blocksInCluster = blocksInCluster[0:8]
     text = ""
@@ -193,8 +203,10 @@ def getClusterSummaryInfo(cluster, blocksInCluster):
 
     prompt = f"""You are summarizing the following text inside qoutes in a concise way.     
     The text contains multiple parts. Each part is about a user pain point. These parts are separated by blank lines. 
-    Write a brief summary for the entire text that captures the main theme for all of the given pain points. Your summary should start with a title of at most 6 words, followed by a description of at most 50 words.
-    Text:\n "{text}"  """
+    Write a brief summary for the entire text that captures the main theme for all of the given pain points. 
+    Text:\n "{text}"\n\n  
+    <<<Your answer should be formatted as follows: in the first line, write "Title:" followed with a title of at most 6 words, and in the second line write "Summary:" followed with the summary of at most 50 words.>>>.
+    """
 
     # prompt = f"""You are summarizing the following text inside qoutes in a concise way.     
     # The text contains multiple parts. Each part is about a user pain point. These parts are separated by blank lines. 
@@ -211,16 +223,18 @@ def getClusterSummaryInfo(cluster, blocksInCluster):
     #     print(f"\n\n debugCluster {debugCluster}  promot: {prompt}")
     #     for b in blocksInCluster:
     #         print(f"block in {debugCluster}: {b}\n")
-    response = get_completion(prompt,)
-    content_starts = 1+response.find(":")
-    content = response[content_starts:].strip()
-    return {"content": content}
+    response = get_completion(prompt, llm_name)    
+    title_starts = 1+response.find(":")
+    title_ends = response.find("\n")    
+    title = response[title_starts:title_ends].strip()
+    content = response.strip()
+    return {"title": title, "content": content}
 
 def add2queue(tail, clusterIndex, summaryInfo):
     #ans.append({'content': row['content'], 'embedding': ast.literal_eval(row['embedding']), 'reviewer_id': row['reviewer_id']})
     if (len(data)<=tail):                
-        data.append({'content': "",  'embedding': [], 'reviewer_id': ""})
-    data[tail] = {'content': summaryInfo['content'],  'embedding': getEmbeddings(summaryInfo['content']), 'reviewer_id': ""}
+        data.append({'content': "",  'embedding': [], 'review_id': ""})
+    data[tail] = {'title': summaryInfo['title'],'content': summaryInfo['content'],  'embedding': getEmbeddings(summaryInfo['content']), 'review_id': ""}
     return
 
 
@@ -240,9 +254,9 @@ def refineTree():
 def writeNode(node): 
     blockData = ""
     if (len(children[node])>0):
-        blockData = f"node: {node}\n Content: {data[node]['content']}\n  children: {children[node]}\n\n"
+        blockData = f"node: {node}\n {data[node]['content']}\n  children: {children[node]}\n\n"
     else: 
-        blockData = f"node: {node}\n Content: {data[node]['content']}\n  Reviewer ID: {data[node]['reviewer_id']}\n\n"
+        blockData = f"node: {node}\n {data[node]['content']}\n  Reviewer ID: {data[node]['review_id']}\n\n"
     updateFile(output_file, blockData)
     # for c in childrenInfo:
     #     childID = c['blockID']
@@ -306,7 +320,7 @@ def clusterAndSummarize(head, tail):
         tail = tail+1
     return True   
 
-
+painpoints = []
 
 def clusterData(): 
     # get average embeddings, one for each block in the lens      
@@ -318,6 +332,11 @@ def clusterData():
             break
         head = tail
         tail = len(data)
+        break
+    painpoints = [data[head:tail]['title']] 
+    with open('painpoints.txt', 'w') as f:
+    # Use the print function with the file argument to redirect output to the file
+        print(painpoints, file=f)
     return
 
 
@@ -326,9 +345,11 @@ np.random.seed(42)
 
 #makeDB()
 data = loadData()
+
 # for entry in data:
 #     print(entry['content'])
 #     print(entry['reviewer_id'])
+
 clusterData()
 refineTree()
 writeOutput()

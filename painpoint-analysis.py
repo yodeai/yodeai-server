@@ -4,8 +4,23 @@ import time
 import numpy as np
 from debug.tools import clearConsole
 from utils import get_completion
+from utils import getEmbeddings
 
+def extractFirstInteger(text):
+    # Use regular expression to find the first integer in the string
+    match = re.search(r'\d+', text)
 
+    if match:
+        return int(match.group())
+    else:        
+        return 0
+def getSubstantiveness(text):
+    if ((not text) or (len(text)<5)):
+        return 0
+    prompt = f"Does the following text have any concrete substantive information about user pain points? Assign a score between 0 to 10, with 10 being the most substantive. Answer with a single number, the score alone. Text: ``{text}'' "
+    response = get_completion(prompt)
+    clearConsole( extractFirstInteger(response))
+    return extractFirstInteger(response)
 
 reviews = []
 def loadReviews():
@@ -47,17 +62,22 @@ np.random.seed(42)
 #loadReviews()
 #getPainPoints(reviews[0])
 
+llm_name = "gpt-3.5-turbo"
+llm_name = 'models/text-bison-001'
+llm_name = "gpt-4"
+
 start_time = time.time()
-print( get_completion("who won the worldcup in 2018?"))
+print( get_completion("who won the worldcup in 2018?",llm_name))
 end_time = time.time()
 print(end_time-start_time)
+print("problem \u2026 but it didn\u2019t. What\u2019s more is tha")
 
 #makeDB()
 #data = loadData()
 #clusterData()
 #refineTree()
 #writeOutput()
-
+print( getEmbeddings("my text"))
 
 
 

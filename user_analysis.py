@@ -8,7 +8,7 @@ from utils import getEmbeddings
 from sklearn.metrics.pairwise import cosine_similarity
 import numpy as np
 
-MODEL_NAME = "gpt-3.5-turbo"
+MODEL_NAME = "gpt-4"
 eps = 0.10
 
 def get_block_ids(lens_id):
@@ -100,8 +100,7 @@ def generate_from_existing_topics(topics, lens_id, whiteboard_id, block_ids, new
             text = ""
             for d in relevant_chunks:        
                 text += d['content'] + "\n\n"  
-
-            prompt = f"Please provide a concise summary for the given content, if it is relevant to {topic}. If the content is irrelevant, just output a single bullet point: '- not relevant'.  If referring to the interviewee, refer to them as 'The user'. Start each bullet point with '-':\n\n```{text}```\n\nEnsure that the bullet points are relevant to {topic}, IF A BULLET POINT IS IRRELEVANT TO THE {topic} THEN DO NOT INCLUDE IT AT ALL. DO NOT OUTPUT MORE THAN 10 BULLET POINTS, AIM TO GENERATE LESS BULLET POINTS."
+            prompt = f"Please provide a concise summary for the given content:\n\n```{text}```\n\n, if it is relevant to {topic}. If the content is irrelevant, just output a single bullet point: '- not relevant'.  If referring to the interviewee, refer to them as 'The user'. Start each bullet point with '-'/ Ensure that the bullet points are relevant to {topic}, IF A BULLET POINT IS IRRELEVANT TO THE {topic} THEN DO NOT INCLUDE IT AT ALL. DO NOT OUTPUT MORE THAN 10 BULLET POINTS, AIM TO GENERATE LESS BULLET POINTS."
             bullet_summary = get_completion(prompt, MODEL_NAME)
 
             bullets = bullet_summary.split("- ")

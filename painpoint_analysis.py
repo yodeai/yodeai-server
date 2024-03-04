@@ -294,7 +294,7 @@ def convert_data(painpoints, months):
         row_data["0"] = {"value": painpoint}
         for j, month in enumerate(months):
             block_ids = data.get(month, [])
-            row_data[str(j+1)] = {"value": len(block_ids)}
+            row_data[str(j+1)] = {"value": len(block_ids), "block_ids": block_ids}
         result[str(i)] = row_data
     print("result", result)
     return result

@@ -107,7 +107,7 @@ def generate_from_existing_topics(topics, lens_id, whiteboard_id, block_ids, new
 
             comments = {"comments": [{"id": i, "comment": bullet} for i, bullet in enumerate(bullets) if bullet != "" and bullet != "-" and bullet != " " and find_closest_comment(getEmbeddings(bullet), comment_embeddings) < 1-eps],
                         "topicKey": topic, "topicName": topic}
-            filtered_comments = '. '.join([comment["comment"] for comment in comments["comments"]])
+            filtered_comments = ', '.join([comment["comment"] for comment in comments["comments"]])
             if not filtered_comments:
                 comments = {"comments": [{"id": 0, "comment": "not relevant"}],
                         "topicKey": topic, "topicName": topic}

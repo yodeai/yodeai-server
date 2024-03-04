@@ -260,6 +260,7 @@ def cluster_reviews(lens_id, painpoints, spreadsheet_id, num_clusters, method=KM
 def custom_sort(month):
     # Split month and year
     month_str, year_str = month.split("/")
+    print("date", month)
     
     # Convert month and year to integers
     month_num = int(month_str)
@@ -283,11 +284,10 @@ def convert_data(painpoints, months):
     # Create the header row
     header_row = {}
     header_row["0"] = {"value": "Painpoint"}
+    months = sorted(months, key=custom_sort)
     for i, month in enumerate(months):
         header_row[str(i+1)] = {"value": convert_date(month)}
     result["0"] = header_row
-    
-    months = sorted(months, key=custom_sort)
 
     for i, (painpoint, data) in enumerate(painpoints.items(), start=1):
         row_data = {}
@@ -296,7 +296,7 @@ def convert_data(painpoints, months):
             block_ids = data.get(month, [])
             row_data[str(j+1)] = {"value": len(block_ids)}
         result[str(i)] = row_data
-
+    print("result", result)
     return result
 
 # print("cluster reviews")

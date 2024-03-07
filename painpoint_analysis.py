@@ -296,7 +296,6 @@ def convert_data(painpoints, months):
             block_ids = data.get(month, [])
             row_data[str(j+1)] = {"value": len(block_ids), "block_ids": block_ids}
         result[str(i)] = row_data
-    print("result", result)
     return result
 
 # print("cluster reviews")

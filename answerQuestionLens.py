@@ -3,7 +3,7 @@ from utils import get_completion, getEmbeddings
 from DB import supabaseClient
 import time
 from debug.tools import clearConsole
-MODEL_NAME = "gpt-3.5-turbo"
+MODEL_NAME = "gpt-4"
 
 relevanceThreshold = 5
 notFound = "The question does not seem to be relevant to the provided content."
@@ -110,8 +110,14 @@ def answer_question_lens(question: str, lensID: str, activeComponent: str, userI
     print(relevant_block_ids)
     text = ""    
     for d in relevant_chunks:        
-        text += d['content'] + "\n\n"        
-    prompt = f"You are answering questions asked by a user. Answer the question: " + question + " in a helpful and concise way and in at most one paragraph, using the following text inside triple quotes:\n '''" + text + "''' \n >>"
+        text += d['content'] + "\n\n"      
+    previousAnswer, error = supabaseClient.rpc("get_previous_answer", {"chosen_lens_id": lensID, "chosen_user_id": userID}).execute()  
+    if previousAnswer[1]:
+        previousAnswer = previousAnswer[1][0]["previous_answer"]
+    else:
+        previousAnswer = ""
+
+    prompt = f"You are answering questions asked by a user. Answer the question and write the answer in bullet points and bold the headers: " + question + " in a helpful and concise way and in at most one paragraph, using any supplemental information as well as the following text inside triple quotes:\n '''" + text + "''' as well as the previous answer generated, if relevant: " + previousAnswer + " \n >>"
     
     
     # Record the start time for get_completion

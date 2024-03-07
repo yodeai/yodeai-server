@@ -167,6 +167,27 @@ async def searchable_feed(data: QuestionForSearchableFeed):
     answer = get_searchable_feed(data.question, data.lensID)
     return {"answer": answer}
 
+
+@app.post("/setUpForInterview")
+async def set_up_for_interview(data: dict):
+    try:
+        user_id = data.get("user_id")
+        # add 2 lens ids
+        reviews_lens = 1086
+        interviews_lens = 1043
+        data, count = supabaseClient.table('lens_users') \
+            .insert([{"lens_id": reviews_lens, "user_id": user_id, "access_type": "editor", "pinned": True}, {"lens_id": interviews_lens, "user_id": user_id, "access_type": "editor", "pinned": True}]) \
+            .execute()
+        print("data", data)
+        print(user_id)
+        
+        status = "success"
+    except Exception as e:
+        status = e
+        print("EXCEPTION OCCURRED", e)
+    finally:
+        return {"status": status}
+
 @app.patch("/increasePopularity")
 async def increase_popularity(data: QuestionPopularityUpdateFromLens):
     # Perform your logic here to get the answer

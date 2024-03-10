@@ -117,7 +117,7 @@ def answer_question_lens(question: str, lensID: str, activeComponent: str, userI
     else:
         previousAnswer = ""
 
-    prompt = f"You are answering questions asked by a user. Answer the question and write the answer in bullet points and bold the headers: " + question + " in a helpful and concise way and in at most one paragraph, using any supplemental information as well as the following text inside triple quotes:\n '''" + text + "''' as well as the previous answer generated, if relevant: " + previousAnswer + " \n >>"
+    prompt = f"You are answering questions asked by a user. Answer the question and write the answer in bullet points and bold the headers: " + question + " in a helpful and concise way and in at most one paragraph, using the following text inside triple quotes:\n '''" + text + "''', as well as context from this previous answer you gave the user, if it is relevant: " + previousAnswer +  " .\n >>"
     
     
     # Record the start time for get_completion

@@ -111,14 +111,21 @@ def answer_question_lens(question: str, lensID: str, activeComponent: str, userI
     text = ""    
     for d in relevant_chunks:        
         text += d['content'] + "\n\n"      
-    previousAnswer, error = supabaseClient.rpc("get_previous_answer", {"chosen_lens_id": lensID, "chosen_user_id": userID}).execute()  
-    if previousAnswer[1]:
-        previousAnswer = previousAnswer[1][0]["previous_answer"]
+    previous, error = supabaseClient.rpc("get_previous_question_and_answer", {"chosen_lens_id": lensID, "chosen_user_id": userID}).execute()  
+    print("repvus", previous)
+    if previous[1]:
+        previousAnswer = previous[1][0]["previous_answer"]
+        previousQuestion = previous[1][0]["previous_question"]
     else:
         previousAnswer = ""
+        previousQuestion = ""
+    print("pervious answer", previousAnswer)
+    print("previous question", previousQuestion)
+    if previousAnswer:
+        prompt = f"You are answering questions asked by a user. Answer the question and write the answer in bullet points and bold the headers: " + question + " in a helpful and concise way and in at most one paragraph, using the following text inside triple quotes:\n '''" + text + "''', as well as context from this previous question: " + previousQuestion + " and the previous answer to the previous question:  " + previousAnswer +  " you gave the user. ONLY USE THE PREVIOUS QUESTION AND PREVIOUS ANSWER IF IT IS RELEVANT TO THIS QUESITON: " + question + "\n >>"
+    else:
+        prompt = f"You are answering questions asked by a user. Answer the question and write the answer in bullet points and bold the headers: " + question + " in a helpful and concise way and in at most one paragraph, using the following text inside triple quotes:\n '''" + text + "'''.\n >>"
 
-    prompt = f"You are answering questions asked by a user. Answer the question and write the answer in bullet points and bold the headers: " + question + " in a helpful and concise way and in at most one paragraph, using the following text inside triple quotes:\n '''" + text + "''', as well as context from this previous answer you gave the user, if it is relevant: " + previousAnswer +  " .\n >>"
-    
     
     # Record the start time for get_completion
     get_completion_start_time = time.time()

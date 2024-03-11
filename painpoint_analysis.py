@@ -9,7 +9,7 @@ from datetime import datetime
 import csv
 import time
 
-MODEL_NAME = "gpt-3.5-turbo" # sometimes won't work, use 3.5
+MODEL_NAME = "gpt-4" # sometimes won't work, use 3.5
 NUM_CLUSTERS = 5
 # LENS_ID = 972
 LENS_ID = 959
@@ -169,6 +169,7 @@ def cluster_for_topics(lens_id, new_percentage, spreadsheet_id, num_clusters=NUM
             data, error = supabaseClient.rpc("update_plugin_progress_spreadsheet", {"id": spreadsheet_id, "new_progress": new_percentage}).execute() 
         print(f"Time taken: {time.time() - start_time:.2f} seconds")
         topics = [topic for topic in topics if topic != ""]
+        topics = [topic.strip("'\"") for topic in topics]
         return topics
 def update_spreadsheet_nodes(output, spreadsheet_id):
     update_response, update_error = supabaseClient.table('spreadsheet')\

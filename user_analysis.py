@@ -8,7 +8,7 @@ from utils import getEmbeddings
 from sklearn.metrics.pairwise import cosine_similarity
 import numpy as np
 
-MODEL_NAME = "gpt-4"
+MODEL_NAME = "gpt-3.5-turbo"
 eps = 0.10
 
 def get_block_ids(lens_id):

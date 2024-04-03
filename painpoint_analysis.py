@@ -9,7 +9,7 @@ from datetime import datetime
 import csv
 import time
 
-MODEL_NAME = "gpt-4" # sometimes won't work, use 3.5
+MODEL_NAME = "gpt-3.5-turbo" # sometimes won't work, use 3.5
 NUM_CLUSTERS = 5
 # LENS_ID = 972
 LENS_ID = 959
